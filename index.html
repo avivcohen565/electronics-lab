@@ -3,10 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="description" content="מעבדת אלקטרוניקה תקבילית: מעגלים חיים, סימולציות, תרגול ודף נוסחאות">
-<style>html,body{margin:0}</style>
-</head>
-<body>
+<meta name="color-scheme" content="light dark">
 <title>מעבדת אלקטרוניקה תקבילית</title>
 <script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg:{fontCache:'global'},startup:{typeset:false}};</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.min.js" async></script>
@@ -15,86 +12,247 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700&family=Rubik:wght@500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap">
 <style>
 :root{
-  --bg:#F2F4F1;--surface:#FFFFFF;--surface2:#E7ECE8;--ink:#14201B;--muted:#56645E;--line:#D3DAD5;
-  --accent:#0A7A60;--accent-soft:#D5ECE3;--on-accent:#FFFFFF;
-  --ok:#1C8F55;--warn:#A86F00;--bad:#C63E33;
-  --scope-bg:#0E1613;--scope-grid:#1D2A25;--scope-axis:#50655C;--scope-text:#97ACA3;--scope-hi:#D8E5DF;
+  --bg:#F6F6F8;--surface:#FFFFFF;--surface2:#EEEEF2;--ink:#17171C;--muted:#62626E;--line:#E2E2E8;
+  --accent:#5B5BD6;--accent-soft:#E9E9FB;--on-accent:#FFFFFF;
+  --ok:#1A8A4F;--warn:#A86A00;--bad:#C93A36;
+  --dc:#0E7FA8;--dc-soft:#DDF1F8;--ac:#C26A00;--ac-soft:#FCEBD5;
+  --scope-bg:#0F1115;--scope-grid:#1E222A;--scope-axis:#4D5566;--scope-text:#9AA3B5;--scope-hi:#DDE2EC;
   --t1:#F2C230;--t2:#3CC4E2;--t3:#F2649E;--t4:#7EDC8C;--t5:#B7A3FF;
-  --p-reg:#35202A;--n-reg:#15303A;--dep:#0A0F0D;
-  --wire:#6F8A80;--comp:#D8E5DF;--comp-dim:#5E7068;
+  --p-reg:#35202A;--n-reg:#15303A;--dep:#0A0C10;
+  --wire:#6E788C;--comp:#DDE2EC;--comp-dim:#5B6272;
   --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
   --display:"Rubik","Assistant",system-ui,sans-serif;
   --body:"Assistant","Rubik",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+  --side:288px;--shadow:0 1px 2px rgba(16,16,24,.05),0 4px 16px rgba(16,16,24,.05);
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
-    --bg:#0C1210;--surface:#131B18;--surface2:#1A2420;--ink:#E2EAE6;--muted:#8FA098;--line:#26332E;
-    --accent:#3FCBA4;--accent-soft:#16332A;--on-accent:#06120E;
-    --ok:#4CC985;--warn:#E3A93A;--bad:#F07266;--scope-bg:#070B0A;--scope-grid:#17221E;
+    --bg:#0B0B0F;--surface:#141419;--surface2:#1C1C24;--ink:#ECECF1;--muted:#9A9AA8;--line:#272731;
+    --accent:#8F90F7;--accent-soft:#23234A;--on-accent:#0B0B14;
+    --ok:#4CC985;--warn:#E3A93A;--bad:#F07266;
+    --dc:#4CC3EA;--dc-soft:#0F2C38;--ac:#F5A546;--ac-soft:#38260F;
+    --scope-bg:#08090C;--scope-grid:#181B22;--shadow:none;
   }
 }
 :root[data-theme="dark"]{
-  --bg:#0C1210;--surface:#131B18;--surface2:#1A2420;--ink:#E2EAE6;--muted:#8FA098;--line:#26332E;
-  --accent:#3FCBA4;--accent-soft:#16332A;--on-accent:#06120E;
-  --ok:#4CC985;--warn:#E3A93A;--bad:#F07266;--scope-bg:#070B0A;--scope-grid:#17221E;
+  --bg:#0B0B0F;--surface:#141419;--surface2:#1C1C24;--ink:#ECECF1;--muted:#9A9AA8;--line:#272731;
+  --accent:#8F90F7;--accent-soft:#23234A;--on-accent:#0B0B14;
+  --ok:#4CC985;--warn:#E3A93A;--bad:#F07266;
+  --dc:#4CC3EA;--dc-soft:#0F2C38;--ac:#F5A546;--ac-soft:#38260F;
+  --scope-bg:#08090C;--scope-grid:#181B22;--shadow:none;
 }
 *{box-sizing:border-box}
 html,body{background:var(--bg)}
-body{color:var(--ink);font:16px/1.6 var(--body)}
-.app{max-width:1180px;margin:0 auto;padding-inline:16px;padding-block:0 110px}
-@media (min-width:700px){.app{padding-inline:24px}}
-/* top bar */
-.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;padding-block:10px;margin-inline:-16px;padding-inline:16px}
-@media (min-width:700px){.bar{margin-inline:-24px;padding-inline:24px}}
-.brand{font:800 17px/1 var(--display);color:var(--ink);text-decoration:none;display:flex;align-items:center;gap:8px;white-space:nowrap}
-.brand svg{width:26px;height:26px}
-.bar .sp{flex:1}
-.bar nav{display:none;gap:4px}
-@media (min-width:900px){.bar nav{display:flex}}
-.bar nav a,.tabbar a{color:var(--muted);text-decoration:none;font:500 14px/1 var(--display);padding:9px 12px;border-radius:8px}
-.bar nav a[aria-current="page"]{color:var(--accent);background:var(--accent-soft)}
-.flowtog{display:flex;align-items:center;gap:6px;font:500 12.5px/1.2 var(--display);color:var(--muted);background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:6px 10px;cursor:pointer;white-space:nowrap}
-.flowtog i{width:9px;height:9px;border-radius:50%;background:var(--t1);display:inline-block}
-.flowtog[aria-pressed="true"] i{background:var(--t2)}
-.tabbar{position:fixed;inset-inline:0;bottom:0;z-index:30;display:flex;justify-content:space-around;background:color-mix(in srgb,var(--surface) 94%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-top:1px solid var(--line);padding:6px 8px calc(6px + env(safe-area-inset-bottom,0px))}
-.tabbar a{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:12px;padding:6px 10px;min-width:70px}
-.tabbar a svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8}
+body{color:var(--ink);font:16px/1.65 var(--body);margin:0}
+a{color:var(--accent)}
+/* ============ shell ============ */
+.shell{display:grid;grid-template-columns:minmax(0,1fr);min-height:100vh}
+@media (min-width:1000px){.shell{grid-template-columns:var(--side) minmax(0,1fr)}}
+.side{background:var(--surface);border-inline-end:1px solid var(--line);display:flex;flex-direction:column;gap:14px;padding:16px 14px 20px;overflow-y:auto;z-index:60}
+@media (min-width:1000px){.side{position:sticky;top:0;height:100vh}}
+@media (max-width:999.98px){
+  .side{position:fixed;inset-block:0;inset-inline-start:0;width:min(88vw,330px);transform:translateX(105%);transition:transform .22s ease;box-shadow:0 0 40px rgba(0,0,0,.25)}
+  body.side-open .side{transform:none}
+}
+.scrim{position:fixed;inset:0;background:rgba(8,8,12,.45);z-index:55;display:none}
+@media (max-width:999.98px){body.side-open .scrim{display:block}}
+.brand{font:800 17px/1.1 var(--display);color:var(--ink);text-decoration:none;display:flex;align-items:center;gap:9px}
+.brand svg{width:28px;height:28px;flex:none}
+.brand small{display:block;font:500 12px/1.2 var(--body);color:var(--muted);margin-top:2px}
+.oprog{background:var(--surface2);border-radius:12px;padding:10px 12px}
+.oprog .row{display:flex;justify-content:space-between;align-items:baseline;font-size:13px;color:var(--muted)}
+.oprog b{font:700 18px/1 var(--mono);color:var(--ink)}
+.pbar{height:6px;border-radius:4px;background:color-mix(in srgb,var(--muted) 20%,transparent);overflow:hidden;margin-top:8px}
+.pbar span{display:block;height:100%;background:var(--accent);border-radius:4px;transition:width .3s}
+.qlinks{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.qlinks a{display:flex;align-items:center;gap:7px;padding:9px 10px;border-radius:10px;border:1px solid var(--line);text-decoration:none;color:var(--ink);font:500 13.5px/1.2 var(--display);background:var(--surface)}
+.qlinks a:hover{border-color:var(--accent)}
+.qlinks a[aria-current="page"]{background:var(--accent-soft);border-color:transparent;color:var(--accent)}
+.qlinks a.wide{grid-column:1/-1}
+.navh{font:600 11.5px/1 var(--display);letter-spacing:.07em;color:var(--muted);margin:6px 6px 2px}
+.tree{display:flex;flex-direction:column;gap:2px}
+.tl{display:grid;grid-template-columns:26px minmax(0,1fr) 34px;align-items:center;gap:8px;padding:7px 8px;border-radius:9px;color:var(--ink);text-decoration:none;font:500 14px/1.25 var(--display)}
+.tl:hover{background:var(--surface2)}
+.tl[aria-current="page"]{background:var(--accent-soft);color:var(--accent)}
+.tl .n{font:600 12px/1 var(--mono);color:var(--muted);text-align:center}
+.tl .pc{font:600 11px/1 var(--mono);color:var(--muted);text-align:end}
+.ring{--p:0;width:26px;height:26px;border-radius:50%;background:conic-gradient(var(--accent) calc(var(--p)*1%),color-mix(in srgb,var(--muted) 22%,transparent) 0);display:grid;place-items:center}
+.ring i{width:20px;height:20px;border-radius:50%;background:var(--surface);display:grid;place-items:center;font:600 10.5px/1 var(--mono);font-style:normal;color:var(--muted)}
+.tl[aria-current="page"] .ring i{background:var(--accent-soft)}
+.subt{display:flex;flex-direction:column;margin:2px 0 6px;padding-inline-start:40px;gap:1px}
+.subt a{display:flex;align-items:center;gap:8px;font:500 13px/1.3 var(--display);color:var(--muted);text-decoration:none;padding:5px 8px;border-radius:7px}
+.subt a:hover{color:var(--ink);background:var(--surface2)}
+.subt a[aria-current="true"]{color:var(--accent);background:var(--accent-soft)}
+.subt a .ck{margin-inline-start:auto;font-size:11px;color:var(--ok)}
+.sidefoot{margin-top:auto;display:flex;gap:6px;flex-wrap:wrap}
+.pillbtn{display:inline-flex;align-items:center;gap:6px;font:500 12.5px/1.2 var(--display);color:var(--muted);background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:7px 11px;cursor:pointer;white-space:nowrap}
+.pillbtn:hover{color:var(--ink);border-color:var(--accent)}
+.pillbtn i{width:9px;height:9px;border-radius:50%;background:var(--t1);display:inline-block}
+.pillbtn[aria-pressed="true"] i{background:var(--t2)}
+/* mobile top bar */
+.mbar{position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:10px;padding:10px 14px;background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+@media (min-width:1000px){.mbar{display:none}}
+.mbar{margin-inline:-16px}
+@media (min-width:700px){.mbar{margin-inline:-28px}}
+.iconbtn{width:38px;height:38px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);display:grid;place-items:center;cursor:pointer;flex:none}
+.iconbtn svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.mbar .t{font:700 15px/1.2 var(--display);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.main{min-width:0;padding:0 16px 120px}
+@media (min-width:700px){.main{padding:0 28px 80px}}
+.wrap{max-width:1120px;margin:0 auto}
+/* bottom tab bar (mobile) */
+.tabbar{position:fixed;inset-inline:0;bottom:0;z-index:30;display:flex;justify-content:space-around;background:color-mix(in srgb,var(--surface) 94%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-top:1px solid var(--line);padding:5px 6px calc(5px + env(safe-area-inset-bottom,0px))}
+.tabbar a{display:flex;flex-direction:column;align-items:center;gap:2px;font:500 11.5px/1.2 var(--display);color:var(--muted);text-decoration:none;padding:6px 8px;min-width:64px;border-radius:8px}
+.tabbar a svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .tabbar a[aria-current="page"]{color:var(--accent)}
-@media (min-width:900px){.tabbar{display:none}.app{padding-block-end:60px}}
-/* home */
-.hero{padding-block:30px 10px;display:grid;gap:18px}
+@media (min-width:1000px){.tabbar{display:none}}
+/* ============ typography ============ */
 .kicker,.eyebrow{font:600 12px/1 var(--display);letter-spacing:.08em;color:var(--accent)}
-h1{font:800 clamp(30px,6vw,52px)/1.05 var(--display);margin:8px 0 10px;text-wrap:balance}
-.sub{color:var(--muted);max-width:64ch;margin:0}
-.herobox{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:18px;align-items:center}
-@media (max-width:840px){.herobox{grid-template-columns:minmax(0,1fr)}}
-.stats{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
-.stat{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 14px;min-width:110px}
+h1{font:800 clamp(28px,5.4vw,46px)/1.08 var(--display);margin:8px 0 10px;text-wrap:balance;letter-spacing:-.01em}
+h2{font:700 clamp(21px,3.2vw,27px)/1.25 var(--display);margin:6px 0 8px;text-wrap:balance}
+h3{font:600 16.5px/1.35 var(--display);margin:0 0 8px}
+.sub{color:var(--muted);max-width:68ch;margin:0}
+.lead{max-width:72ch;color:var(--muted);margin:0}
+.muted{color:var(--muted)}
+.m{font-family:var(--mono);font-size:.9em;direction:ltr;unicode-bidi:isolate;white-space:nowrap}
+sub,sup{font-size:.72em;line-height:0}
+mjx-container{direction:ltr}
+mjx-container[display="true"]{overflow-x:auto;overflow-y:hidden;padding:2px 0;margin:10px 0!important}
+/* ============ home ============ */
+.hero{padding-block:30px 6px;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:22px;align-items:center}
+@media (max-width:860px){.hero{grid-template-columns:minmax(0,1fr)}}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 14px;min-width:108px}
 .stat b{display:block;font:700 22px/1.1 var(--mono)}
 .stat span{font-size:13px;color:var(--muted)}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;margin-top:22px}
-.card{display:flex;flex-direction:column;gap:6px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;text-decoration:none;color:var(--ink);transition:border-color .15s,transform .15s;position:relative;overflow:hidden}
+.cta{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.tools{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:26px}
+.tool{display:flex;gap:12px;align-items:flex-start;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px;text-decoration:none;color:var(--ink);box-shadow:var(--shadow)}
+.tool:hover{border-color:var(--accent)}
+.tool .ic{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;font-size:19px;background:var(--accent-soft);flex:none}
+.tool b{font:600 16px/1.3 var(--display);display:block}
+.tool span{font-size:14px;color:var(--muted);line-height:1.4}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;margin-top:14px}
+.card{display:flex;flex-direction:column;gap:6px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;text-decoration:none;color:var(--ink);transition:border-color .15s;position:relative;box-shadow:var(--shadow)}
 .card:hover,.card:focus-visible{border-color:var(--accent);outline:none}
-.card .num{font:800 34px/1 var(--mono);color:var(--accent);opacity:.9}
+.card .num{font:800 30px/1 var(--mono);color:var(--accent)}
 .card h3{font:600 18px/1.25 var(--display);margin:0}
 .card p{margin:0;color:var(--muted);font-size:14px;line-height:1.45}
-.card .prog{height:5px;border-radius:3px;background:var(--surface2);overflow:hidden;margin-top:8px}
-.card .prog span{display:block;height:100%;background:var(--accent)}
-.card .meta{font-size:12.5px;color:var(--muted);display:flex;justify-content:space-between}
-.group-h{font:600 13px/1 var(--display);color:var(--muted);letter-spacing:.06em;margin:28px 0 -8px}
-/* lesson */
-.lhead{padding-block:26px 8px}
-.lhead h1{font-size:clamp(28px,5vw,44px)}
+.card .meta{font-size:12.5px;color:var(--muted);display:flex;justify-content:space-between;gap:8px;margin-top:4px}
+.badge{display:inline-flex;align-items:center;gap:4px;font:600 11.5px/1 var(--display);padding:4px 8px;border-radius:999px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.badge.gray{background:var(--surface2);color:var(--muted)}
+.group-h{font:600 13px/1 var(--display);color:var(--muted);letter-spacing:.06em;margin:30px 0 0}
+.resume{display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-top:22px;box-shadow:var(--shadow)}
+.resume .sp{flex:1;min-width:180px}
+/* ============ lesson ============ */
+.lhead{padding-block:26px 6px}
+.lhead h1{font-size:clamp(28px,4.6vw,42px)}
+.ltabs{position:sticky;top:0;z-index:25;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;padding:10px 0;margin-top:12px;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+@media (max-width:999.98px){.ltabs{top:59px}}
+.ltabs::-webkit-scrollbar{display:none}
+.ltabs button{display:flex;align-items:center;gap:7px;font:600 14px/1 var(--display);color:var(--muted);background:transparent;border:1px solid transparent;border-radius:10px;padding:10px 13px;cursor:pointer;white-space:nowrap}
+.ltabs button:hover{color:var(--ink);background:var(--surface2)}
+.ltabs button[aria-selected="true"]{color:var(--accent);background:var(--accent-soft)}
+.ltabs button .no{font:600 11px/1 var(--mono);opacity:.7}
+.ltabs button .dot{width:6px;height:6px;border-radius:50%;background:var(--ok)}
+.panel{padding-top:10px}
+.panel:focus{outline:none}
 .chips{display:flex;gap:6px;overflow-x:auto;padding-block:12px 4px;scrollbar-width:none}
 .chips::-webkit-scrollbar{display:none}
 .chips button{font:500 13.5px/1 var(--display);color:var(--ink);padding:8px 12px;border:1px solid var(--line);border-radius:999px;white-space:nowrap;background:var(--surface);cursor:pointer}
 .chips button:hover{border-color:var(--accent);color:var(--accent)}
-section.mod{padding-block:34px;border-bottom:1px solid var(--line);scroll-margin-top:70px}
-h2{font:600 clamp(21px,3.4vw,29px)/1.2 var(--display);margin:8px 0 8px;text-wrap:balance}
-h3{font:600 16px/1.3 var(--display);margin:0 0 8px}
-.lead{max-width:72ch;color:var(--muted);margin:0}
+.pnav{display:flex;justify-content:space-between;gap:10px;margin-top:30px;flex-wrap:wrap}
+.pnav a{text-decoration:none}
+.soon{background:var(--surface);border:1px dashed var(--line);border-radius:14px;padding:22px;margin-top:18px;text-align:center;color:var(--muted)}
+.soon b{display:block;color:var(--ink);font:600 17px/1.3 var(--display);margin-bottom:6px}
+/* theory */
+.th{display:grid;gap:16px;margin-top:14px}
+.th>*,.flows>*,.probs>*,.calc>*,.cols2>*,.given>*,.notes>*,.gotchas>*{min-width:0}
+.th-sec,.flowc,.prob .body,.dd,.gotcha p{overflow-wrap:anywhere}
+.th-sec{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 20px;box-shadow:var(--shadow)}
+.th-sec h2{font-size:21px;display:flex;align-items:center;gap:10px}
+.th-sec h2 .sn{font:700 13px/1 var(--mono);color:var(--accent);background:var(--accent-soft);border-radius:7px;padding:5px 7px}
+.th-sec p{margin:0 0 10px;max-width:78ch}
+.th-sec p:last-child{margin-bottom:0}
+.th-sec ul,.th-sec ol{margin:0 0 10px;padding-inline-start:20px}
+.th-sec li{margin-bottom:6px}
+.callout{border-radius:12px;padding:12px 14px;margin:12px 0;display:flex;gap:10px;align-items:flex-start}
+.callout .ci{font-size:18px;line-height:1.4;flex:none}
+.callout p{margin:0}
+.callout.analogy{background:var(--ac-soft)}
+.callout.why{background:var(--accent-soft)}
+.callout.key{background:var(--dc-soft)}
+.callout.warn{background:color-mix(in srgb,var(--bad) 12%,var(--surface))}
+.callout b.h{display:block;font:600 14px/1.3 var(--display);margin-bottom:2px}
+.golab{display:inline-flex;align-items:center;gap:6px;font:600 13px/1.2 var(--display);color:var(--accent);background:transparent;border:1px solid var(--accent);border-radius:8px;padding:6px 10px;cursor:pointer;margin-top:4px}
+.golab:hover{background:var(--accent-soft)}
+.cols2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+@media (max-width:760px){.cols2{grid-template-columns:minmax(0,1fr)}}
+/* colour tags */
+.tag{display:inline-flex;align-items:center;font:700 11px/1 var(--mono);letter-spacing:.03em;padding:4px 7px;border-radius:6px;white-space:nowrap}
+.tag.dc{background:var(--dc-soft);color:var(--dc)}
+.tag.ac{background:var(--ac-soft);color:var(--ac)}
+.tag.ok{background:color-mix(in srgb,var(--ok) 15%,transparent);color:var(--ok)}
+.tag.bad{background:color-mix(in srgb,var(--bad) 14%,transparent);color:var(--bad)}
+.tag.gray{background:var(--surface2);color:var(--muted)}
+.dc-t{color:var(--dc);font-weight:600}.ac-t{color:var(--ac);font-weight:600}.ok-t{color:var(--ok);font-weight:600}.bad-t{color:var(--bad);font-weight:600}
+.legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;font-size:13px;color:var(--muted);align-items:center}
+/* algorithm flow */
+.flows{display:grid;gap:16px;margin-top:14px}
+.flowc{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 20px;box-shadow:var(--shadow)}
+.flowc>header{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.flowc>header h2{margin:0;font-size:20px}
+.flowc>header p{margin:0;width:100%;color:var(--muted);font-size:14.5px}
+.fl{list-style:none;margin:0;padding:0;position:relative}
+.fl>li{position:relative;padding-inline-start:46px;padding-bottom:16px}
+.fl>li:last-child{padding-bottom:0}
+.fl>li::before{content:"";position:absolute;inset-inline-start:15px;top:32px;bottom:0;width:2px;background:var(--line)}
+.fl>li:last-child::before{display:none}
+.fl .bub{position:absolute;inset-inline-start:0;top:0;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font:700 13px/1 var(--mono);background:var(--accent);color:var(--on-accent)}
+.fl .chk .bub{background:var(--surface);color:var(--warn);border:2px solid var(--warn);border-radius:8px;transform:rotate(45deg)}
+.fl .chk .bub b{transform:rotate(-45deg)}
+.fl .st{font:600 15.5px/1.4 var(--display);padding-top:4px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.fl .dd{color:var(--ink);font-size:15px;margin-top:4px}
+.fl .dd p{margin:0 0 6px}
+.br{display:grid;grid-template-columns:minmax(0,max-content) minmax(0,1fr);gap:4px 8px;margin-top:8px;font-size:14.5px;align-items:baseline}
+@media (max-width:560px){.br{grid-template-columns:minmax(0,1fr)}.br .n,.br .y{margin-top:4px}}
+.dd mjx-container:not([display="true"]),.gotcha mjx-container:not([display="true"]),.stp mjx-container:not([display="true"]){display:inline-block;max-width:100%;overflow-x:auto;overflow-y:hidden;vertical-align:middle}
+.br .y{color:var(--ok);font-weight:700}.br .n{color:var(--bad);font-weight:700}
+.gotchas{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px;margin-top:10px}
+.gotcha{background:var(--surface);border:1px solid var(--line);border-inline-start:4px solid var(--bad);border-radius:10px;padding:12px 14px}
+.gotcha b{display:block;font:600 15px/1.35 var(--display);margin-bottom:4px}
+.gotcha p{margin:0;font-size:14.5px;color:var(--muted)}
+.shortcuts{margin-top:10px}
+/* solved problems */
+.probs{display:grid;gap:18px;margin-top:14px}
+.prob{background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:var(--shadow)}
+.prob>header{padding:16px 20px 6px;display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.prob>header h2{margin:0;font-size:20px;flex:1 1 260px}
+.prob .body{padding:6px 20px 20px}
+.prob .fig{background:var(--scope-bg);border-radius:12px;overflow:hidden;margin:6px 0 12px;max-width:560px}
+.prob .fig svg{display:block;width:100%;height:auto;direction:ltr}
+.prob .stmt{margin:0 0 10px}
+.given{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;margin:10px 0 14px}
+@media (max-width:640px){.given{grid-template-columns:minmax(0,1fr)}}
+.given>div{background:var(--surface2);border-radius:10px;padding:10px 12px;font-size:14.5px}
+.given b{display:block;font:600 13px/1.2 var(--display);color:var(--muted);margin-bottom:4px}
+.steps{display:flex;flex-direction:column;gap:8px}
+.stp{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface)}
+.stp>button{width:100%;display:flex;align-items:center;gap:10px;text-align:start;background:var(--surface2);border:0;padding:11px 14px;font:600 15px/1.3 var(--display);color:var(--ink);cursor:pointer}
+.stp>button .k{font:700 12px/1 var(--mono);background:var(--accent);color:var(--on-accent);border-radius:6px;padding:4px 7px;flex:none}
+.stp>button .chev{margin-inline-start:auto;transition:transform .2s;color:var(--muted)}
+.stp[data-open="true"]>button .chev{transform:rotate(180deg)}
+.stp>.sb{padding:12px 16px;font-size:15px}
+.stp>.sb p{margin:0 0 8px}.stp>.sb p:last-child{margin:0}
+.stp.locked>button{opacity:.55}
+.stp.ans>button{background:color-mix(in srgb,var(--ok) 14%,var(--surface))}
+.stp.ans>button .k{background:var(--ok)}
+.sbar{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 4px;align-items:center}
+.sbar .cnt{font:600 13px/1 var(--mono);color:var(--muted);margin-inline-start:auto}
+/* ============ lab (legacy components) ============ */
+section.mod{padding-block:30px;border-bottom:1px solid var(--line);scroll-margin-top:120px}
 .lab{display:grid;grid-template-columns:minmax(260px,330px) minmax(0,1fr);gap:18px;margin-top:18px;align-items:start}
-@media (max-width:840px){.lab{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:860px){.lab{grid-template-columns:minmax(0,1fr)}}
 .lab.solo{grid-template-columns:minmax(0,1fr)}
 .controls{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:12px}
 .sliders{display:flex;flex-direction:column;gap:10px}
@@ -102,8 +260,8 @@ h3{font:600 16px/1.3 var(--display);margin:0 0 8px}
 .sl output{font-family:var(--mono);font-size:13px;color:var(--accent);direction:ltr;unicode-bidi:isolate;white-space:nowrap}
 input[type=range]{width:100%;accent-color:var(--accent);direction:ltr;margin:4px 0 0}
 input[type=range]:disabled{opacity:.4}
-input:focus-visible,button:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.seg{display:flex;border:1px solid var(--line);border-radius:9px;overflow:hidden;flex-wrap:wrap}
+input:focus-visible,button:focus-visible,a:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.seg{display:flex;border:1px solid var(--line);border-radius:9px;overflow:hidden;flex-wrap:wrap;background:var(--surface)}
 .seg button{flex:1 1 auto;padding:8px 8px;background:transparent;border:0;border-inline-start:1px solid var(--line);font:500 13.5px/1.2 var(--display);color:var(--ink);cursor:pointer;min-width:0}
 .seg button:first-child{border-inline-start:0}
 .seg button[aria-pressed="true"]{background:var(--accent);color:var(--on-accent)}
@@ -111,9 +269,12 @@ input:focus-visible,button:focus-visible,a:focus-visible{outline:2px solid var(-
 .checks label{display:inline-flex;align-items:center;gap:6px;cursor:pointer}
 .checks input{accent-color:var(--accent)}
 .presets{display:flex;flex-wrap:wrap;gap:6px}
-.presets button,.btn{font:500 13px/1.2 var(--display);padding:7px 10px;border-radius:8px;border:1px dashed var(--accent);background:transparent;color:var(--accent);cursor:pointer}
+.presets button,.btn{display:inline-flex;align-items:center;gap:6px;font:500 13px/1.2 var(--display);padding:7px 11px;border-radius:8px;border:1px dashed var(--accent);background:transparent;color:var(--accent);cursor:pointer;text-decoration:none}
 .presets button:hover,.btn:hover{background:var(--accent-soft)}
-.btn.solid{border-style:solid;background:var(--accent);color:var(--on-accent);font-size:14px;padding:10px 16px}
+.btn.solid{border-style:solid;background:var(--accent);color:var(--on-accent);font-size:14.5px;padding:10px 16px;font-weight:600}
+.btn.solid:hover{filter:brightness(1.08);background:var(--accent)}
+.btn.line{border-style:solid;font-size:14px;padding:9px 14px}
+.btn:disabled{opacity:.45;cursor:default}
 .scopes{display:flex;flex-direction:column;gap:12px;min-width:0}
 figure.scope{margin:0;background:var(--scope-bg);border-radius:12px;overflow:hidden;border:1px solid var(--line)}
 figure.scope canvas{display:block;width:100%;aspect-ratio:16/9}
@@ -137,7 +298,7 @@ figcaption .play{margin-inline-start:auto;font:600 12px/1 var(--display);color:v
 .pill.bad{background:color-mix(in srgb,var(--bad) 16%,transparent);color:var(--bad)}
 .pill.mute{background:var(--surface2);color:var(--muted)}
 .notes{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;margin-top:16px}
-@media (max-width:840px){.notes{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:860px){.notes{grid-template-columns:minmax(0,1fr)}}
 .note{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;min-width:0}
 .note.fx-box{background:var(--surface2);border-color:transparent}
 .note p{margin:0 0 8px}.note p:last-child{margin-bottom:0}
@@ -146,9 +307,6 @@ figcaption .play{margin-inline-start:auto;font:600 12px/1 var(--display);color:v
 .fx{display:flex;flex-wrap:wrap;gap:2px 10px;align-items:baseline;direction:rtl;font-family:var(--mono);font-size:14px;padding:5px 0;color:var(--ink)}
 .fx .c{font-family:var(--body);font-size:13px;color:var(--muted);flex:none}
 .fx .f{direction:ltr;unicode-bidi:isolate}
-.m{font-family:var(--mono);font-size:.9em;direction:ltr;unicode-bidi:isolate;white-space:nowrap}
-sub,sup{font-size:.72em;line-height:0}
-.muted{color:var(--muted)}
 .tbl{overflow-x:auto;margin-top:14px;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
 table{border-collapse:collapse;width:100%;font-size:14px;min-width:520px}
 th,td{padding:9px 12px;border-bottom:1px solid var(--line);text-align:right;vertical-align:top}
@@ -163,7 +321,6 @@ tr.on td{background:var(--accent-soft)}
 .jn{padding:5px 8px;border-radius:7px;font:600 12.5px/1.2 var(--display);direction:rtl}
 .jn.fwd{background:color-mix(in srgb,var(--ok) 16%,transparent);color:var(--ok)}
 .jn.rev{background:color-mix(in srgb,var(--bad) 14%,transparent);color:var(--bad)}
-/* svg circuits */
 svg.circ{background:var(--scope-bg)}
 svg.circ .w{fill:none;stroke:var(--wire);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
 svg.circ .k{fill:none;stroke:var(--comp);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
@@ -184,29 +341,29 @@ svg.circ text.he{font:600 12.5px var(--body)}
 svg.circ .fl{fill:none;stroke:var(--t1);stroke-width:5;stroke-linecap:round;stroke-dasharray:0.01 15}
 body.electrons svg.circ .fl{stroke:var(--t2)}
 svg.circ .blk{fill:var(--scope-grid);stroke:var(--comp);stroke-width:2}
-/* quiz */
+/* ============ quiz ============ */
 .quiz{display:flex;flex-direction:column;gap:12px;margin-top:16px}
-.q{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
-.q .qt{font-weight:600;margin:0 0 10px}
-.q .qn{font:700 12px/1 var(--mono);color:var(--accent);margin-bottom:6px}
-.opts{display:grid;gap:6px}
-.opts button{text-align:right;font:15px/1.4 var(--body);color:var(--ink);background:var(--surface2);border:1px solid transparent;border-radius:9px;padding:9px 12px;cursor:pointer}
+.q{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 18px;box-shadow:var(--shadow)}
+.q .qt{font-weight:600;margin:0 0 12px;font-size:16.5px}
+.q .qn{display:flex;gap:8px;align-items:center;font:700 12px/1 var(--mono);color:var(--accent);margin-bottom:8px}
+.opts{display:grid;gap:7px}
+.opts button{display:flex;gap:10px;align-items:flex-start;text-align:start;font:15.5px/1.45 var(--body);color:var(--ink);background:var(--surface2);border:1.5px solid transparent;border-radius:10px;padding:10px 12px;cursor:pointer}
+.opts button .L{font:700 12px/1.9 var(--mono);color:var(--muted);flex:none}
 .opts button:hover:not(:disabled){border-color:var(--accent)}
 .opts button:disabled{cursor:default}
-.opts button.good{background:color-mix(in srgb,var(--ok) 18%,var(--surface));border-color:var(--ok)}
-.opts button.badc{background:color-mix(in srgb,var(--bad) 14%,var(--surface));border-color:var(--bad)}
-.q .ex{margin-top:10px;font-size:14.5px;color:var(--muted);border-inline-start:3px solid var(--accent);padding-inline-start:10px}
+.opts button.pick{border-color:var(--accent);background:var(--accent-soft)}
+.opts button.good{background:color-mix(in srgb,var(--ok) 16%,var(--surface));border-color:var(--ok)}
+.opts button.badc{background:color-mix(in srgb,var(--bad) 12%,var(--surface));border-color:var(--bad)}
+.q .ex{margin-top:12px;font-size:15px;border-inline-start:3px solid var(--accent);padding-inline-start:12px}
+.q .ex p{margin:0 0 6px}
+.q .why{margin:8px 0 0;padding:0;list-style:none;display:grid;gap:5px}
+.q .why li{font-size:14.5px;color:var(--muted);display:flex;gap:8px}
+.q .why li b{font:700 12px/1.7 var(--mono);flex:none;color:var(--bad)}
+.q .why li.c b{color:var(--ok)}
 .score{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:12px}
-.nextl{display:flex;justify-content:space-between;gap:10px;margin-top:26px;flex-wrap:wrap}
-.nextl a{text-decoration:none}
-/* formula sheet */
+/* ============ formula sheet ============ */
 .search{width:100%;font:16px var(--body);padding:11px 14px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);margin-top:14px}
 .fgroup{margin-top:22px}
-.fgroup h3{font-size:17px}
-.frow{display:grid;grid-template-columns:minmax(120px,210px) minmax(0,1fr);gap:4px 14px;padding:9px 0;border-bottom:1px solid var(--line);align-items:baseline}
-@media (max-width:600px){.frow{grid-template-columns:minmax(0,1fr)}}
-.frow .fn{color:var(--muted);font-size:14px}
-.frow .ff{font-family:var(--mono);font-size:14px;direction:ltr;unicode-bidi:isolate;text-align:right;overflow-wrap:anywhere}
 .fh{margin:18px 0 4px;color:var(--accent);font-size:15px}
 .frow2{display:grid;grid-template-columns:minmax(120px,200px) minmax(0,1fr) auto;gap:6px 14px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
 .frow2 .fn{color:var(--muted);font-size:14px;unicode-bidi:plaintext;text-align:right}
@@ -216,24 +373,79 @@ svg.circ .blk{fill:var(--scope-grid);stroke:var(--comp);stroke-width:2}
 .frow2 .fbar .btn{padding:5px 8px;font-size:12px;white-space:nowrap}
 .frow2 pre.fcode{grid-column:1/-1;margin:0;padding:10px 12px;background:var(--scope-bg);color:var(--t1);border-radius:8px;font:13px/1.5 var(--mono);overflow-x:auto;white-space:pre-wrap;word-break:break-all;text-align:left}
 @media (max-width:700px){.frow2{grid-template-columns:minmax(0,1fr)}.frow2 .fbar{justify-content:flex-start}}
+/* ============ quick-ref drawer ============ */
+.fab{position:fixed;inset-inline-end:18px;bottom:22px;z-index:45;display:flex;align-items:center;gap:8px;font:600 14px/1 var(--display);background:var(--ink);color:var(--bg);border:0;border-radius:999px;padding:12px 16px;cursor:pointer;box-shadow:0 6px 24px rgba(0,0,0,.25)}
+.fab .sig{font:700 17px/1 var(--mono)}
+@media (max-width:999.98px){.fab{bottom:calc(76px + env(safe-area-inset-bottom,0px));padding:11px 14px}}
+@media (max-width:600px){.fab span:not(.sig){display:none}.fab{width:46px;height:46px;justify-content:center;padding:0}}
+.drawer{position:fixed;inset-block:0;inset-inline-end:0;width:min(94vw,440px);background:var(--surface);border-inline-start:1px solid var(--line);z-index:70;display:flex;flex-direction:column;transform:translateX(-105%);transition:transform .22s ease;box-shadow:0 0 40px rgba(0,0,0,.25)}
+body.drawer-open .drawer{transform:none}
+body.drawer-open .scrim2{display:block}
+.scrim2{position:fixed;inset:0;background:rgba(8,8,12,.35);z-index:65;display:none}
+.drawer>header{display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid var(--line)}
+.drawer>header h2{margin:0;font-size:18px;flex:1}
+.drawer .dsearch{margin:12px 16px 0;width:auto}
+.drawer .dchips{padding:8px 16px 0}
+.drawer .dlist{overflow-y:auto;padding:4px 16px 24px;flex:1}
+.dg h3{font-size:14px;color:var(--accent);margin:16px 0 4px}
+.dr{padding:8px 0;border-bottom:1px solid var(--line)}
+.dr .dl{font-size:12.5px;color:var(--muted)}
+.dr .df{font-family:var(--mono);font-size:13.5px;direction:ltr;unicode-bidi:isolate;text-align:right;overflow-wrap:anywhere}
+@media (prefers-reduced-motion: reduce){.side,.drawer,.pbar span{transition:none}}
+/* ============ exam ============ */
+.exhead{position:sticky;top:0;z-index:25;display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:10px 0;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+@media (max-width:999.98px){.exhead{top:59px}}
+.timer{font:700 22px/1 var(--mono);padding:8px 12px;border-radius:10px;background:var(--surface);border:1px solid var(--line)}
+.timer.low{color:var(--bad);border-color:var(--bad)}
+.qgrid{display:flex;flex-wrap:wrap;gap:5px}
+.qgrid button{width:34px;height:34px;border-radius:8px;border:1px solid var(--line);background:var(--surface);font:600 12.5px/1 var(--mono);color:var(--muted);cursor:pointer;position:relative}
+.qgrid button.ans{background:var(--accent-soft);color:var(--accent);border-color:transparent}
+.qgrid button.cur{outline:2px solid var(--accent);outline-offset:1px}
+.qgrid button.flag::after{content:"";position:absolute;top:3px;inset-inline-end:3px;width:6px;height:6px;border-radius:50%;background:var(--warn)}
+.qgrid button.good{background:color-mix(in srgb,var(--ok) 18%,var(--surface));color:var(--ok);border-color:transparent}
+.qgrid button.badc{background:color-mix(in srgb,var(--bad) 14%,var(--surface));color:var(--bad);border-color:transparent}
+.bigscore{display:flex;align-items:center;gap:20px;flex-wrap:wrap;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px;margin-top:16px;box-shadow:var(--shadow)}
+.bigscore .sc{font:800 54px/1 var(--mono)}
+.tbars{display:grid;gap:8px;margin-top:12px}
+.tbar{display:grid;grid-template-columns:minmax(120px,190px) minmax(0,1fr) 60px;gap:10px;align-items:center;font-size:14px}
+.tbar .tb{height:10px;border-radius:6px;background:var(--surface2);overflow:hidden}
+.tbar .tb span{display:block;height:100%}
+.tbar .v{font:600 13px/1 var(--mono);text-align:end}
+.hist{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+/* ============ calculator ============ */
+.calc{display:grid;grid-template-columns:minmax(260px,360px) minmax(0,1fr);gap:18px;margin-top:16px;align-items:start}
+@media (max-width:900px){.calc{grid-template-columns:minmax(0,1fr)}}
+.fields{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
+.fld label{display:block;font-size:13.5px;color:var(--muted);margin-bottom:3px}
+.fld input{width:100%;font:15px var(--mono);padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface2);color:var(--ink);direction:ltr;text-align:left}
+.fld input:focus{border-color:var(--accent);outline:none}
+.fld.hide{display:none}
+.csteps{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-top:14px}
+.csteps ol{margin:0;padding-inline-start:20px}
+.csteps li{margin-bottom:7px}
+.verdict{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
 footer{padding-block:28px 0;color:var(--muted);font-size:13.5px}
-@media (prefers-reduced-motion: reduce){.bar2 span{transition:none}.card{transition:none}}
 </style>
 
-<div class="app" dir="rtl" lang="he">
-  <header class="bar">
-    <a class="brand" href="#/"><svg viewBox="0 0 26 26" aria-hidden="true"><rect x="1" y="1" width="24" height="24" rx="6" fill="var(--accent)"/><path d="M5 13h5l2-5 3 10 2-5h4" fill="none" stroke="var(--on-accent)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg>אלקטרוניקה תקבילית</a>
-    <span class="sp"></span>
-    <nav aria-label="ניווט ראשי"><a href="#/" data-nav="home">שיעורים</a><a href="#/f" data-nav="f">דף נוסחאות</a><a href="#/q" data-nav="q">תרגול מסכם</a></nav>
-    <button type="button" class="flowtog" id="flowtog" aria-pressed="false" title="החלפת תצוגת הזרם"><i></i><span>זרם קונבנציונלי</span></button>
-  </header>
-  <main id="view"></main>
+</head>
+<body>
+<div class="shell" dir="rtl" lang="he">
+  <aside class="side" id="side" aria-label="ניווט הקורס"></aside>
+  <div class="main">
+    <div class="mbar"><button type="button" class="iconbtn" id="menubtn" aria-label="פתח תפריט"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button><span class="t" id="mtitle">אלקטרוניקה תקבילית</span><button type="button" class="iconbtn" id="themebtn2" aria-label="החלפת ערכת צבע"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9 7 7 0 0 1-9-9z"/></svg></button></div>
+    <div class="wrap"><main id="view"></main></div>
+  </div>
 </div>
+<div class="scrim" id="scrim"></div>
 <nav class="tabbar" aria-label="ניווט תחתון" dir="rtl">
-  <a href="#/" data-nav="home"><svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>שיעורים</a>
+  <a href="#/" data-nav="home"><svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>בית</a>
   <a href="#/f" data-nav="f"><svg viewBox="0 0 24 24"><path d="M5 4h14v16H5z M8 8h8 M8 12h8 M8 16h5"/></svg>נוסחאות</a>
-  <a href="#/q" data-nav="q"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .9-1 1.7M12 17h.01"/></svg>תרגול</a>
+  <a href="#/exam" data-nav="exam"><svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M9 2h6"/></svg>מבחן</a>
+  <a href="#/calc" data-nav="calc"><svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 11h2M12 11h2M16 11h0M8 15h2M12 15h2M8 18h2M12 18h2M16 14v4"/></svg>מחשבון</a>
 </nav>
+<button type="button" class="fab" id="fab" aria-label="דף נוסחאות מהיר"><span class="sig">Σ</span><span>נוסחאות</span></button>
+<div class="scrim2" id="scrim2"></div>
+<aside class="drawer" id="drawer" dir="rtl" aria-label="דף נוסחאות מהיר" aria-hidden="true"><header><h2>דף נוסחאות מהיר</h2><button type="button" class="iconbtn" id="dclose" aria-label="סגור"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></header><input class="search dsearch" id="dsearch" type="search" placeholder="חיפוש: r_d, זנר, g_m, CMRR…" aria-label="חיפוש נוסחה"><div class="chips dchips" id="dchips"></div><div class="dlist" id="dlist"></div></aside>
 
 <script>
 (function(){
@@ -545,34 +757,6 @@ function loop(ts){
 /* map a current to 0..1 flow magnitude on a log scale */
 const mag=(I,Imax)=>{const a=Math.abs(I);if(a<Imax*1e-4)return 0;return clamp(0.15+0.85*Math.log10(a/(Imax*1e-4))/4,0.12,1);};
 
-/* ---------- quiz ---------- */
-function quiz(root,lid,qs){
-  const box=document.createElement('div');box.className='quiz';root.appendChild(box);
-  const prog=store.get('quiz',{});const key='L'+lid;
-  const state=prog[key]||{};
-  const sc=document.createElement('div');sc.className='score';
-  const upd=()=>{const n=Object.keys(state).length,c=Object.values(state).filter(Boolean).length;
-    sc.innerHTML=pill(c+' / '+qs.length+' נכונות','ok')+'<span class="muted">'+(n<qs.length?'ענית על '+n+' מתוך '+qs.length:'סיימת את התרגול של השיעור')+'</span><button type="button" class="btn" id="qreset-'+lid+'">התחל מחדש</button>';
-    document.getElementById('qreset-'+lid).onclick=()=>{for(const k in state)delete state[k];prog[key]=state;store.set('quiz',prog);box.innerHTML='';render();};
-    prog[key]=state;store.set('quiz',prog);updateHomeProgress();};
-  function render(){
-    qs.forEach((q,i)=>{
-      const d=document.createElement('div');d.className='q';
-      d.innerHTML='<div class="qn">שאלה '+(i+1)+'</div><p class="qt">'+q.q+'</p><div class="opts">'+q.o.map((o,j)=>'<button type="button" data-j="'+j+'">'+o+'</button>').join('')+'</div>';
-      const btns=[...d.querySelectorAll('button')];
-      const reveal=(j)=>{btns.forEach((b,k)=>{b.disabled=true;if(k===q.a)b.classList.add('good');else if(k===j)b.classList.add('badc');});
-        const ex=document.createElement('div');ex.className='ex';ex.innerHTML=(j===q.a?'<b>נכון.</b> ':'<b>לא בדיוק.</b> ')+q.e;d.appendChild(ex);};
-      btns.forEach(b=>b.addEventListener('click',()=>{const j=+b.dataset.j;state[i]=j===q.a;reveal(j);upd();}));
-      if(state[i]!==undefined){reveal(state[i]?q.a:(q.a+1)%q.o.length);}
-      box.appendChild(d);
-    });
-    box.appendChild(sc);upd();
-  }
-  render();
-}
-function lessonProgress(n){const p=store.get('quiz',{})['L'+n]||{};const L=LESSONS[n];const tot=L&&L.quiz?L.quiz.length:1;
-  return {done:Object.keys(p).length,correct:Object.values(p).filter(Boolean).length,tot};}
-function updateHomeProgress(){document.querySelectorAll('[data-prog]').forEach(el=>{const p=lessonProgress(+el.dataset.prog);el.querySelector('span').style.width=(p.correct/p.tot*100)+'%';});}
 
 /* =================== LESSON 1: DIODES =================== */
 LESSONS[1]={title:'דיודות',sub:'צומת PN, מודלים, קו עבודה, אות קטן, קטימה וזנר',topics:'6 הדמיות',
@@ -1863,34 +2047,487 @@ formulas:[
 ['לוג','v<sub>out</sub> = −V<sub>T</sub>ln(v<sub>in</sub>/(I<sub>S</sub>R))'],['אנטי-לוג','v<sub>out</sub> = I<sub>S</sub>R·e<sup>v<sub>in</sub>/V<sub>T</sub></sup> (בסימן לפי המעגל)']
 ]};
 
-/* ---------- router & pages ---------- */
+
+/* =================================================================
+   CONTENT: 5-tab lessons (theory · algorithm · solved · quiz)
+   Lessons without an entry fall back to the legacy lab + quiz.
+================================================================= */
+const R=String.raw;
+const CONTENT={};
+const tg=(k,t)=>'<span class="tag '+k+'">'+t+'</span>';
+const co=(kind,icon,head,body)=>'<div class="callout '+kind+'"><span class="ci">'+icon+'</span><div><b class="h">'+head+'</b>'+body+'</div></div>';
+const golab=(n,s,t)=>'<button type="button" class="golab" data-go="#/l/'+n+'/lab/'+s+'">🔬 '+(t||'נסה במעבדה')+'</button>';
+
+/* ------------------------------------------------------------------ */
+/* LESSON 1 · DIODES                                                  */
+/* ------------------------------------------------------------------ */
+CONTENT[1]={
+theory:[
+{t:'הרעיון בשורה אחת',h:R`
+<p>דיודה היא <b>שסתום חד-כיווני לזרם</b>. זרם עובר מהאנודה (צד P) אל הקתודה (צד N) רק כשהמתח עליה חיובי מספיק, ובכיוון ההפוך היא כמעט נתק.</p>
+${''}`+co('analogy','🚰','אנלוגיה: שסתום אל-חוזר בצנרת','<p>דלתית קטנה עם קפיץ. צריך "לחץ פתיחה" מינימלי (בסיליקון בערך <span class="m">0.6–0.7V</span>) כדי לפתוח אותה, ואחרי שנפתחה כמעט כל תוספת לחץ מזרימה עוד הרבה מים. לחץ הפוך רק לוחץ את הדלתית חזק יותר נגד המושב, עד שבלחץ גבוה מאוד היא נשברת. זו פריצת הזנר.</p>')+R`
+<p>הסימון: משולש שמצביע בכיוון הזרם המותר, וקו ניצב בצד הקתודה. המתח על הדיודה תמיד מוגדר כ-\(V_D = V_P - V_N\) (אנודה פחות קתודה).</p>`},
+{t:'מאיפה זה בא: צומת PN',h:R`
+<p>סיליקון טהור מוליך גרוע. <b>סימום</b> מוסיף נשאים: בצד <b>P</b> אטומי בורון יוצרים עודף <b>חורים</b>, ובצד <b>N</b> אטומי זרחן יוצרים עודף <b>אלקטרונים</b>.</p>
+<ol><li>בצומת, אלקטרונים וחורים מתפזרים (דיפוזיה) ומתאחים.</li><li>נשאר <b>אזור מחסור</b>: רק יונים קבועים, בלי נשאים חופשיים.</li><li>היונים יוצרים שדה חשמלי שעוצר דיפוזיה נוספת. זהו <b>מחסום פוטנציאל</b> \(V_{bi}\approx0.7\,\text{V}\).</li></ol>
+<div class="cols2"><div>${tg('ok','ממתח קדמי')} <p style="margin-top:6px">\(V_D>0\) מוריד את המחסום. יותר ויותר נשאים מצליחים לחצות, והזרם גדל <b>אקספוננציאלית</b>.</p></div><div>${tg('bad','ממתח אחורי')} <p style="margin-top:6px">\(V_D\lt 0\) מגביה את המחסום ומרחיב את אזור המחסור. זורם רק זרם הזליגה הזעיר \(I_S\) (סדר גודל fA).</p></div></div>
+${''}`+golab(1,'l1-pn','ראה את אזור המחסור מתרחב ומתכווץ')},
+{t:'משוואת שוקלי ומה היא אומרת',h:R`
+\[I_D = I_S\left(e^{\frac{V_D}{nV_T}}-1\right),\qquad V_T=\frac{kT}{q}\approx 25\,\text{mV}\]
+<ul><li>\(I_S\): זרם הרוויה ההפוך, זעיר מאוד ותלוי בטמפרטורה ובשטח הצומת.</li><li>\(n\): מקדם האידיאליות (1 עד 2). בסיכום הקורס נהוג \(n=2\) לסיליקון, אז שים לב מה נתון בשאלה.</li><li>בממתח קדמי של יותר מכמה \(V_T\), ה-\(-1\) זניח: \(I_D\approx I_S e^{V_D/nV_T}\).</li></ul>
+`+co('key','📐','הכלל שכדאי לזכור','<p>כל הכפלה של הזרם פי 10 מוסיפה רק \\(nV_T\\ln 10\\approx 58n\\,\\text{mV}\\) למתח. בגלל זה "הדיודה יושבת על 0.7V": בין 1mA ל-10mA המתח זז רק בכ-60mV.</p>')+R`
+<p>מכאן שני כלים שימושיים:</p>
+\[\frac{I_2}{I_1}=e^{\frac{V_2-V_1}{nV_T}}\quad\Longleftrightarrow\quad V_2-V_1=nV_T\ln\frac{I_2}{I_1}\]`},
+{t:'ארבעה מודלים: מתי משתמשים בכל אחד',h:R`
+<p>המשוואה האקספוננציאלית מדויקת, אבל קשה לפתור איתה מעגל. לכן מחליפים את הדיודה במודל ליניארי למקטעים:</p>
+<div class="tbl"><table><thead><tr><th>מודל</th><th>ON (מוליכה)</th><th>OFF</th><th>מתי להשתמש</th></tr></thead><tbody>
+<tr><td>אידיאלי</td><td>קצר, \(V_D=0\)</td><td>נתק</td><td>כש"דיודה אידיאלית" נתונה, או כשהמתחים במעגל גדולים בהרבה מ-0.7V</td></tr>
+<tr><td>מקור מתח (CVD)</td><td>מקור \(V_{D0}\approx0.7\text{V}\)</td><td>נתק</td><td>ברירת המחדל ברוב שאלות ה-DC</td></tr>
+<tr><td>\(V_{D0}+r_D\)</td><td>מקור \(V_{D0}\) בטור ל-\(r_D\)</td><td>נתק</td><td>כשנתון \(r_D\), או כשצריך שיפוע באופיין</td></tr>
+<tr><td>אקספוננציאלי</td><td colspan="2">משוואת שוקלי</td><td>כשנתונים \(I_S\) או נקודה \((V,I)\) ו-\(n\): פותרים באיטרציה</td></tr>
+</tbody></table></div>
+`+golab(1,'l1-iv','השווה בין המודלים על גרף אחד')},
+{t:'קו עבודה ונקודת עבודה',h:R`
+<p>במעגל הפשוט ביותר, מקור \(V_{DD}\), נגד \(R\) ודיודה, יש <b>שתי משוואות ושני נעלמים</b>:</p>
+<div class="cols2"><div>\[\text{הרכיב:}\quad I_D=I_S e^{V_D/nV_T}\]</div><div>\[\text{המעגל (KVL):}\quad I_D=\frac{V_{DD}-V_D}{R}\]</div></div>
+<p>המשוואה השנייה היא ישר, <b>קו העבודה</b>, שחותך את הצירים ב-\(V_{DD}\) וב-\(V_{DD}/R\). נקודת החיתוך עם אופיין הדיודה היא <b>נקודת העבודה Q</b>. אלגברית אין פתרון סגור, ולכן פותרים באיטרציה: מנחשים \(V_D\), מחשבים \(I_D\) מה-KVL, מתקנים את \(V_D\) לפי הלוגריתם, וחוזרים. בדרך כלל שתי איטרציות מספיקות.</p>
+`+co('why','💡','למה עושים את זה?','<p>נקודת העבודה קובעת איך הרכיב יגיב לאות קטן. זה בדיוק מה שנעשה בהמשך עם טרנזיסטורים: קודם DC כדי לקבוע את Q, ורק אחר כך AC.</p>')},
+{t:'אות קטן: הדיודה כנגד',h:R`
+<p>מוסיפים ל-DC אות AC קטן: \(v_D(t)=V_D+v_d(t)\). אם מתקרבים מספיק לאופיין סביב Q, הוא נראה <b>ישר</b>. השיפוע של המשיק הוא מוליכות, ולכן לאות הקטן הדיודה היא נגד:</p>
+\[r_d=\left.\frac{dv_D}{di_D}\right|_Q=\frac{nV_T}{I_{DQ}}\qquad\Rightarrow\qquad i_d(t)=\frac{v_d(t)}{r_d}\]
+<ul><li>זרם DC גדול יותר, משיק תלול יותר ו-\(r_d\) קטן יותר. ב-1mA עם \(n=1\) מקבלים \(r_d=25\Omega\).</li><li>הקירוב תקף כש-\(v_d\ll nV_T\). בפועל עד כ-5–10mV.</li></ul>
+<div class="legend">${tg('dc','DC')} קובע את Q ואת \(r_d\) · ${tg('ac','AC')} "מתנדנד" סביב Q ורואה רק את \(r_d\)</div>
+`+golab(1,'l1-ll','ראה את הקירוב נשבר באות גדול')},
+{t:'דיודה כמתג: מעגלי קטימה ו-VTC',h:R`
+<p>במעגל קטימה הדיודה "תופסת" את המוצא ברגע שהמתח עליה מגיע ל-\(V_{D0}\). מסתכלים על <b>אופיין המעבר</b> \(v_{out}(v_{in})\) (VTC): הוא מורכב מקטעים ישרים, וכל נקודת שבירה היא רגע שבו דיודה משנה מצב.</p>
+<ul><li>כל הדיודות OFF: המוצא הוא מחלק מתח של הכניסה.</li><li>דיודה ON: המוצא נתפס על מתח המקור שלה ועוד \(V_{D0}\) (בכיוון המתאים).</li></ul>
+`+golab(1,'l1-clip','בנה VTC עם שתי דיודות')},
+{t:'דיודת זנר: פריצה שעושים בכוונה',h:R`
+<p>בממתח אחורי גדול מספיק הדיודה "נפרצת" ומחזיקה מתח כמעט קבוע \(V_Z\) על פני טווח זרמים רחב. דיודת זנר מתוכננת לעבוד שם, ולכן משמשת <b>מייצב מתח</b>.</p>
+\[V_Z=V_{Z0}+r_zI_Z,\qquad I=I_Z+I_L,\qquad I_{Z,\min}\le I_Z\le I_{Z,\max}=\frac{P_{Z,\max}}{V_Z}\]
+`+co('analogy','🌊','אנלוגיה: שסתום עודפים','<p>הנגד הטורי מספק זרם, והזנר "שופך" את כל מה שהעומס לא צריך כדי שהמתח לא יעלה. אם העומס לוקח יותר מדי, לא נשאר לזנר זרם מינימלי והוא מפסיק לייצב. אם העומס מנותק, כל הזרם עובר בזנר, ושם בודקים הספק.</p>')+golab(1,'l1-zen','עקוב לאן הולך הזרם במייצב')},
+{t:'מה נשאל במבחן',h:R`
+<ol><li><b>הנח ובדוק</b> במעגל עם דיודה אחת או יותר: מצבים, זרמים ומתחים.</li><li><b>VTC וקטימה</b>: נקודות שבירה ושיפועים בכל תחום.</li><li><b>תכנון מייצב זנר</b>: טווח של \(R\), \(P_Z\), מקרי קצה.</li><li><b>נקודת עבודה ואות קטן</b>: איטרציה, \(r_d\), מחלק מתח ב-AC.</li></ol>
+<p>לכל אחד מהם יש אלגוריתם בטאב ⚡ ותרגיל פתור בטאב 📝.</p>`}
+],
+algo:{
+flows:[
+{t:'הנח ובדוק: מעגלי DC עם דיודות',tags:['dc'],p:'השיטה לכל מעגל שבו לא ידוע מראש אילו דיודות מוליכות.',steps:[
+{t:'בחר מודל',d:'לפי הנתון: "אידיאלית" (0V), מקור מתח \\(V_{D0}=0.7\\text{V}\\), או \\(V_{D0}+r_D\\). אם לא נאמר כלום, 0.7V.'},
+{t:'הנח מצב לכל דיודה',d:'ניחוש מושכל: דיודה שמקור חזק "דוחף" דרכה זרם בכיוון שלה כנראה ON. עם כמה דיודות, התחל מהנחה אחת לכל אחת.'},
+{t:'החלף ופתור מעגל ליניארי',d:'ON הופכת למקור \\(V_{D0}\\) (ועוד \\(r_D\\)), OFF הופכת לנתק. פתור בעזרת KVL, KCL או מתחי צמתים.'},
+{t:'בדוק כל הנחה',chk:1,d:'<div class="br"><span class="y">ON:</span><span>חייב לצאת \\(I_D>0\\) (בכיוון אנודה ← קתודה).</span><span class="y">OFF:</span><span>חייב לצאת \\(V_D=V_P-V_N\\lt V_{D0}\\).</span></div>'},
+{t:'סתירה? הפוך הנחה וחזור לשלב 3',chk:1,d:'<div class="br"><span class="y">✓ אין סתירה</span><span>זה הפתרון. מצב עקבי הוא יחיד.</span><span class="n">✗ יש סתירה</span><span>הפוך את מצב הדיודה הבעייתית (בדרך כלל זו עם \\(I_D\\lt 0\\)) ופתור מחדש.</span></div>'}
+]},
+{t:'נקודת עבודה + אות קטן',tags:['dc','ac'],p:'כשיש מקור DC ואות AC קטן על אותה דיודה.',steps:[
+{t:'ניתוח DC',tag:'dc',d:'אפס את מקורות ה-AC (מקור מתח AC הופך לקצר). קבלים הם נתק. מצא את \\(I_{DQ}\\) עם 0.7V, או באיטרציה אם נתונה משוואה אקספוננציאלית.'},
+{t:'איטרציה (אם צריך)',tag:'dc',d:'\\(I^{(k)}=\\dfrac{V_{DD}-V_D^{(k)}}{R}\\ \\to\\ V_D^{(k+1)}=V_1+nV_T\\ln\\dfrac{I^{(k)}}{I_1}\\). עצור כשהשינוי קטן מ-1mV.'},
+{t:'חשב את \\(r_d\\)',d:'\\(r_d=nV_T/I_{DQ}\\). משתמשים בזרם ה-DC בלבד.'},
+{t:'ניתוח AC',tag:'ac',d:'מקורות DC מתאפסים (מקור מתח הופך לקצר, מקור זרם לנתק). קבלי צימוד הם קצר. הדיודה מוחלפת ב-\\(r_d\\). פתור מחלק מתח או זרם.'},
+{t:'סופרפוזיציה',d:'\\(v_D(t)=V_{DQ}+v_d(t)\\), \\(i_D(t)=I_{DQ}+i_d(t)\\). בדוק ש-\\(|v_d|\\ll nV_T\\), אחרת הקירוב לא תקף.'}
+]},
+{t:'VTC של מעגל קטימה',tags:['dc'],p:'אופיין מעבר \\(v_{out}(v_{in})\\) עם דיודה אחת או יותר.',steps:[
+{t:'סמן לכל דיודה \\(V_P\\) ו-\\(V_N\\)',d:'בדרך כלל צד אחד קבוע (מקור) והצד השני תלוי ב-\\(v_{out}\\) או ב-\\(v_{in}\\).'},
+{t:'התחל מכל הדיודות OFF',d:'מצא את \\(v_{out}\\) כפונקציה של \\(v_{in}\\) (לרוב מחלק מתח \\(k\\cdot v_{in}\\)).'},
+{t:'מצא נקודת שבירה לכל דיודה',d:'השווה \\(V_P-V_N=V_{D0}\\) ובודד את \\(v_{in}\\).'},
+{t:'בכל תחום: מעגל שקול חדש',d:'בכל תחום בין נקודות שבירה, החלף לפי המצבים ומצא את השיפוע ואת הקבוע.'},
+{t:'בדיקת רציפות',chk:1,d:'ה-VTC רציף. בנקודת שבירה, שני הביטויים הסמוכים חייבים לתת אותו \\(v_{out}\\).'}
+]},
+{t:'תכנון מייצב זנר',tags:['dc'],p:'מציאת טווח לנגד הטורי \\(R\\) ובדיקת הספק.',steps:[
+{t:'ודא שהזנר בפריצה',chk:1,d:'נתק את הזנר וחשב את מתח הצומת. אם הוא קטן מ-\\(V_Z\\), הזנר OFF ואין ייצוב.'},
+{t:'החלף במקור \\(V_Z\\)',d:'\\(I=(V_S-V_Z)/R\\), \\(I_L=V_Z/R_L\\), \\(I_Z=I-I_L\\).'},
+{t:'\\(R_{\\max}\\): המקרה הגרוע ל-\\(I_{Z,\\min}\\)',d:'\\(V_S\\) מינימלי ו-\\(I_L\\) מקסימלי (\\(R_L\\) מינימלי): \\(R_{\\max}=\\dfrac{V_{S,\\min}-V_Z}{I_{Z,\\min}+I_{L,\\max}}\\).'},
+{t:'\\(R_{\\min}\\): המקרה הגרוע להספק',d:'\\(V_S\\) מקסימלי ו-\\(I_L\\) מינימלי (בדרך כלל עומס מנותק): \\(R_{\\min}=\\dfrac{V_{S,\\max}-V_Z}{I_{Z,\\max}+I_{L,\\min}}\\).'},
+{t:'\\(R_{\\min}\\le R_{\\max}\\)?',chk:1,d:'<div class="br"><span class="y">✓ כן</span><span>בחר ערך תקני בטווח ובדוק את ההספק על \\(R\\).</span><span class="n">✗ לא</span><span>אין פתרון: צריך זנר עם \\(P_{Z,\\max}\\) גבוה יותר או מקור יציב יותר.</span></div>'}
+]}
+],
+gotchas:[
+{t:'לא בודקים את ההנחה בסוף',d:'גם אם יצא מספר "יפה", בלי בדיקה של \\(I_D>0\\) או \\(V_D\\lt V_{D0}\\) התשובה לא שלמה ומורידים עליה נקודות.'},
+{t:'סימן הפוך של \\(V_D\\)',d:'\\(V_D=V_P-V_N\\), אנודה פחות קתודה. בממתח אחורי \\(V_D\\) שלילי.'},
+{t:'\\(r_d\\) מהזרם הכולל',d:'\\(r_d\\) מחושב מ-\\(I_{DQ}\\) של ה-DC בלבד, לא מהשיא ולא מ-\\(I_{DQ}+i_d\\).'},
+{t:'שוכחים את \\(n\\)',d:'בסיכום הקורס \\(n=2\\) לסיליקון. עם \\(n=2\\) הערכים של \\(r_d\\) ושל "60mV לעשור" מוכפלים.'},
+{t:'מקור DC ב-AC',d:'בניתוח אות קטן מקור מתח DC הופך לקצר ומקור זרם DC לנתק. לא משאירים אותם.'},
+{t:'זנר: מקרה קצה לא נכון',d:'\\(I_{Z,\\min}\\) נבדק עם \\(V_S\\) מינימלי ועומס מקסימלי. \\(P_{Z,\\max}\\) נבדק עם \\(V_S\\) מקסימלי ובלי עומס.'},
+{t:'גשר דיודות',d:'בכל מסלול שתי דיודות מוליכות, ולכן יורדים \\(2V_D\\). ה-PIV שונה בין סנף מרכזי לגשר.'},
+{t:'יחידות',d:'mA כפול kΩ נותן V. עבודה עקבית ב-mA ו-kΩ חוסכת טעויות של פי 1000.'}
+],
+shortcuts:[['\\(r_d=nV_T/I_{DQ}\\)','ב-1mA ו-n=1: 25Ω'],['\\(\\Delta V=nV_T\\ln(I_2/I_1)\\)','60n mV לכל עשור'],['\\(R_{\\max}=\\frac{V_{S,\\min}-V_Z}{I_{Z,\\min}+I_{L,\\max}}\\)','זנר, גבול עליון'],['\\(R_{\\min}=\\frac{V_{S,\\max}-V_Z}{I_{Z,\\max}+I_{L,\\min}}\\)','זנר, גבול תחתון']]
+},
+solved:[
+{t:'שתי דיודות: הנחה ראשונה שגויה',lvl:'בינוני',tags:['dc'],
+fig(C){C.rail(60,22,'+12V');C.w([60,22],[60,34]);C.R([60,34],[60,100],'R_1 = 2kΩ',{side:-1,off:22});C.w([60,100],[60,120]);C.nd(60,120);C.T(46,124,'A','big','end');
+ C.w([60,120],[150,120]);C.D([150,120],[230,120],'D_1',{side:-1});C.w([230,120],[320,120]);C.nd(320,120);C.T(332,114,'B','big','start');
+ C.R([320,120],[320,205],'R_2 = 1kΩ',{side:-1,off:22});C.G(320,205);
+ C.D([60,120],[60,168],'D_2',{side:1});C.w([60,168],[60,178]);C.bat([60,215],[60,178],'5V',{side:1});C.G(60,215);},
+w:440,h:240,
+st:R`כל הדיודות במודל מקור מתח עם \(V_{D0}=0.7\text{V}\). מצא את מצבי הדיודות, את הזרמים ואת המתחים \(V_A\) ו-\(V_B\).`,
+given:R`\(V_{DD}=12\text{V},\ R_1=2\text{k}\Omega,\ R_2=1\text{k}\Omega\), סוללה 5V על הקתודה של \(D_2\).`,
+ask:R`מצב \(D_1,D_2\) · \(I_{D1},I_{D2}\) · \(V_A,V_B\)`,
+steps:[
+{t:'הנחה ראשונה: שתיהן ON',b:R`<p>נראה ש-12V "דוחף" זרם גם דרך \(D_1\) וגם דרך \(D_2\), לכן מניחים ששתיהן ON.</p><p>\(D_2\) ON קובעת \(V_A=5+0.7=5.7\text{V}\), ו-\(D_1\) ON קובעת \(V_B=V_A-0.7=5.0\text{V}\).</p>`},
+{t:'חישוב הזרמים בהנחה',b:R`\[I_{R1}=\frac{12-5.7}{2\text{k}}=3.15\text{ mA},\qquad I_{D1}=I_{R2}=\frac{5.0}{1\text{k}}=5.0\text{ mA}\]\[\text{KCL}(A):\ I_{D2}=I_{R1}-I_{D1}=3.15-5.0=-1.85\text{ mA}\]`},
+{t:'בדיקה: סתירה',b:R`<p><span class="bad-t">\(I_{D2}\lt 0\)</span>: דיודה לא יכולה להוליך בכיוון ההפוך, ולכן ההנחה ש-\(D_2\) ON שגויה. \(D_2\) OFF, ומשאירים את \(D_1\) ON.</p>`},
+{t:'הנחה שנייה: D1 ON, D2 OFF',b:R`<p>נשאר מעגל טורי אחד: 12V, \(R_1\), \(D_1\), \(R_2\).</p>\[I=\frac{12-0.7}{2\text{k}+1\text{k}}=\frac{11.3}{3\text{k}}=3.767\text{ mA}\]\[V_A=12-2\text{k}\cdot3.767\text{m}=4.467\text{ V},\qquad V_B=1\text{k}\cdot3.767\text{m}=3.767\text{ V}\]`},
+{t:'בדיקת ההנחה השנייה',b:R`<p>\(D_1\): \(I_{D1}=3.77\text{mA}>0\) <span class="ok-t">✓</span></p><p>\(D_2\): \(V_{D2}=V_A-5=-0.53\text{V}\lt 0.7\text{V}\) <span class="ok-t">✓ נשארת OFF</span></p><p>אין סתירות, ולכן זה הפתרון.</p>`}
+],
+ans:R`\(D_1\) ON, \(D_2\) OFF · \(I_{D1}=3.77\text{mA},\ I_{D2}=0\) · \(V_A=4.47\text{V},\ V_B=3.77\text{V}\)`},
+{t:'נקודת עבודה באיטרציה ואות קטן',lvl:'בינוני',tags:['dc','ac'],
+fig(C){C.V([60,212],[60,158],'V_{DD} = 5V',{side:1,off:34});C.V([60,150],[60,96],'v_s',{kind:'ac',side:1,off:26});C.w([60,158],[60,150]);C.w([60,96],[60,50],[110,50]);C.R([110,50],[220,50],'R = 1kΩ',{side:-1});C.w([220,50],[320,50]);
+ C.D([320,50],[320,160],'D',{side:-1});C.w([320,160],[320,212]);C.w([60,212],[320,212]);C.G(190,212);C.T(336,110,'v_D','val','start');},
+w:440,h:240,
+st:R`לדיודה \(V_D=0.7\text{V}\) בזרם \(1\text{mA}\), עם \(n=2\) ו-\(V_T=25\text{mV}\). מצא את נקודת העבודה. אחר כך מוסיפים אות \(v_s\) סינוסי עם שיא 50mV. מצא את \(v_d\) ואת \(i_d\).`,
+given:R`\(V_{DD}=5\text{V},\ R=1\text{k}\Omega,\ n=2\), הדיודה עוברת בנקודה \((0.7\text{V},1\text{mA})\), \(\hat v_s=50\text{mV}\)`,
+ask:R`\(V_{DQ},I_{DQ}\) · \(r_d\) · \(\hat v_d,\ \hat i_d\)`,
+steps:[
+{t:'DC: ניחוש ראשון',b:R`<p>${'<span class="tag dc">DC</span>'} מאפסים את \(v_s\) (קצר). מתחילים מ-\(V_D=0.7\text{V}\):</p>\[I^{(1)}=\frac{5-0.7}{1\text{k}}=4.30\text{ mA}\]`},
+{t:'איטרציה',b:R`<p>מתקנים את המתח לפי היחס הלוגריתמי ביחס לנקודה הידועה \((0.7\text{V},1\text{mA})\):</p>\[V^{(2)}=0.7+2\cdot0.025\ln\frac{4.30}{1}=0.7729\text{ V}\ \Rightarrow\ I^{(2)}=\frac{5-0.7729}{1\text{k}}=4.227\text{ mA}\]\[V^{(3)}=0.7+0.05\ln 4.227=0.7721\text{ V}\ \Rightarrow\ I^{(3)}=4.228\text{ mA}\]<p>השינוי בין האיטרציות קטן מ-1mV, ולכן עוצרים.</p>`},
+{t:'התנגדות דינמית',b:R`\[r_d=\frac{nV_T}{I_{DQ}}=\frac{2\cdot25\text{m}}{4.228\text{m}}=11.83\ \Omega\]`},
+{t:'AC: מעגל שקול',b:R`<p>${'<span class="tag ac">AC</span>'} \(V_{DD}\) הופך לקצר והדיודה ל-\(r_d\). מקבלים מחלק מתח פשוט:</p>\[\hat v_d=\hat v_s\frac{r_d}{R+r_d}=50\text{m}\cdot\frac{11.83}{1011.83}=0.585\text{ mV}\]\[\hat i_d=\frac{\hat v_s}{R+r_d}=\frac{50\text{m}}{1011.83}=49.4\ \mu\text{A}\]`},
+{t:'בדיקת תקפות',b:R`<p>\(\hat v_d=0.585\text{mV}\ll nV_T=50\text{mV}\) <span class="ok-t">✓</span>. הקירוב הליניארי מצוין. שים לב שכמעט כל האות נופל על \(R\): הדיודה כמעט "קצר" ל-AC.</p>`}
+],
+ans:R`\(Q=(0.772\text{V},\ 4.23\text{mA})\) · \(r_d=11.8\Omega\) · \(v_d=0.585\sin\omega t\ \text{mV}\) · \(i_d=49.4\sin\omega t\ \mu\text{A}\)`},
+{t:'תכנון מייצב זנר',lvl:'מבחן',tags:['dc'],
+fig(C){C.V([50,180],[50,100],'V_S',{side:1,off:30});C.w([50,100],[50,50],[80,50]);C.R([80,50],[170,50],'R = ?',{side:-1});C.w([170,50],[370,50]);C.nd(220,50).nd(320,50);
+ C.w([220,50],[220,75]);C.D([220,155],[220,75],'D_Z',{zener:true,side:-1});C.w([220,155],[220,200]);C.R([320,50],[320,200],'R_L',{side:-1});C.w([50,180],[50,200],[370,200]);C.nd(220,200).nd(320,200);C.term(370,50).term(370,200);C.T(382,130,'V_o','big','start');},
+w:420,h:230,
+st:R`מקור לא מיוצב \(V_S\) משתנה בין 15V ל-20V. דרוש מתח קבוע של 10V לעומס שצורך בין 0 ל-20mA. לזנר \(V_Z=10\text{V}\) (\(r_z=0\)), \(I_{Z,\min}=5\text{mA}\) ו-\(P_{Z,\max}=0.6\text{W}\). מצא את הטווח המותר של \(R\) ובחר ערך.`,
+given:R`\(V_S\in[15,20]\text{V},\ I_L\in[0,20]\text{mA},\ V_Z=10\text{V},\ I_{Z,\min}=5\text{mA},\ P_{Z,\max}=0.6\text{W}\)`,
+ask:R`\(R_{\min}\le R\le R_{\max}\) · הספק על \(R\)`,
+steps:[
+{t:'זרם זנר מקסימלי',b:R`\[I_{Z,\max}=\frac{P_{Z,\max}}{V_Z}=\frac{0.6}{10}=60\text{ mA}\]`},
+{t:'R מקסימלי: המקרה הגרוע ל-IZmin',b:R`<p>הכי מעט זרם לזנר: מקור מינימלי ועומס מקסימלי.</p>\[R_{\max}=\frac{V_{S,\min}-V_Z}{I_{Z,\min}+I_{L,\max}}=\frac{15-10}{5\text{m}+20\text{m}}=200\ \Omega\]`},
+{t:'R מינימלי: המקרה הגרוע להספק',b:R`<p>הכי הרבה זרם לזנר: מקור מקסימלי ועומס מנותק (\(I_L=0\)).</p>\[R_{\min}=\frac{V_{S,\max}-V_Z}{I_{Z,\max}+I_{L,\min}}=\frac{20-10}{60\text{m}+0}=166.7\ \Omega\]`},
+{t:'בחירה ובדיקה',b:R`<p>\(166.7\Omega\le R\le200\Omega\). בוחרים ערך תקני \(R=180\Omega\).</p><p>בדיקה \(I_{Z,\min}\): \(I=(15-10)/180=27.8\text{mA}\), \(I_Z=27.8-20=7.8\text{mA}\ge5\text{mA}\) <span class="ok-t">✓</span></p><p>בדיקה \(P_Z\): \(I=(20-10)/180=55.6\text{mA}\), \(P_Z=10\cdot55.6\text{m}=0.556\text{W}\le0.6\text{W}\) <span class="ok-t">✓</span></p>`},
+{t:'הספק על הנגד',b:R`\[P_{R,\max}=\frac{(V_{S,\max}-V_Z)^2}{R}=\frac{10^2}{180}=0.556\text{ W}\]<p>צריך נגד של לפחות 1W. זו נקודה שנוטים לשכוח.</p>`}
+],
+ans:R`\(166.7\Omega\le R\le200\Omega\) · בחירה \(R=180\Omega\) · \(P_{Z,\max}=0.556\text{W}\), \(P_R=0.556\text{W}\) (נגד 1W)`}
+],
+quiz:[
+{q:'דיודה אידיאלית מחוברת כך ש-V<sub>P</sub> = 3V ו-V<sub>N</sub> = 5V. מה מצבה?',o:['מוליכה (קצר)','קטעון (נתק)','מוליכה עם מפל 0.7V','תלוי בנגד שבטור'],a:1,
+ e:'V<sub>D</sub> = V<sub>P</sub> − V<sub>N</sub> = −2V, כלומר ממתח אחורי. דיודה אידיאלית בממתח אחורי היא נתק, ו-I<sub>D</sub> = 0.',
+ x:['קצר מתקבל רק ב-V<sub>D</sub> ≥ 0. כאן V<sub>D</sub> שלילי.',null,'מפל 0.7V שייך למודל אחר ולמצב ON. הדיודה בכלל לא מוליכה.','הנגד משפיע על הזרם כשהדיודה מוליכה, לא על עצם ההולכה.']},
+{q:'בשיטת "הנח ובדוק" קיבלת עבור דיודה שהנחת שהיא ON: I<sub>D</sub> = −1.85mA. מה המסקנה?',o:['הדיודה מוליכה בכיוון ההפוך, התשובה תקינה','ההנחה שגויה: הדיודה OFF, ופותרים מחדש','צריך להחליף למודל 0.7V','דיודה אחרת במעגל בהכרח OFF'],a:1,
+ e:'זרם שלילי בדיודה שהונחה ON הוא סתירה. הופכים את ההנחה לדיודה הזו ופותרים שוב. כך בדיוק בתרגיל הפתור הראשון.',
+ x:['דיודה (שאינה זנר בפריצה) לא מוליכה זרם הפוך משמעותי. זה סימן לסתירה, לא לתוצאה.',null,'שינוי המודל לא פותר סתירה בכיוון הזרם.','אי אפשר להסיק על דיודה אחרת לפני שפותרים מחדש.']},
+{q:'דיודה עם n=2 מוטית בזרם DC של I<sub>DQ</sub> = 2mA. מה r<sub>d</sub>?',o:['12.5Ω','25Ω','50Ω','1kΩ'],a:1,
+ e:'r<sub>d</sub> = nV<sub>T</sub>/I<sub>DQ</sub> = 2·25mV / 2mA = 25Ω.',
+ x:['זו התוצאה עם n=1. שכחת את n.',null,'זו התוצאה עם I = 1mA.','זה V<sub>T</sub>/I בלי יחידות נכונות.']},
+{q:'לדיודה (n=1) יש 0.700V ב-1mA. מה המתח עליה ב-10mA?',o:['≈ 0.758V','7.0V','1.4V','≈ 0.725V'],a:0,
+ e:'V<sub>2</sub> = V<sub>1</sub> + nV<sub>T</sub>ln(I<sub>2</sub>/I<sub>1</sub>) = 0.7 + 0.025·ln10 ≈ 0.758V. תוספת של כ-58mV לעשור.',
+ x:[null,'המתח לא גדל ליניארית עם הזרם. זה אופיין אקספוננציאלי.','זה כמו שתי דיודות בטור, לא הכפלת זרם.','0.725V מתאים לתוספת של V<sub>T</sub> בלבד, כלומר פי e ≈ 2.7 בזרם, לא פי 10.']},
+{q:'בניתוח AC (אות קטן) של מעגל דיודה, מה עושים עם מקור המתח DC ועם קבלי הצימוד?',o:['DC נשאר, קבלים נתק','מקור ה-DC הופך לקצר, קבלי הצימוד לקצר, והדיודה ל-r<sub>d</sub>','מקור ה-DC נתק, קבלים קצר','משאירים הכול כמו ב-DC'],a:1,
+ e:'באות קטן כל מקור DC קבוע מתאפס: מקור מתח הופך לקצר ומקור זרם לנתק. קבלי צימוד גדולים הם קצר בתדר האות.',
+ x:['מקור DC לא משתנה בזמן, ולכן אין לו רכיב AC. קבלים הם נתק רק ב-DC.',null,'מקור מתח מאופס הוא קצר, לא נתק. נתק מתאים למקור זרם.','ב-AC מחליפים את הדיודה ב-r<sub>d</sub> ומאפסים DC.']},
+{q:'במייצב זנר, איזה מקרה קובע את R<sub>max</sub>?',o:['V<sub>S</sub> מקסימלי ועומס מנותק','V<sub>S</sub> מינימלי וזרם עומס מקסימלי','V<sub>S</sub> מינימלי ועומס מנותק','V<sub>S</sub> מקסימלי וזרם עומס מקסימלי'],a:1,
+ e:'R<sub>max</sub> מבטיח שיישאר לזנר לפחות I<sub>Z,min</sub>. המקרה הגרוע: הכי מעט זרם נכנס (V<sub>S</sub> מינימלי) והכי הרבה יוצא לעומס.',
+ x:['זה המקרה של R<sub>min</sub> (הספק מקסימלי בזנר).',null,'בלי עומס כל הזרם הולך לזנר, זה לא המקרה הגרוע ל-I<sub>Z,min</sub>.','V<sub>S</sub> מקסימלי נותן יותר זרם, אז זה לא הגרוע ביותר.']},
+{q:'במעגל קטימה (R בטור, דיודה במוצא אל +V<sub>1</sub>, בלי עומס), מה מתח המוצא המקסימלי?',o:['V<sub>1</sub>','V<sub>1</sub> + V<sub>D0</sub>','v<sub>in</sub>','V<sub>1</sub> − V<sub>D0</sub>'],a:1,
+ e:'הדיודה נדלקת כש-V<sub>P</sub> − V<sub>N</sub> = V<sub>D0</sub>. V<sub>N</sub> = V<sub>1</sub>, ולכן המוצא נתפס על V<sub>1</sub> + V<sub>D0</sub>.',
+ x:['נכון רק לדיודה אידיאלית.',null,'v<sub>in</sub> עובר רק עד נקודת השבירה.','הסימן הפוך: המפל על הדיודה מוסיף למתח המקור.']},
+{q:'איזו אמפליטודת AC על הדיודה (n=1) עדיין "אות קטן"?',o:['5mV','50mV','0.5V','0.7V'],a:0,
+ e:'הקירוב e<sup>x</sup> ≈ 1+x דורש v<sub>d</sub> ≪ nV<sub>T</sub> = 25mV. עד 5mV העיוות בערך 10% ומטה.',
+ x:[null,'50mV = 2V<sub>T</sub>: חצי המחזור החיובי נמתח מאוד. אות גדול.','0.5V גדול פי 20 מ-V<sub>T</sub>.','זה כבר מתח הברך עצמו.']}
+]};
+
+/* ------------------------------------------------------------------ */
+/* LESSON 3 · MOSFET                                                  */
+/* ------------------------------------------------------------------ */
+CONTENT[3]={
+theory:[
+{t:'הרעיון בשורה אחת',h:R`
+<p>MOSFET הוא <b>ברז לזרם שנשלט על ידי מתח</b>. המתח בין השער (Gate) למקור (Source) קובע כמה זרם יזרום מה-Drain ל-Source, <b>ובלי שזורם זרם לשער</b> (\(i_G=0\)).</p>
+`+co('analogy','🚰','אנלוגיה: ברז עם ידית מבודדת','<p>הידית (Gate) מבודדת לגמרי מהמים: מסובבים אותה בלי שטיפה עוברת דרכה. ככל שמסובבים יותר (\\(V_{GS}\\) גדול), הצינור נפתח יותר. יש "סיבוב מת": עד \\(V_T\\) הברז עדיין סגור.</p>')+R`
+<p>שלושה הדקים: Gate, Drain, Source (ולפעמים הדק רביעי, Body). ב-NMOS הזרם זורם מ-D ל-S.</p>`},
+{t:'המבנה: קבל שיוצר תעלה',h:R`
+<p>השער הוא לוח מתכת, מתחתיו שכבה דקה של תחמוצת (SiO\(_2\)), ומתחתיה מצע P. זה בעצם <b>קבל</b>. שני בורות N\(^+\) משני הצדדים הם ה-Source וה-Drain.</p>
+<ol><li>\(V_{GS}>0\) דוחה חורים מתחת לשער ויוצר אזור מחסור.</li><li>כש-\(V_{GS}\) עובר את <b>מתח הסף \(V_T\)</b>, מצטברים מספיק אלקטרונים ליצירת שכבת היפוך: <b>תעלת N</b> שמחברת את S ל-D.</li><li>כמות המטען בתעלה פרופורציונלית ל-<b>מתח היתר</b>:</li></ol>
+\[V_{OV}=V_{GS}-V_T,\qquad Q_{ch}\propto C_{ox}\,V_{OV}\]
+`+golab(3,'l3-ch','ראה את התעלה נוצרת')},
+{t:'טריודה: נגד שנשלט במתח',h:R`
+<p>כש-\(V_{DS}\) קטן, התעלה אחידה והטרנזיסטור הוא <b>נגד</b>. המוליכות שלו גדלה עם \(V_{OV}\):</p>
+\[I_D=k_n'\frac{W}{L}\left(V_{OV}V_{DS}-\tfrac12V_{DS}^2\right)\ \xrightarrow{V_{DS}\ \text{קטן}}\ r_{DS}\approx\frac{1}{k_n'(W/L)\,V_{OV}}\]
+<p>ככל ש-\(V_{DS}\) גדל, המתח המקומי בין השער לתעלה בצד ה-Drain קטן (\(V_{GD}=V_{GS}-V_{DS}\)), התעלה נעשית דקה שם, והעקומה מתכופפת.</p>`},
+{t:'צביטה ורוויה: מקור זרם',h:R`
+<p>ברגע ש-\(V_{GD}\) יורד ל-\(V_T\), כלומר \(V_{DS}=V_{OV}\), התעלה <b>נצבטת</b> (pinch-off) בצד ה-Drain. מעבר לזה הזרם כמעט לא תלוי ב-\(V_{DS}\):</p>
+\[I_D=\tfrac12k_n'\frac{W}{L}V_{OV}^2\qquad(V_{DS}\ge V_{OV})\]
+`+co('analogy','🏞️','אנלוגיה: מפל מים','<p>כמות המים שנופלת במפל נקבעת בקצה העליון (כמה מים מגיעים), לא בגובה המפל. הגדלת \\(V_{DS}\\) אחרי הצביטה מאריכה את "הנפילה" אבל לא מוסיפה זרם.</p>')+co('why','💡','למה זה חשוב?','<p><b>מגברים עובדים ברוויה</b>. שם הטרנזיסטור הוא מקור זרם שנשלט במתח: שינוי קטן ב-\\(V_{GS}\\) משנה את הזרם, ו-\\(R_D\\) הופך את שינוי הזרם לשינוי מתח גדול. מתגים דיגיטליים עובדים דווקא בקטעון ובטריודה.</p>')},
+{t:'שלושת התחומים בטבלה אחת',h:R`
+<div class="tbl"><table><thead><tr><th>תחום</th><th>תנאי</th><th>זרם</th><th>התנהגות</th></tr></thead><tbody>
+<tr><td>${'<span class="tag bad">קטעון</span>'}</td><td>\(V_{GS}\lt V_T\)</td><td>\(I_D=0\)</td><td>מתג פתוח</td></tr>
+<tr><td>${'<span class="tag ok">טריודה</span>'}</td><td>\(V_{OV}>0,\ V_{DS}\lt V_{OV}\)</td><td>\(k_n\left(V_{OV}V_{DS}-\tfrac12V_{DS}^2\right)\)</td><td>נגד \(r_{DS}\)</td></tr>
+<tr><td>${'<span class="tag dc">רוויה</span>'}</td><td>\(V_{OV}>0,\ V_{DS}\ge V_{OV}\)</td><td>\(\tfrac12k_nV_{OV}^2(1+\lambda V_{DS})\)</td><td>מקור זרם, מגבר</td></tr>
+</tbody></table></div>
+<p style="margin-top:10px">כאן \(k_n=k_n'(W/L)\) ו-\(k_n'=\mu_nC_{ox}\). דרך שקולה לבדוק רוויה: \(V_{GD}\le V_T\), כלומר ה-Drain לא נמוך מהשער ביותר מ-\(V_T\).</p>
+`+co('warn','⚠️','שמות הפרמטרים משתנים בין ספרים','<p>יש מי שכותב \\(K_n=\\tfrac12k_n\'(W/L)\\) ואז \\(I_D=K_nV_{OV}^2\\) בלי ½. קרא בשאלה איך הפרמטר מוגדר לפני שמציבים.</p>')},
+{t:'אפקטים מסדר שני',h:R`
+<p><b>קיצור תעלה (CLM):</b> אחרי הצביטה נקודת הצביטה זזה מעט לכיוון ה-Source, התעלה האפקטיבית מתקצרת, והזרם עולה מעט עם \(V_{DS}\):</p>
+\[I_D=\tfrac12k_nV_{OV}^2(1+\lambda V_{DS}),\qquad V_A=\frac1\lambda,\qquad r_o=\frac{1}{\lambda I_D}=\frac{V_A}{I_D}\]
+<p><b>אפקט המצע:</b> כש-\(V_{SB}>0\), אזור המחסור מתחת לתעלה מתרחב ו-\(V_T\) עולה: \(V_T=V_{T0}+\gamma\left(\sqrt{2\phi_f+V_{SB}}-\sqrt{2\phi_f}\right)\). בסיכום \(2\phi_f=0.6\text{V}\).</p>
+<p><b>PMOS:</b> הכול הפוך. עובדים עם \(V_{SG}\), \(V_{SD}\) ו-\(|V_T|\), והזרם זורם מ-S ל-D. <b>Depletion:</b> יש תעלה מובנית, לכן NMOS Depletion מוליך גם ב-\(V_{GS}=0\) (\(V_T\lt 0\)).</p>
+`+golab(3,'l3-types','השווה בין ארבעת הסוגים')},
+{t:'מודל אות קטן',h:R`
+<p>סביב נקודת עבודה ברוויה, שינוי קטן \(v_{gs}\) גורם לשינוי קטן בזרם. היחס הוא השיפוע של האופיין, <b>הטרנסמוליכות</b>:</p>
+\[g_m=\left.\frac{\partial i_D}{\partial v_{GS}}\right|_Q=k_nV_{OV}=\sqrt{2k_nI_D}=\frac{2I_D}{V_{OV}}\]
+<div class="cols2"><div><p><b>מודל π</b>: שער פתוח (\(i_g=0\)), ובין D ל-S מקור זרם \(g_mv_{gs}\) במקביל ל-\(r_o\).</p></div><div><p><b>מודל T</b>: התנגדות \(1/g_m\) בין ה-Source לשער הפנימי. נוח כשיש נגד ב-Source.</p></div></div>
+\[\mu=g_mr_o\quad\text{(הגבר עצמי: המקסימום שטרנזיסטור יחיד נותן)}\]
+<div class="legend">${tg('dc','DC')} קובע את \(I_D,V_{OV}\) ולכן את \(g_m,r_o\) · ${tg('ac','AC')} רואה רק את המודל הליניארי</div>
+`+golab(3,'l3-ss','ראה את g<sub>m</sub> כשיפוע המשיק')},
+{t:'מה נשאל במבחן',h:R`
+<ol><li><b>ניתוח DC</b>: נקודת עבודה עם מחלק מתח ו-\(R_S\), כולל משוואה ריבועית ובחירת השורש.</li><li><b>אימות תחום</b>: רוויה מול טריודה, ופתרון מחדש אם ההנחה נכשלה.</li><li><b>PMOS</b>: אותו תרגיל עם סימנים הפוכים.</li><li><b>פרמטרי אות קטן</b>: \(g_m,r_o\) ומעבר למגבר (שיעור 4).</li></ol>`}
+],
+algo:{
+flows:[
+{t:'ניתוח DC של NMOS',tags:['dc'],p:'נקודת עבודה עם מחלק מתח בשער, R<sub>D</sub> ו-R<sub>S</sub>.',steps:[
+{t:'מתח השער',d:'\\(i_G=0\\), לכן אין העמסה על המחלק: \\(V_G=V_{DD}\\dfrac{R_{G2}}{R_{G1}+R_{G2}}\\).'},
+{t:'בדוק אם הוא בכלל מוליך',chk:1,d:'אם \\(V_G-V_S\\le V_T\\) גם עם \\(I_D=0\\), הוא בקטעון: \\(I_D=0\\), \\(V_D=V_{DD}\\).'},
+{t:'הנח רוויה',d:'\\(I_D=\\tfrac12k_n(V_{GS}-V_T)^2\\) (ב-DC בדרך כלל \\(\\lambda=0\\)).'},
+{t:'KVL בלולאת השער-מקור',d:'\\(V_{GS}=V_G-I_DR_S\\). מציבים את \\(I_D\\) ומקבלים משוואה ריבועית ב-\\(V_{OV}\\): \\(\\tfrac12k_nR_S V_{OV}^2+V_{OV}-(V_G-V_T)=0\\).'},
+{t:'בחר את השורש הנכון',chk:1,d:'<div class="br"><span class="y">✓</span><span>השורש עם \\(V_{OV}>0\\) (כלומר \\(V_{GS}>V_T\\)).</span><span class="n">✗</span><span>השורש השני נותן \\(V_{GS}\\lt V_T\\), שזה קטעון, בסתירה להנחה.</span></div>'},
+{t:'מתחי צמתים',d:'\\(V_S=I_DR_S\\), \\(V_D=V_{DD}-I_DR_D\\), \\(V_{DS}=V_D-V_S\\).'},
+{t:'בדיקת רוויה',chk:1,d:'<div class="br"><span class="y">✓ \\(V_{DS}\\ge V_{OV}\\)</span><span>ההנחה נכונה, סיימת.</span><span class="n">✗ \\(V_{DS}\\lt V_{OV}\\)</span><span>טריודה: פתור מחדש עם \\(I_D=k_n(V_{OV}V_{DS}-\\tfrac12V_{DS}^2)\\) יחד עם KVL, ובחר את השורש עם \\(V_{DS}\\lt V_{OV}\\).</span></div>'}
+]},
+{t:'PMOS: אותו אלגוריתם, סימנים הפוכים',tags:['dc'],p:'Source למעלה (לכיוון V<sub>DD</sub>), Drain למטה.',steps:[
+{t:'עבוד עם \\(V_{SG}\\) ו-\\(V_{SD}\\)',d:'הולכה: \\(V_{SG}>|V_T|\\). \\(V_{OV}=V_{SG}-|V_T|\\).'},
+{t:'רוויה',d:'\\(I_D=\\tfrac12k_p V_{OV}^2\\), כשהזרם זורם מ-S ל-D.'},
+{t:'KVL',d:'\\(V_{SG}=V_{DD}-I_DR_S-V_G\\) (כש-\\(R_S\\) בין \\(V_{DD}\\) ל-Source).'},
+{t:'בדיקה',chk:1,d:'רוויה אם \\(V_{SD}\\ge V_{OV}\\), כלומר \\(V_D\\le V_G+|V_T|\\).'}
+]},
+{t:'מעבר לאות קטן',tags:['ac'],p:'אחרי שנקודת העבודה ידועה.',steps:[
+{t:'פרמטרים מ-DC',tag:'dc',d:'\\(g_m=2I_D/V_{OV}\\), \\(r_o=V_A/I_D=1/(\\lambda I_D)\\).'},
+{t:'מעגל AC',tag:'ac',d:'\\(V_{DD}\\) הופך לאדמה, קבלי צימוד ועקיפה לקצר, מקורות זרם DC לנתק.'},
+{t:'החלף את הטרנזיסטור',d:'מודל π (\\(g_mv_{gs}\\parallel r_o\\)), או מודל T כשיש \\(R_S\\) לא מעוקף.'},
+{t:'חשב \\(R_{in}\\), \\(R_{out}\\) ו-\\(A_v\\)',d:'או השתמש בנוסחאות הקיצור של CS, CG ו-CD (שיעור 4).'}
+]}
+],
+gotchas:[
+{t:'השורש הלא נכון',d:'במשוואה הריבועית תמיד יש שני פתרונות. זה שנותן \\(V_{GS}\\lt V_T\\) (או \\(V_{OV}\\lt 0\\)) פסול.'},
+{t:'תנאי רוויה שגוי',d:'התנאי הוא \\(V_{DS}\\ge V_{GS}-V_T\\), לא \\(V_{DS}\\ge V_{GS}\\) ולא \\(V_{DS}\\ge V_T\\).'},
+{t:'½ חסר או כפול',d:'\\(k_n\\), \\(k_n\'\\) ו-\\(K_n\\) מוגדרים אחרת בספרים שונים. בדוק את ההגדרה בשאלה.'},
+{t:'\\(g_m\\) עם \\(V_{GS}\\)',d:'\\(g_m=2I_D/V_{OV}\\) משתמש במתח היתר, לא ב-\\(V_{GS}\\).'},
+{t:'\\(\\lambda\\) ב-DC',d:'אלא אם נאמר אחרת, מזניחים את \\(\\lambda\\) בחישוב ה-DC, ומשתמשים בו רק ל-\\(r_o\\) ב-AC.'},
+{t:'שוכחים את אפקט המצע',d:'כשה-Source לא מחובר למצע (לדוגמה, יש \\(R_S\\) והמצע באדמה), \\(V_T\\) עולה. בדוק אם השאלה מבקשת להתחשב בזה.'},
+{t:'סימנים ב-PMOS',d:'עבוד תמיד עם גדלים חיוביים: \\(V_{SG}\\), \\(V_{SD}\\), \\(|V_T|\\). זה חוסך כמעט את כל טעויות הסימן.'},
+{t:'זרם לשער',d:'\\(i_G=0\\) תמיד. מחלק המתח בשער לא מועמס, ואין מפל על \\(R_G\\).'}
+],
+shortcuts:[['\\(g_m=\\frac{2I_D}{V_{OV}}=\\sqrt{2k_nI_D}\\)','שלוש דרכים שקולות'],['\\(r_o=\\frac{V_A}{I_D}\\)','\\(V_A=1/\\lambda\\)'],['\\(r_{DS}\\approx\\frac{1}{k_nV_{OV}}\\)','טריודה עמוקה'],['\\(V_{DS,sat}=V_{OV}\\)','גבול הרוויה']]
+},
+solved:[
+{t:'NMOS עם מחלק מתח ו-R<sub>S</sub>',lvl:'מבחן',tags:['dc'],
+fig(C){C.rail(150,20,'V_{DD}');C.w([150,20],[150,32]);C.R([150,32],[150,122],'R_{G1} = 2MΩ',{side:1,off:22});C.w([150,122],[150,140]);C.nd(150,140);C.R([150,140],[150,222],'R_{G2} = 1MΩ',{side:1,off:22});C.G(150,222);
+ C.rail(300,20,'V_{DD} = 15V');C.w([300,20],[300,32]);C.R([300,32],[300,96],'R_D = 5kΩ',{side:-1,off:22});C.w([300,96],[300,110]);const t=C.mos(290,140,{});C.w([300,170],[300,180]);C.R([300,180],[300,226],'R_S = 2kΩ',{side:-1,off:22});C.G(300,226);
+ C.w([150,140],t.g);C.nd(300,103);C.nd(300,176);C.T(190,132,'V_G','val','middle');C.T(288,104,'V_D','val','end');C.T(288,190,'V_S','val','end');},
+w:440,h:250,
+st:R`NMOS עם \(V_T=1\text{V}\) ו-\(k_n=k_n'(W/L)=1\,\text{mA/V}^2\) (ב-DC \(\lambda=0\)). מצא את נקודת העבודה ובדוק את התחום. חשב גם את \(g_m\), ואת \(r_o\) עבור \(\lambda=0.01\,\text{V}^{-1}\).`,
+given:R`\(V_{DD}=15\text{V},\ R_{G1}=2\text{M}\Omega,\ R_{G2}=1\text{M}\Omega,\ R_D=5\text{k}\Omega,\ R_S=2\text{k}\Omega\)`,
+ask:R`\(I_D,V_{GS},V_{DS}\) · תחום · \(g_m,r_o\)`,
+steps:[
+{t:'מתח השער',b:R`<p>\(i_G=0\), לכן מחלק מתח לא מועמס:</p>\[V_G=15\cdot\frac{1\text{M}}{2\text{M}+1\text{M}}=5\text{ V}\]`},
+{t:'הנחת רוויה ומשוואה ריבועית',b:R`<p>\(V_{GS}=V_G-I_DR_S\) ו-\(I_D=\tfrac12k_nV_{OV}^2\). נסמן \(x=V_{OV}\), כך ש-\(V_{GS}=1+x\):</p>\[1+x=5-2\text{k}\cdot\tfrac12\cdot1\text{m}\cdot x^2=5-x^2\ \Rightarrow\ x^2+x-4=0\]`},
+{t:'בחירת השורש',b:R`\[x=\frac{-1\pm\sqrt{17}}{2}\ \Rightarrow\ x_1=1.562\text{ V},\quad x_2=-2.562\text{ V}\]<p>\(x_2\lt 0\) פירושו \(V_{GS}\lt V_T\), קטעון, בסתירה להנחה. לכן <span class="ok-t">\(V_{OV}=1.562\text{V}\)</span> ו-\(V_{GS}=2.562\text{V}\).</p>`},
+{t:'זרם ומתחים',b:R`\[I_D=\tfrac12\cdot1\text{m}\cdot1.562^2=1.219\text{ mA}\]\[V_S=1.219\text{m}\cdot2\text{k}=2.438\text{ V},\quad V_D=15-1.219\text{m}\cdot5\text{k}=8.904\text{ V},\quad V_{DS}=6.466\text{ V}\]`},
+{t:'אימות תחום',b:R`<p>\(V_{DS}=6.47\text{V}\ \ge\ V_{OV}=1.56\text{V}\) <span class="ok-t">✓ רוויה</span></p><p>(ובדרך השקולה: \(V_{GD}=5-8.904=-3.9\text{V}\le V_T\).)</p>`},
+{t:'פרמטרי אות קטן',b:R`\[g_m=\frac{2I_D}{V_{OV}}=\frac{2\cdot1.219\text{m}}{1.562}=1.562\ \text{mA/V}\quad(=k_nV_{OV}\ \checkmark)\]\[r_o=\frac{1}{\lambda I_D}=\frac{1}{0.01\cdot1.219\text{m}}=82.0\ \text{k}\Omega\]`}
+],
+ans:R`רוויה · \(I_D=1.22\text{mA},\ V_{GS}=2.56\text{V},\ V_{DS}=6.47\text{V}\) · \(g_m=1.56\text{mA/V},\ r_o=82\text{k}\Omega\)`},
+{t:'ההנחה נכשלת: פתרון בטריודה',lvl:'בינוני',tags:['dc'],
+fig(C){C.rail(260,22,'V_{DD} = 5V');C.w([260,22],[260,40]);C.R([260,40],[260,110],'R_D = 10kΩ',{side:1,off:24});C.w([260,110],[260,125]);const t=C.mos(250,155,{});C.w([260,185],[260,215]);C.G(260,215);
+ C.w(t.g,[150,155]);C.V([150,215],[150,155],'V_{GS} = 2V',{side:-1,off:36});C.G(150,215);C.nd(260,118);C.T(276,122,'V_{DS}','val','start');},
+w:420,h:240,
+st:R`NMOS עם \(V_T=0.7\text{V}\) ו-\(k_n=2\,\text{mA/V}^2\). מצא את \(I_D\) ו-\(V_{DS}\).`,
+given:R`\(V_{DD}=5\text{V},\ R_D=10\text{k}\Omega,\ V_{GS}=2\text{V}\ \Rightarrow\ V_{OV}=1.3\text{V}\)`,
+ask:R`תחום · \(I_D,V_{DS}\)`,
+steps:[
+{t:'הנחת רוויה',b:R`\[I_D=\tfrac12\cdot2\text{m}\cdot1.3^2=1.69\text{ mA}\ \Rightarrow\ V_{DS}=5-1.69\text{m}\cdot10\text{k}=-11.9\text{ V}\]`},
+{t:'בדיקה: סתירה',b:R`<p>\(V_{DS}\lt 0\), ובוודאי \(V_{DS}\lt V_{OV}\) <span class="bad-t">✗</span>. הנגד גדול מדי, והטרנזיסטור "נדחק" לטריודה.</p>`},
+{t:'טריודה + KVL',b:R`\[I_D=2\text{m}\left(1.3V_{DS}-\tfrac12V_{DS}^2\right),\qquad V_{DS}=5-10\text{k}\cdot I_D\]\[V_{DS}=5-20\left(1.3V_{DS}-0.5V_{DS}^2\right)\ \Rightarrow\ 10V_{DS}^2-27V_{DS}+5=0\]`},
+{t:'בחירת השורש',b:R`\[V_{DS}=\frac{27\pm\sqrt{729-200}}{20}=\frac{27\pm23}{20}\ \Rightarrow\ 2.5\text{ V}\ \text{או}\ 0.2\text{ V}\]<p>בטריודה צריך \(V_{DS}\lt V_{OV}=1.3\text{V}\), לכן <span class="ok-t">\(V_{DS}=0.2\text{V}\)</span>.</p>`},
+{t:'זרם ובדיקה',b:R`\[I_D=\frac{5-0.2}{10\text{k}}=0.48\text{ mA}\]<p>בדיקה מול נוסחת הטריודה: \(2\text{m}(1.3\cdot0.2-0.5\cdot0.04)=0.48\text{mA}\) <span class="ok-t">✓</span>. הטרנזיסטור מתנהג כמתג סגור עם \(r_{DS}\approx0.2/0.48\text{m}\approx417\Omega\).</p>`}
+],
+ans:R`טריודה · \(V_{DS}=0.2\text{V},\ I_D=0.48\text{mA}\)`},
+{t:'מ-DC לאות קטן: מגבר CS',lvl:'מבחן',tags:['dc','ac'],
+fig(C){C.rail(150,20,'V_{DD}');C.w([150,20],[150,32]);C.R([150,32],[150,122],'R_{G1}',{side:1,off:18});C.w([150,122],[150,140]);C.nd(150,140);C.R([150,140],[150,222],'R_{G2}',{side:1,off:18});C.G(150,222);
+ C.w([150,140],[110,140]);C.Cap([110,140],[76,140],'',{});C.w([76,140],[44,140],[44,160]);C.V([44,214],[44,160],'v_{sig}',{kind:'ac',side:1,off:26});C.G(44,214);
+ C.rail(300,20,'V_{DD}');C.w([300,20],[300,32]);C.R([300,32],[300,96],'R_D',{side:1,off:18});C.w([300,96],[300,110]);const t=C.mos(290,140,{});C.w(t.g,[150,140]);C.w([300,170],[300,182]);C.nd(300,182);C.R([300,182],[300,226],'R_S',{side:1,off:18});C.G(300,226);
+ C.w([300,182],[350,182]);C.Cap([350,182],[350,226],'C_S',{side:-1});C.G(350,226);
+ C.nd(300,103);C.w([300,103],[362,103]);C.Cap([362,103],[396,103],'',{});C.w([396,103],[412,103]);C.R([412,103],[412,210],'R_L',{side:1,off:16});C.G(412,210);C.T(420,94,'v_o','val','end');},
+w:440,h:250,
+st:R`אותו מעגל כמו בתרגיל 1, עם קבלי צימוד, \(R_S\) מעוקף בקבל, עומס \(R_L=10\text{k}\Omega\) ו-\(\lambda=0.01\,\text{V}^{-1}\). מצא את \(R_{in}\), \(R_{out}\) ו-\(A_v=v_o/v_{gs}\).`,
+given:R`מתרגיל 1: \(I_D=1.219\text{mA},\ g_m=1.562\text{mA/V},\ r_o=82\text{k}\Omega\). \(R_D=5\text{k}\Omega\), \(R_L=10\text{k}\Omega\).`,
+ask:R`\(R_{in},\ R_{out},\ A_v\)`,
+steps:[
+{t:'נקודת העבודה לא משתנה',b:R`<p>${'<span class="tag dc">DC</span>'} קבלים הם נתק ב-DC, לכן הוספת הקבלים לא משנה את Q. כל הפרמטרים מתרגיל 1 תקפים.</p>`},
+{t:'מעגל AC',b:R`<p>${'<span class="tag ac">AC</span>'} \(V_{DD}\) לאדמה, \(C_S\) מקצר את \(R_S\) ולכן ה-Source באדמה, קבלי הצימוד קצר. \(R_{G1}\parallel R_{G2}\) בין השער לאדמה, ובמוצא \(r_o\parallel R_D\parallel R_L\).</p>`},
+{t:'התנגדות כניסה ומוצא',b:R`\[R_{in}=R_{G1}\parallel R_{G2}=2\text{M}\parallel1\text{M}=667\text{ k}\Omega\]\[R_{out}=r_o\parallel R_D=82\text{k}\parallel5\text{k}=4.71\text{ k}\Omega\]`},
+{t:'הגבר',b:R`\[r_o\parallel R_D\parallel R_L=\left(\tfrac{1}{82}+\tfrac15+\tfrac1{10}\right)^{-1}\text{k}=3.20\text{ k}\Omega\]\[A_v=-g_m\left(r_o\parallel R_D\parallel R_L\right)=-1.562\text{m}\cdot3.20\text{k}\approx-5.0\ \text{V/V}\]<p>הסימן השלילי הוא היפוך פאזה של 180°, התכונה של תצורת CS.</p>`}
+],
+ans:R`\(R_{in}=667\text{k}\Omega\) · \(R_{out}=4.71\text{k}\Omega\) · \(A_v\approx-5.0\)`}
+],
+quiz:[
+{q:'NMOS עם V<sub>T</sub> = 1V, V<sub>GS</sub> = 3V ו-V<sub>DS</sub> = 1.5V. באיזה תחום הוא?',o:['קטעון','טריודה','רוויה','לא ניתן לדעת'],a:1,
+ e:'V<sub>OV</sub> = 3 − 1 = 2V. V<sub>DS</sub> = 1.5V &lt; V<sub>OV</sub>, ולכן טריודה.',
+ x:['V<sub>GS</sub> &gt; V<sub>T</sub>, יש תעלה.',null,'לרוויה צריך V<sub>DS</sub> ≥ 2V.','יש מספיק נתונים: V<sub>OV</sub> ו-V<sub>DS</sub>.']},
+{q:'NMOS ברוויה עם k<sub>n</sub> = k\'<sub>n</sub>(W/L) = 2mA/V² ו-V<sub>OV</sub> = 0.5V (λ=0). מה I<sub>D</sub>?',o:['0.5mA','0.25mA','1mA','2mA'],a:1,
+ e:'I<sub>D</sub> = ½·2m·0.5² = 0.25mA.',
+ x:['שכחת את ה-½.',null,'זה k<sub>n</sub>·V<sub>OV</sub> = g<sub>m</sub>, לא I<sub>D</sub>.','זה k<sub>n</sub> עצמו.']},
+{q:'באותה נקודה (I<sub>D</sub> = 0.25mA, V<sub>OV</sub> = 0.5V), מה g<sub>m</sub>?',o:['0.5mA/V','1mA/V','2mA/V','0.25mA/V'],a:1,
+ e:'g<sub>m</sub> = 2I<sub>D</sub>/V<sub>OV</sub> = 0.5m/0.5 = 1mA/V. שקול ל-k<sub>n</sub>V<sub>OV</sub> = 2m·0.5.',
+ x:['זה I<sub>D</sub>/V<sub>OV</sub>, בלי הגורם 2.',null,'זה k<sub>n</sub>, לא g<sub>m</sub>.','זה I<sub>D</sub> ביחידות לא נכונות.']},
+{q:'פתרת משוואה ריבועית וקיבלת V<sub>OV</sub> = 1.56V או V<sub>OV</sub> = −2.56V. איזה פתרון נכון?',o:['1.56V','−2.56V','שניהם, יש שתי נקודות עבודה','אף אחד'],a:0,
+ e:'V<sub>OV</sub> &lt; 0 פירושו V<sub>GS</sub> &lt; V<sub>T</sub>, כלומר קטעון, וזה סותר את הנחת הרוויה שממנה נגזרה המשוואה.',
+ x:[null,'V<sub>OV</sub> שלילי סותר את ההנחה שיש תעלה.','לטרנזיסטור יש נקודת עבודה יחידה. השורש השני הוא תוצר מתמטי.','השורש החיובי עקבי ועובר בדיקה.']},
+{q:'מה התנאי הנכון לרוויה ב-NMOS?',o:['V<sub>DS</sub> ≥ V<sub>GS</sub>','V<sub>DS</sub> ≥ V<sub>GS</sub> − V<sub>T</sub>','V<sub>DS</sub> ≥ V<sub>T</sub>','V<sub>GS</sub> ≥ V<sub>DS</sub>'],a:1,
+ e:'רוויה מתחילה בצביטה: V<sub>DS</sub> = V<sub>OV</sub> = V<sub>GS</sub> − V<sub>T</sub>. בצורה שקולה: V<sub>GD</sub> ≤ V<sub>T</sub>.',
+ x:['חזק מדי. מפספס את התחום V<sub>OV</sub> ≤ V<sub>DS</sub> &lt; V<sub>GS</sub>.',null,'V<sub>T</sub> לא קשור ישירות לגבול, אלא V<sub>OV</sub>.','זה כמעט התנאי ההפוך.']},
+{q:'λ = 0.02 V⁻¹ ו-I<sub>D</sub> = 1mA. מה r<sub>o</sub>?',o:['20kΩ','50kΩ','500Ω','5kΩ'],a:1,
+ e:'r<sub>o</sub> = 1/(λI<sub>D</sub>) = 1/(0.02·1m) = 50kΩ. V<sub>A</sub> = 1/λ = 50V.',
+ x:['טעות בחזקה.',null,'זה λ/I, הפוך.','טעות של פי 10.']},
+{q:'PMOS עם Source ב-5V, Gate ב-2V ו-|V<sub>T</sub>| = 1V. מה המתח המקסימלי ב-Drain שבו הוא עדיין ברוויה?',o:['3V','2V','4V','1V'],a:0,
+ e:'V<sub>SG</sub> = 3V, V<sub>OV</sub> = 2V. רוויה דורשת V<sub>SD</sub> ≥ 2V, כלומר V<sub>D</sub> ≤ 5 − 2 = 3V (שווה ל-V<sub>G</sub> + |V<sub>T</sub>|).',
+ x:[null,'זה V<sub>G</sub>. הגבול הוא V<sub>G</sub> + |V<sub>T</sub>|.','ב-4V, V<sub>SD</sub> = 1V &lt; V<sub>OV</sub>, כלומר טריודה.','זה מחמיר מדי. גם V<sub>D</sub> = 3V ברוויה.']},
+{q:'מה ההשפעה של V<sub>SB</sub> חיובי על NMOS?',o:['V<sub>T</sub> יורד','V<sub>T</sub> עולה','k\'<sub>n</sub> גדל','אין השפעה'],a:1,
+ e:'אפקט המצע: V<sub>T</sub> = V<sub>T0</sub> + γ(√(0.6+V<sub>SB</sub>) − √0.6). אזור המחסור מתחת לתעלה מתרחב, ולכן V<sub>T</sub> עולה.',
+ x:['הכיוון הפוך.',null,'k\'<sub>n</sub> = μ<sub>n</sub>C<sub>ox</sub>, פרמטר תהליך שלא תלוי ב-V<sub>SB</sub>.','יש השפעה, דרך V<sub>T</sub>.']},
+{q:'בזרם I<sub>D</sub> קבוע מגדילים את V<sub>OV</sub> (בעזרת W/L קטן יותר). מה קורה ל-g<sub>m</sub>?',o:['גדל','קטן','לא משתנה','תלוי ב-λ'],a:1,
+ e:'g<sub>m</sub> = 2I<sub>D</sub>/V<sub>OV</sub>. בזרם קבוע, V<sub>OV</sub> גדול נותן g<sub>m</sub> קטן יותר.',
+ x:['g<sub>m</sub> = k<sub>n</sub>V<sub>OV</sub> מטעה כאן, כי k<sub>n</sub> קטן יחד עם השינוי.',null,'יש תלות הפוכה ב-V<sub>OV</sub>.','λ משפיע על r<sub>o</sub>, לא על g<sub>m</sub>.']}
+]};
+
+
+/* =================================================================
+   LEARNING HUB: progress · quiz · sidebar · tabs · exam · calculator
+================================================================= */
+const ORDER=[1,2,3,4,5,6,7,8,9];
+const TABS=[{k:'theory',i:'📘',t:'אינטואיציה ותיאוריה',s:'תיאוריה'},{k:'lab',i:'🔬',t:'מעבדה אינטראקטיבית',s:'מעבדה'},{k:'algo',i:'⚡',t:'אלגוריתם פתרון',s:'אלגוריתם'},{k:'solved',i:'📝',t:'תרגילים פתורים',s:'פתורים'},{k:'quiz',i:'🎯',t:'בוחן ידע',s:'בוחן'}];
+const GROUPS=[['דיודות',[1,2]],['טרנזיסטורים',[3,4,5]],['מעגלים משולבים ומגברים',[6,7,8,9]]];
+const full=n=>!!CONTENT[n];
+const strip=s=>String(s).replace(/<[^>]+>/g,'');
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+
+/* ---------- MathJax ---------- */
+function typeset(el){if(!el)return;const go=()=>{if(window.MathJax&&MathJax.typesetPromise){MathJax.typesetPromise([el]).catch(()=>{});}else setTimeout(go,250);};go();}
+
+/* ---------- progress store ---------- */
+function quizOf(n){return full(n)&&CONTENT[n].quiz?CONTENT[n].quiz:LESSONS[n].quiz;}
+function qKey(n){return (full(n)?'Q2_':'L')+n;}
+(function migrate(){ // old format: quiz.L{n} = {i:bool}  ->  ans.L{n} = {i:choice}
+  if(store.get('migrated',false))return;const old=store.get('quiz',{}),ans=store.get('ans',{});
+  ORDER.forEach(n=>{const o=old['L'+n];if(!o||full(n))return;const qs=LESSONS[n].quiz;ans['L'+n]={};Object.keys(o).forEach(i=>{const q=qs[+i];if(q)ans['L'+n][i]=o[i]?q.a:(q.a+1)%q.o.length;});});
+  store.set('ans',ans);store.set('migrated',true);})();
+const visits=()=>store.get('visits',{});
+function markVisit(n,k){const v=visits();v[n]=v[n]||{};if(!v[n][k]){v[n][k]=1;store.set('visits',v);}store.set('last',{n,k});}
+function lessonProg(n){const qs=quizOf(n),a=store.get('ans',{})[qKey(n)]||{};let c=0,d=0;Object.keys(a).forEach(i=>{if(qs[+i]){d++;if(a[i]===qs[+i].a)c++;}});
+  const v=Object.keys(visits()[n]||{}).length;return {v,c,d,tot:qs.length,pct:Math.round(40*v/5+60*c/qs.length)};}
+function courseProg(){const p=ORDER.map(lessonProg);return {pct:Math.round(p.reduce((s,x)=>s+x.pct,0)/p.length),c:p.reduce((s,x)=>s+x.c,0),tot:p.reduce((s,x)=>s+x.tot,0)};}
+
+/* ---------- quiz with reasoned distractors ---------- */
+const LET='אבגדהו';
+function quiz2(root,n,qs,key,opt){
+  opt=opt||{};const box=document.createElement('div');box.className='quiz';root.appendChild(box);
+  const all=store.get('ans',{});const state=all[key]||{};
+  const sc=document.createElement('div');sc.className='score';
+  function save(){all[key]=state;store.set('ans',all);refreshProgress();}
+  function upd(){const d=Object.keys(state).length,c=Object.keys(state).filter(i=>qs[+i]&&state[i]===qs[+i].a).length;
+    sc.innerHTML=pill(c+' / '+qs.length+' נכונות',c===qs.length?'ok':'mute')+'<span class="muted">'+(d<qs.length?'ענית על '+d+' מתוך '+qs.length:'סיימת את הבוחן של השיעור')+'</span><button type="button" class="btn">התחל מחדש</button>';
+    sc.querySelector('button').onclick=()=>{Object.keys(state).forEach(k=>delete state[k]);save();box.innerHTML='';render();};}
+  function explain(q,j){let h='<p>'+(j===q.a?'<b class="ok-t">נכון.</b> ':'<b class="bad-t">לא בדיוק.</b> ')+q.e+'</p>';
+    if(q.x){h+='<ul class="why">'+q.o.map((o,k)=>k===q.a?'':'<li><b>'+LET[k]+'</b><span>'+(q.x[k]||'')+'</span></li>').join('')+'</ul>';}return h;}
+  function render(){
+    qs.forEach((q,i)=>{
+      const d=document.createElement('div');d.className='q';
+      d.innerHTML='<div class="qn"><span>שאלה '+(i+1)+'</span>'+(opt.tag?opt.tag(q,i):'')+'</div><p class="qt">'+q.q+'</p><div class="opts">'+q.o.map((o,j)=>'<button type="button" data-j="'+j+'"><span class="L">'+LET[j]+'</span><span>'+o+'</span></button>').join('')+'</div>';
+      const btns=[...d.querySelectorAll('.opts button')];
+      const reveal=j=>{btns.forEach((b,k)=>{b.disabled=true;if(k===q.a)b.classList.add('good');else if(k===j)b.classList.add('badc');});
+        const ex=document.createElement('div');ex.className='ex';ex.innerHTML=explain(q,j);d.appendChild(ex);typeset(ex);};
+      btns.forEach(b=>b.addEventListener('click',()=>{const j=+b.dataset.j;state[i]=j;reveal(j);upd();save();}));
+      if(state[i]!==undefined)reveal(state[i]);
+      box.appendChild(d);
+    });
+    box.appendChild(sc);upd();typeset(box);
+  }
+  render();
+}
+
+/* ---------- sidebar ---------- */
+const side=document.getElementById('side');
+let cur={page:'home',n:0,tab:''};
+function sideHTML(){
+  const cp=courseProg();
+  const tree=GROUPS.map(g=>'<div class="navh">'+g[0]+'</div><div class="tree">'+g[1].map(n=>{const p=lessonProg(n),on=cur.page==='l'&&cur.n===n,vs=visits()[n]||{};
+    return '<a class="tl" href="#/l/'+n+'" '+(on?'aria-current="page"':'')+'><span class="ring" style="--p:'+p.pct+'"><i>'+n+'</i></span><span>'+LESSONS[n].title+'</span><span class="pc">'+p.pct+'%</span></a>'+
+      (on?'<div class="subt">'+TABS.map(t=>'<a href="#/l/'+n+'/'+t.k+'" '+(cur.tab===t.k?'aria-current="true"':'')+'><span>'+t.i+'</span>'+t.s+(vs[t.k]?'<span class="ck">✓</span>':'')+'</a>').join('')+'</div>':'');}).join('')+'</div>').join('');
+  const ql=(h,k,ic,t,w)=>'<a href="'+h+'" '+(cur.page===k?'aria-current="page"':'')+(w?' class="wide"':'')+'><span>'+ic+'</span>'+t+'</a>';
+  side.innerHTML='<a class="brand" href="#/"><svg viewBox="0 0 26 26" aria-hidden="true"><rect x="1" y="1" width="24" height="24" rx="7" fill="var(--accent)"/><path d="M5 13h5l2-5 3 10 2-5h4" fill="none" stroke="var(--on-accent)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg><span>אלקטרוניקה תקבילית<small>סביבת למידה למבחן</small></span></a>'+
+    '<div class="oprog"><div class="row"><span>התקדמות בקורס</span><b>'+cp.pct+'%</b></div><div class="pbar"><span style="width:'+cp.pct+'%"></span></div><div class="row" style="margin-top:6px"><span>'+cp.c+'/'+cp.tot+' תשובות נכונות</span></div></div>'+
+    '<div class="qlinks">'+ql('#/','home','🏠','בית')+ql('#/f','f','Σ','נוסחאות')+ql('#/exam','exam','⏱️','סימולטור מבחן')+ql('#/calc','calc','🧮','מחשבון עבודה')+ql('#/q','q','🎲','תרגול מעורב',1)+'</div>'+
+    tree+
+    '<div class="sidefoot"><button type="button" class="pillbtn" id="themebtn"></button><button type="button" class="pillbtn" id="flowtog" aria-pressed="false" title="החלפת תצוגת הזרם"><i></i><span></span></button></div>';
+  bindSideButtons();
+}
+function refreshProgress(){sideHTML();document.querySelectorAll('[data-lp]').forEach(el=>{const p=lessonProg(+el.dataset.lp);el.style.width=p.pct+'%';});
+  document.querySelectorAll('[data-lpt]').forEach(el=>{el.textContent=lessonProg(+el.dataset.lpt).pct+'%';});
+  document.querySelectorAll('[data-tabdot]').forEach(el=>{const [n,k]=el.dataset.tabdot.split(':');el.hidden=!(visits()[n]||{})[k];});}
+/* theme */
+const THEMES=['auto','light','dark'],THN={auto:'ערכת צבע: אוטומטית',light:'ערכת צבע: בהירה',dark:'ערכת צבע: כהה'};
+let theme=store.get('theme','auto');
+function applyTheme(){if(theme==='auto')document.documentElement.removeAttribute('data-theme');else document.documentElement.setAttribute('data-theme',theme);const b=document.getElementById('themebtn');if(b)b.textContent=(theme==='dark'?'🌙 ':theme==='light'?'☀️ ':'🌓 ')+THN[theme];}
+function cycleTheme(){theme=THEMES[(THEMES.indexOf(theme)+1)%3];store.set('theme',theme);applyTheme();}
+function bindSideButtons(){
+  const b=document.getElementById('flowtog');
+  const upd=()=>{document.body.classList.toggle('electrons',electronMode);b.setAttribute('aria-pressed',electronMode?'true':'false');b.querySelector('span').textContent=electronMode?'זרימת אלקטרונים':'זרם קונבנציונלי';};
+  b.onclick=()=>{electronMode=!electronMode;store.set('electrons',electronMode);upd();};upd();
+  document.getElementById('themebtn').onclick=cycleTheme;applyTheme();
+  side.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>document.body.classList.remove('side-open')));
+}
+document.getElementById('themebtn2').onclick=cycleTheme;
+document.getElementById('menubtn').onclick=()=>document.body.classList.add('side-open');
+document.getElementById('scrim').onclick=()=>document.body.classList.remove('side-open');
+
+/* ---------- quick-reference drawer ---------- */
+const drawer=document.getElementById('drawer');
+function buildDrawer(){
+  const list=document.getElementById('dlist'),chips=document.getElementById('dchips');
+  const order=cur.n?[cur.n].concat(ORDER.filter(n=>n!==cur.n)):ORDER;
+  list.innerHTML=order.map(n=>'<div class="dg" id="dg-'+n+'"><h3>'+n+'. '+LESSONS[n].title+(n===cur.n?' · השיעור הנוכחי':'')+'</h3>'+LESSONS[n].formulas.map(f=>'<div class="dr" data-t="'+esc(strip(f[0]+' '+f[1]).toLowerCase())+'"><div class="dl">'+f[0]+'</div><div class="df">'+f[1]+'</div></div>').join('')+'</div>').join('');
+  chips.innerHTML='';order.forEach(n=>{const b=document.createElement('button');b.type='button';b.textContent=n+'. '+LESSONS[n].title;b.onclick=()=>document.getElementById('dg-'+n).scrollIntoView({block:'start'});chips.appendChild(b);});
+  document.getElementById('dsearch').value='';}
+function openDrawer(){buildDrawer();document.body.classList.add('drawer-open');drawer.setAttribute('aria-hidden','false');setTimeout(()=>document.getElementById('dsearch').focus(),60);}
+function closeDrawer(){document.body.classList.remove('drawer-open');drawer.setAttribute('aria-hidden','true');}
+document.getElementById('fab').onclick=openDrawer;document.getElementById('dclose').onclick=closeDrawer;document.getElementById('scrim2').onclick=closeDrawer;
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeDrawer();document.body.classList.remove('side-open');}});
+document.getElementById('dsearch').addEventListener('input',e=>{const q=e.target.value.trim().toLowerCase();
+  document.querySelectorAll('#dlist .dg').forEach(g=>{let any=false;g.querySelectorAll('.dr').forEach(r=>{const ok=!q||r.dataset.t.includes(q);r.hidden=!ok;any=any||ok;});g.hidden=!any;});});
+
+/* ---------- pages ---------- */
 const view=document.getElementById('view');
 const pages={};
-const ORDER=[1,2,3,4,5,6,7,8,9];
 function page(key,builder){
   Object.values(pages).forEach(p=>p.hidden=true);
   if(!pages[key]){const d=document.createElement('div');view.appendChild(d);pages[key]=d;builder(d);}
-  pages[key].hidden=false;
-  return pages[key];
+  pages[key].hidden=false;return pages[key];
 }
-function navMark(k){document.querySelectorAll('[data-nav]').forEach(a=>{if(a.dataset.nav===k)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});}
+function navMark(k){document.querySelectorAll('.tabbar [data-nav]').forEach(a=>{if(a.dataset.nav===k)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});}
 
+/* ---------- home ---------- */
 function buildHome(d){
-  const done=ORDER.reduce((s,n)=>s+lessonProgress(n).correct,0),tot=ORDER.reduce((s,n)=>s+lessonProgress(n).tot,0);
-  const groups=[['דיודות',[1,2]],['טרנזיסטורים',[3,4,5]],['מעגלים משולבים ומגברים',[6,7,8,9]]];
-  d.innerHTML='<div class="hero"><div class="herobox"><div><div class="kicker">LevelUp · 9 שיעורים · ללמוד דרך הידיים</div>'+
-    '<h1>מעבדת אלקטרוניקה תקבילית</h1><p class="sub">כל הקורס במקום אחד: מצומת PN ועד מגברי שרת. בכל שיעור יש מעגלים חיים שבהם רואים איך הזרם זורם, סקופים שמגיבים לכל סליידר, ושאלות תרגול עם הסבר מלא.</p>'+
-    '<div class="stats"><div class="stat"><b>9</b><span>שיעורים</span></div><div class="stat"><b id="h-sims">40+</b><span>הדמיות ומעגלים</span></div><div class="stat"><b id="h-score">'+done+'/'+tot+'</b><span>תשובות נכונות</span></div></div></div>'+
-    '<figure class="scope" style="margin:0"><div id="hero-c"></div><figcaption>'+lg('t1','זרם במיישר גשר: הזרם בעומס זורם תמיד באותו כיוון')+'</figcaption></figure></div></div>'+
-    groups.map(g=>'<div class="group-h">'+g[0]+'</div><div class="grid">'+g[1].map(n=>{const L=LESSONS[n];
-      return '<a class="card" href="#/l/'+n+'"><span class="num">'+String(n).padStart(2,'0')+'</span><h3>'+L.title+'</h3><p>'+L.sub+'</p><div class="prog" data-prog="'+n+'"><span style="width:0"></span></div><div class="meta"><span>'+L.topics+'</span><span>'+L.quiz.length+' שאלות</span></div></a>';}).join('')+'</div>').join('')+
+  const last=store.get('last',null);
+  d.innerHTML='<div class="hero"><div><div class="kicker">ZERO → HERO · 9 שיעורים · 5 שלבים בכל שיעור</div>'+
+    '<h1>מעבדת אלקטרוניקה תקבילית</h1><p class="sub">סביבת למידה אחת לכל הקורס: תיאוריה מאפס, מעגלים חיים, אלגוריתמים לפתרון, תרגילי מבחן פתורים שלב אחר שלב, ובוחן עם הסבר לכל מסיח.</p>'+
+    '<div class="stats"><div class="stat"><b id="h-pct">0%</b><span>התקדמות</span></div><div class="stat"><b id="h-score">0/0</b><span>תשובות נכונות</span></div><div class="stat"><b>40+</b><span>הדמיות</span></div></div>'+
+    '<div class="cta"><a class="btn solid" href="#/l/1">להתחיל משיעור 1</a><a class="btn line" href="#/exam">⏱️ סימולטור מבחן</a></div></div>'+
+    '<figure class="scope" style="margin:0"><div id="hero-c"></div><figcaption>'+lg('t1','מיישר גשר: הזרם בעומס זורם תמיד באותו כיוון')+'</figcaption></figure></div>'+
+    '<div id="h-resume"></div>'+
+    '<div class="tools"><a class="tool" href="#/exam"><span class="ic">⏱️</span><span><b>סימולטור מבחן</b><span>20 שאלות אקראיות, 60 דקות, דוח נושאים חלשים</span></span></a><a class="tool" href="#/calc"><span class="ic">🧮</span><span><b>מחשבון נקודת עבודה</b><span>MOSFET ו-BJT: DC, תחום מאומת ופרמטרי אות קטן</span></span></a><a class="tool" href="#/f"><span class="ic">Σ</span><span><b>דף נוסחאות</b><span>כל הנוסחאות ב-LaTeX, עם חיפוש והעתקה</span></span></a></div>'+
+    GROUPS.map(g=>'<div class="group-h">'+g[0]+'</div><div class="grid">'+g[1].map(n=>{const L=LESSONS[n];
+      return '<a class="card" href="#/l/'+n+'"><div style="display:flex;justify-content:space-between;align-items:center"><span class="num">'+String(n).padStart(2,'0')+'</span>'+(full(n)?'<span class="badge">5 שלבים מלאים</span>':'<span class="badge gray">מעבדה + בוחן</span>')+'</div><h3>'+L.title+'</h3><p>'+L.sub+'</p><div class="pbar"><span data-lp="'+n+'" style="width:0"></span></div><div class="meta"><span>'+L.topics+' · '+quizOf(n).length+' שאלות</span><span data-lpt="'+n+'">0%</span></div></a>';}).join('')+'</div>').join('')+
     '<footer>מבוסס על סיכומי LevelUp לקורס אלקטרוניקה תקבילית. V<sub>T</sub> = 25mV בכל החישובים. ההדמיות הן מודלים לימודיים ולא סימולציית SPICE.</footer>';
-  heroBridge();updateHomeProgress();
+  heroBridge();
 }
+function homeRefresh(){const cp=courseProg();const a=document.getElementById('h-pct'),b=document.getElementById('h-score');if(a)a.textContent=cp.pct+'%';if(b)b.textContent=cp.c+'/'+cp.tot;
+  const last=store.get('last',null),r=document.getElementById('h-resume');
+  if(r)r.innerHTML=last&&LESSONS[last.n]?'<div class="resume"><span class="ring" style="--p:'+lessonProg(last.n).pct+'"><i>'+last.n+'</i></span><div class="sp"><b>להמשיך מאיפה שעצרת</b><div class="muted" style="font-size:14px">שיעור '+last.n+': '+LESSONS[last.n].title+' · '+(TABS.find(t=>t.k===last.k)||TABS[0]).t+'</div></div><a class="btn solid" href="#/l/'+last.n+'/'+last.k+'">המשך ←</a></div>':'';}
 function heroBridge(){
   const C=Circuit('hero-c',420,230);
-  // bridge rectifier
-  const L=[40,115],top=[210,40],bot=[210,190],lft=[140,115],rgt=[280,115];
+  const top=[210,40],bot=[210,190],lft=[140,115],rgt=[280,115];
   C.V([40,150],[40,80],'v_s',{kind:'ac',side:1,off:26});
   C.w([40,80],[40,40],top).w([40,150],[40,190],bot);
   C.D(lft,top,'D4',{id:'d4',side:1}); C.D(top,rgt,'D1',{id:'d1',side:-1});
@@ -1904,26 +2541,82 @@ function heroBridge(){
     C.I('p',pos?a:0);C.I('n',neg?a:0);C.st('d1',pos?'on':'dim');C.st('d3',pos?'on':'dim');C.st('d2',neg?'on':'dim');C.st('d4',neg?'on':'dim');};
   C.tick(0.7);
 }
+
+/* ---------- lesson page with 5 tabs ---------- */
 function buildLesson(d,n){
   const L=LESSONS[n];
-  d.innerHTML='<div class="lhead"><div class="kicker">שיעור '+n+' מתוך 9</div><h1>'+L.title+'</h1><p class="sub">'+L.intro+'</p><div class="chips" id="chips-'+n+'"></div></div>';
-  const root=document.createElement('div');d.appendChild(root);
-  L.build(root);
-  const q=section(root,{id:'l'+n+'-quiz',tag:'תרגול',title:'בדוק את עצמך',short:'תרגול',lead:'שאלות בסגנון המבחן. לחץ על תשובה וקבל הסבר מלא. ההתקדמות נשמרת בדפדפן הזה.'});
-  quiz(q,n,L.quiz);
-  const i=ORDER.indexOf(n),prev=ORDER[i-1],next=ORDER[i+1];
-  const nav=document.createElement('div');nav.className='nextl';
-  nav.innerHTML=(prev?'<a class="btn" href="#/l/'+prev+'">→ שיעור '+prev+': '+LESSONS[prev].title+'</a>':'<span></span>')+(next?'<a class="btn solid" href="#/l/'+next+'">שיעור '+next+': '+LESSONS[next].title+' ←</a>':'<a class="btn solid" href="#/q">לתרגול המסכם ←</a>');
-  d.appendChild(nav);
-  const chips=document.getElementById('chips-'+n);
-  root.querySelectorAll('section.mod').forEach(s=>{const b=document.createElement('button');b.type='button';b.textContent=s.dataset.title.replace(/<[^>]+>/g,'');b.onclick=()=>s.scrollIntoView({behavior:reduced?'auto':'smooth'});chips.appendChild(b);});
+  d.innerHTML='<div class="lhead"><div class="kicker">שיעור '+n+' מתוך 9'+(full(n)?'':' · מעבדה ובוחן זמינים, שאר השלבים בהכנה')+'</div><h1>'+L.title+'</h1><p class="sub">'+L.intro+'</p></div>'+
+    '<div class="ltabs" role="tablist" aria-label="שלבי השיעור">'+TABS.map((t,i)=>'<button type="button" role="tab" id="tab-'+n+'-'+t.k+'" data-k="'+t.k+'" aria-selected="false" aria-controls="pn-'+n+'-'+t.k+'"><span>'+t.i+'</span><span>'+(i+1)+'. '+t.t+'</span><span class="dot" data-tabdot="'+n+':'+t.k+'" hidden></span></button>').join('')+'</div>'+
+    TABS.map(t=>'<div class="panel" role="tabpanel" tabindex="-1" id="pn-'+n+'-'+t.k+'" aria-labelledby="tab-'+n+'-'+t.k+'" hidden></div>').join('');
+  d.querySelectorAll('.ltabs button').forEach(b=>b.onclick=()=>{location.hash='#/l/'+n+'/'+b.dataset.k;});
+  d._built={};
 }
+function showTab(d,n,k,scrollTo){
+  const L=LESSONS[n];
+  d.querySelectorAll('.ltabs button').forEach(b=>{const on=b.dataset.k===k;b.setAttribute('aria-selected',on?'true':'false');if(on)b.scrollIntoView({block:'nearest',inline:'nearest'});});
+  TABS.forEach(t=>{document.getElementById('pn-'+n+'-'+t.k).hidden=t.k!==k;});
+  const p=document.getElementById('pn-'+n+'-'+k);
+  if(!d._built[k]){d._built[k]=1;BUILD[k](p,n);p.appendChild(pnav(n,k));}
+  markVisit(n,k);refreshProgress();
+  if(scrollTo){const el=document.getElementById(scrollTo);if(el)setTimeout(()=>el.scrollIntoView({behavior:reduced?'auto':'smooth',block:'start'}),60);}
+  kickLoop();
+}
+function pnav(n,k){const i=TABS.findIndex(t=>t.k===k),e=document.createElement('div');e.className='pnav';
+  const prev=i>0?'<a class="btn line" href="#/l/'+n+'/'+TABS[i-1].k+'">→ '+TABS[i-1].i+' '+TABS[i-1].s+'</a>':(n>1?'<a class="btn line" href="#/l/'+(n-1)+'/quiz">→ שיעור '+(n-1)+'</a>':'<span></span>');
+  const next=i<4?'<a class="btn solid" href="#/l/'+n+'/'+TABS[i+1].k+'">'+TABS[i+1].i+' '+TABS[i+1].s+' ←</a>':(n<9?'<a class="btn solid" href="#/l/'+(n+1)+'">שיעור '+(n+1)+': '+LESSONS[n+1].title+' ←</a>':'<a class="btn solid" href="#/exam">לסימולטור המבחן ←</a>');
+  e.innerHTML=prev+next;return e;}
+function soon(what,n){return '<div class="soon"><b>'+what+' לשיעור הזה בהכנה</b>בינתיים יש כאן את המעבדה המלאה והבוחן. המבנה זהה לשיעורים 1 ו-3, והתוכן יתווסף בעדכון הבא.<div class="cta" style="justify-content:center"><a class="btn" href="#/l/'+n+'/lab">🔬 למעבדה</a><a class="btn" href="#/l/1/'+(what.includes('אלגוריתם')?'algo':what.includes('פתורים')?'solved':'theory')+'">לדוגמה בשיעור 1</a></div></div>';}
+function bindGo(root){root.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{location.hash=b.dataset.go;});}
+const BUILD={
+theory(p,n){const C=CONTENT[n];
+  if(!C){p.innerHTML='<div class="th"><section class="th-sec"><h2><span class="sn">01</span>סקירה</h2><p>'+LESSONS[n].intro+'</p></section><section class="th-sec"><h2><span class="sn">02</span>הנוסחאות המרכזיות</h2>'+LESSONS[n].formulas.map(f=>F(f[0]+':',f[1])).join('')+'</section></div>'+soon('הסבר תיאורטי מורחב',n);wrapFx(p);return;}
+  p.innerHTML='<div class="th">'+C.theory.map((s,i)=>'<section class="th-sec"><h2><span class="sn">'+String(i+1).padStart(2,'0')+'</span>'+s.t+'</h2>'+s.h+'</section>').join('')+'</div>';
+  bindGo(p);typeset(p);},
+lab(p,n){const root=document.createElement('div');
+  p.innerHTML='<p class="lead" style="margin-top:10px">כל סליידר משנה את המעגל בזמן אמת. הנקודות הזזות הן הזרם (אפשר להחליף לזרימת אלקטרונים בתפריט). מתחת לכל מעבדה יש "מה לראות" והנוסחאות הרלוונטיות.</p><div class="chips" id="chips-'+n+'"></div>';
+  p.appendChild(root);LESSONS[n].build(root);
+  const chips=p.querySelector('#chips-'+n);
+  root.querySelectorAll('section.mod').forEach(s=>{const b=document.createElement('button');b.type='button';b.textContent=s.dataset.title.replace(/<[^>]+>/g,'');b.onclick=()=>s.scrollIntoView({behavior:reduced?'auto':'smooth'});chips.appendChild(b);});},
+algo(p,n){const C=CONTENT[n];if(!C){p.innerHTML=soon('אלגוריתם הפתרון',n);return;}
+  const A=C.algo;
+  p.innerHTML='<p class="lead" style="margin-top:10px">תרשימי זרימה ממוספרים לכל סוג שאלה. ◆ צהוב הוא נקודת בדיקה: שם מחליטים אם ממשיכים או חוזרים אחורה.</p><div class="legend">'+tg('dc','DC')+' ניתוח נקודת עבודה · '+tg('ac','AC')+' אות קטן · <span class="ok-t">✓</span> תקין · <span class="bad-t">✗</span> סתירה</div>'+
+  '<div class="flows">'+A.flows.map((f,fi)=>'<section class="flowc"><header><span class="badge">'+String.fromCharCode(1488+fi)+'</span><h2>'+f.t+'</h2>'+f.tags.map(x=>tg(x,x.toUpperCase())).join('')+'<p>'+f.p+'</p></header><ol class="fl">'+f.steps.map((s,i)=>'<li class="'+(s.chk?'chk':'')+'"><span class="bub"><b>'+(s.chk?'?':i+1)+'</b></span><div class="st">'+s.t+(s.tag?tg(s.tag,s.tag.toUpperCase()):'')+'</div><div class="dd">'+s.d+'</div></li>').join('')+'</ol></section>').join('')+
+  '<section class="flowc"><header><h2>⚠️ מלכודות מבחן נפוצות</h2><p>הטעויות שעולות הכי הרבה נקודות.</p></header><div class="gotchas">'+A.gotchas.map(g=>'<div class="gotcha"><b>'+g.t+'</b><p>'+g.d+'</p></div>').join('')+'</div></section>'+
+  '<section class="flowc"><header><h2>⚡ נוסחאות קיצור</h2></header><div class="tbl shortcuts"><table><tbody>'+A.shortcuts.map(s=>'<tr><td style="direction:ltr;text-align:left">'+s[0]+'</td><td>'+s[1]+'</td></tr>').join('')+'</tbody></table></div></section></div>';
+  typeset(p);},
+solved(p,n){const C=CONTENT[n];if(!C){p.innerHTML=soon('תרגילי מבחן פתורים',n);return;}
+  p.innerHTML='<p class="lead" style="margin-top:10px">נסה לפתור לבד, ואז חשוף שלב אחד בכל פעם. כל שלב נפתח רק אחרי הקודם, כמו במבחן.</p><div class="probs"></div>';
+  const host=p.querySelector('.probs');
+  C.solved.forEach((pr,pi)=>{const s=document.createElement('article');s.className='prob';const fid='fig-'+n+'-'+pi;
+    s.innerHTML='<header><span class="badge">תרגיל '+(pi+1)+'</span><h2>'+pr.t+'</h2>'+pr.tags.map(x=>tg(x,x.toUpperCase())).join(' ')+'<span class="badge gray">'+pr.lvl+'</span></header><div class="body">'+
+      (pr.fig?'<div class="fig" id="'+fid+'"></div>':'')+'<p class="stmt">'+pr.st+'</p><div class="given"><div><b>נתונים</b>'+pr.given+'</div><div><b>מבוקש</b>'+pr.ask+'</div></div>'+
+      '<div class="sbar"><button type="button" class="btn solid" data-a="next">הצג את השלב הבא</button><button type="button" class="btn line" data-a="all">הצג הכול</button><button type="button" class="btn" data-a="hide">הסתר</button><span class="cnt"></span></div><div class="steps">'+
+      pr.steps.map((st,i)=>'<div class="stp locked" data-open="false"><button type="button" aria-expanded="false"><span class="k">'+(i+1)+'</span><span>'+st.t+'</span><span class="chev">▾</span></button><div class="sb" hidden>'+st.b+'</div></div>').join('')+
+      '<div class="stp ans locked" data-open="false"><button type="button" aria-expanded="false"><span class="k">✓</span><span>תשובה סופית</span><span class="chev">▾</span></button><div class="sb" hidden>'+pr.ans+'</div></div></div></div>';
+    host.appendChild(s);
+    if(pr.fig){const Cc=Circuit(fid,pr.w||440,pr.h||240);pr.fig(Cc);}
+    const stps=[...s.querySelectorAll('.stp')],cnt=s.querySelector('.cnt');let shown=0;
+    const setOpen=(el,o)=>{el.dataset.open=o?'true':'false';el.querySelector('.sb').hidden=!o;el.querySelector('button').setAttribute('aria-expanded',o?'true':'false');};
+    const upd=()=>{stps.forEach((el,i)=>el.classList.toggle('locked',i>shown));cnt.textContent=Math.min(shown,stps.length)+' / '+stps.length;};
+    const reveal=k=>{for(let i=0;i<k&&i<stps.length;i++)setOpen(stps[i],true);shown=Math.max(shown,Math.min(k,stps.length));upd();};
+    stps.forEach((el,i)=>el.querySelector('button').onclick=()=>{if(i>shown)return;if(i===shown){reveal(i+1);return;}setOpen(el,el.dataset.open!=='true');});
+    s.querySelector('[data-a="next"]').onclick=()=>{reveal(shown+1);const el=stps[shown-1];if(el)el.scrollIntoView({block:'nearest',behavior:reduced?'auto':'smooth'});};
+    s.querySelector('[data-a="all"]').onclick=()=>reveal(stps.length);
+    s.querySelector('[data-a="hide"]').onclick=()=>{stps.forEach(el=>setOpen(el,false));shown=0;upd();};
+    upd();});
+  typeset(p);},
+quiz(p,n){const qs=quizOf(n);
+  p.innerHTML='<p class="lead" style="margin-top:10px">'+(full(n)?'שאלות בסגנון המבחן. אחרי כל תשובה מופיע הסבר למה היא נכונה, ולמה כל אחד מהמסיחים שגוי.':'שאלות בסגנון המבחן עם הסבר מלא. ההתקדמות נשמרת בדפדפן הזה.')+'</p>';
+  quiz2(p,n,qs,qKey(n));}
+};
+
+/* ---------- formula sheet (LaTeX) ---------- */
 function copyText(t,btn){const done=()=>{const o=btn.textContent;btn.textContent='הועתק ✓';setTimeout(()=>btn.textContent=o,1400);};
   const fb=()=>{const ta=document.createElement('textarea');ta.value=t;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');done();}catch(e){}ta.remove();};
   try{navigator.clipboard.writeText(t).then(done,fb);}catch(e){fb();}}
 function texDoc(){return FORMULAS.map(L=>'% ===== שיעור '+L.n+': '+L.title+' =====\n'+L.groups.map(g=>'% --- '+g.h+' ---\n'+g.items.map(i=>(i.l?'% '+i.l.replace(/<[^>]+>/g,'')+'\n':'')+'\\['+i.t+'\\]').join('\n')).join('\n')).join('\n\n');}
 function buildFormulas(d){
-  d.innerHTML='<div class="lhead"><div class="kicker">דף נוסחאות · LaTeX</div><h1>כל הנוסחאות של הקורס</h1><p class="sub">'+FORMULAS.reduce((a,L)=>a+L.groups.reduce((b,g)=>b+g.items.length,0),0)+' נוסחאות מ-9 השיעורים, כתובות בקוד LaTeX ומוצגות כנוסחה. ליד כל נוסחה יש כפתור להעתקת הקוד.</p>'+
+  d.innerHTML='<div class="lhead"><div class="kicker">דף נוסחאות · LaTeX</div><h1>כל הנוסחאות של הקורס</h1><p class="sub">'+FORMULAS.reduce((a,L)=>a+L.groups.reduce((b,g)=>b+g.items.length,0),0)+' נוסחאות מ-9 השיעורים. ליד כל נוסחה יש כפתור להעתקת קוד ה-LaTeX. גרסה מקוצרת פתוחה תמיד בכפתור Σ בפינה.</p>'+
     '<input class="search" id="fsearch" type="search" placeholder="חיפוש: זנר, CMRR, g_m, \\\\frac…" aria-label="חיפוש נוסחה">'+
     '<div class="presets" style="margin-top:10px"><button type="button" id="fcode">הצג קוד לכל הנוסחאות</button><button type="button" id="fall">העתק את כל הקוד</button></div>'+
     '<div class="chips" id="fchips"></div></div><div id="flist"></div>';
@@ -1939,34 +2632,201 @@ function buildFormulas(d){
   const ch=d.querySelector('#fchips');FORMULAS.forEach(L=>{const b=document.createElement('button');b.type='button';b.textContent=L.n+'. '+L.title;b.onclick=()=>document.getElementById('fl-'+L.n).scrollIntoView({behavior:reduced?'auto':'smooth'});ch.appendChild(b);});
   d.querySelector('#fsearch').addEventListener('input',e=>{const q=e.target.value.trim().toLowerCase();
     list.querySelectorAll('.fgroup').forEach(g=>{let any=false;g.querySelectorAll('.frow2').forEach(r=>{const ok=!q||r.dataset.t.includes(q);r.hidden=!ok;any=any||ok;});g.querySelectorAll('.fh').forEach(h=>{let n=h.nextElementSibling,vis=false;while(n&&n.classList.contains('frow2')){if(!n.hidden)vis=true;n=n.nextElementSibling;}h.hidden=!vis;});g.hidden=!any;});});
-  const typeset=()=>{if(window.MathJax&&MathJax.typesetPromise){MathJax.typesetPromise([list]).catch(()=>{});}else setTimeout(typeset,300);};typeset();
+  typeset(list);
 }
+
+/* ---------- mixed practice ---------- */
 function buildPractice(d){
-  d.innerHTML='<div class="lhead"><div class="kicker">תרגול מסכם</div><h1>12 שאלות מכל הקורס</h1><p class="sub">סט אקראי מכל השיעורים. אחרי שסיימת, לחץ על "סט חדש" לקבלת שאלות אחרות.</p><div class="presets" style="margin-top:12px"><button type="button" id="newset">סט חדש</button></div></div><div id="qhost"></div>';
+  d.innerHTML='<div class="lhead"><div class="kicker">תרגול מעורב</div><h1>12 שאלות מכל הקורס</h1><p class="sub">סט אקראי בלי שעון, עם הסבר מיידי. למבחן מלא עם טיימר ודוח עבור ל<a href="#/exam">סימולטור המבחן</a>.</p><div class="presets" style="margin-top:12px"><button type="button" id="newset">סט חדש</button></div></div><div id="qhost"></div>';
   const host=d.querySelector('#qhost');
-  const make=()=>{host.innerHTML='';const all=[];ORDER.forEach(n=>LESSONS[n].quiz.forEach(q=>all.push(Object.assign({},q,{q:'<span class="muted">[שיעור '+n+']</span> '+q.q}))));
+  const make=()=>{host.innerHTML='';const all=[];ORDER.forEach(n=>quizOf(n).forEach(q=>all.push(Object.assign({},q,{q:'<span class="muted">[שיעור '+n+']</span> '+q.q}))));
     for(let i=all.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[all[i],all[j]]=[all[j],all[i]];}
-    const p=store.get('quiz',{});delete p.Lmix;store.set('quiz',p);quiz(host,'mix',all.slice(0,12));};
+    const a=store.get('ans',{});delete a.mix;store.set('ans',a);quiz2(host,0,all.slice(0,12),'mix');};
   d.querySelector('#newset').onclick=make;make();
 }
+
+/* ---------- mock exam ---------- */
+const EXAM_N=20,EXAM_T=60*60;
+let examTimer=0;
+function buildExam(d){d.innerHTML='<div id="exhost"></div>';examRender();}
+function examState(){return store.get('exam',null);}
+function examRender(){
+  clearInterval(examTimer);const host=document.getElementById('exhost');if(!host)return;const S=examState();
+  if(!S)return examIntro(host);if(S.done)return examReport(host,S);return examRun(host,S);}
+function examIntro(host){
+  const hist=store.get('examHist',[]);
+  host.innerHTML='<div class="lhead"><div class="kicker">מצב מבחן</div><h1>סימולטור מבחן מסכם</h1><p class="sub">'+EXAM_N+' שאלות אקראיות מכל 9 השיעורים (לפחות שתיים מכל שיעור), 60 דקות. בזמן המבחן אין משוב. בסיום מקבלים ציון, פירוק לפי נושאים, רשימת נושאים חלשים וסקירה של כל שאלה עם ההסבר.</p></div>'+
+    '<div class="notes"><div class="note"><h3>כללים</h3><ul><li>אפשר לדלג, לחזור ולסמן שאלה לבדיקה חוזרת (🚩).</li><li>המבחן נשמר בדפדפן, כך שרענון הדף לא מאפס אותו.</li><li>כשהזמן נגמר, המבחן מוגש אוטומטית.</li></ul><div class="cta"><button type="button" class="btn solid" id="exstart">התחל מבחן ⏱️</button></div></div>'+
+    '<div class="note fx-box"><h3>מבחנים קודמים</h3>'+(hist.length?'<div class="hist">'+hist.slice(-8).reverse().map(h=>'<span class="pill '+(h.p>=80?'ok':h.p>=60?'warn':'bad')+'">'+h.p+'% · '+new Date(h.t).toLocaleDateString('he-IL')+'</span>').join('')+'</div>':'<p class="muted">עוד לא עשית מבחן. זה הזמן.</p>')+'</div></div>';
+  host.querySelector('#exstart').onclick=examStart;}
+function examStart(){
+  const by={};ORDER.forEach(n=>{by[n]=quizOf(n).map((q,i)=>[n,i]);for(let i=by[n].length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[by[n][i],by[n][j]]=[by[n][j],by[n][i]];}});
+  let ids=[];ORDER.forEach(n=>ids.push(...by[n].splice(0,2)));
+  const rest=[];ORDER.forEach(n=>rest.push(...by[n]));for(let i=rest.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[rest[i],rest[j]]=[rest[j],rest[i]];}
+  ids=ids.concat(rest.slice(0,EXAM_N-ids.length));for(let i=ids.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[ids[i],ids[j]]=[ids[j],ids[i]];}
+  store.set('exam',{ids,ans:{},flag:{},cur:0,start:Date.now(),done:false});examRender();}
+const fmtT=s=>{s=Math.max(0,Math.round(s));return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');};
+function examRun(host,S){
+  const left=()=>EXAM_T-(Date.now()-S.start)/1000;
+  if(left()<=0)return examFinish();
+  const q=i=>quizOf(S.ids[i][0])[S.ids[i][1]];
+  host.innerHTML='<div class="exhead"><span class="timer" id="extimer">'+fmtT(left())+'</span><div class="qgrid" id="exgrid"></div><span style="flex:1"></span><button type="button" class="btn solid" id="exsubmit">הגש מבחן</button></div><div id="exq"></div>';
+  const grid=host.querySelector('#exgrid'),qh=host.querySelector('#exq');
+  function drawGrid(){grid.innerHTML=S.ids.map((_,i)=>'<button type="button" class="'+(S.ans[i]!==undefined?'ans ':'')+(S.flag[i]?'flag ':'')+(i===S.cur?'cur':'')+'" data-i="'+i+'" aria-label="שאלה '+(i+1)+'">'+(i+1)+'</button>').join('');
+    grid.querySelectorAll('button').forEach(b=>b.onclick=()=>{S.cur=+b.dataset.i;save();drawQ();drawGrid();});}
+  function save(){store.set('exam',S);}
+  function drawQ(){const i=S.cur,Q=q(i),n=S.ids[i][0];
+    qh.innerHTML='<div class="q" style="margin-top:16px"><div class="qn"><span>שאלה '+(i+1)+' מתוך '+S.ids.length+'</span><span class="badge gray">שיעור '+n+' · '+LESSONS[n].title+'</span></div><p class="qt">'+Q.q+'</p><div class="opts">'+Q.o.map((o,j)=>'<button type="button" data-j="'+j+'" class="'+(S.ans[i]===j?'pick':'')+'"><span class="L">'+LET[j]+'</span><span>'+o+'</span></button>').join('')+'</div></div>'+
+      '<div class="pnav" style="margin-top:14px"><button type="button" class="btn line" id="exprev" '+(i===0?'disabled':'')+'>→ הקודמת</button><button type="button" class="btn" id="exflag">'+(S.flag[i]?'🚩 הסר סימון':'🚩 סמן לבדיקה')+'</button><button type="button" class="btn solid" id="exnext">'+(i===S.ids.length-1?'סיום וסקירה':'הבאה ←')+'</button></div>';
+    qh.querySelectorAll('.opts button').forEach(b=>b.onclick=()=>{S.ans[i]=+b.dataset.j;save();drawQ();drawGrid();});
+    qh.querySelector('#exprev').onclick=()=>{if(S.cur>0){S.cur--;save();drawQ();drawGrid();}};
+    qh.querySelector('#exnext').onclick=()=>{if(S.cur<S.ids.length-1){S.cur++;save();drawQ();drawGrid();}else confirmSubmit();};
+    qh.querySelector('#exflag').onclick=()=>{S.flag[i]=!S.flag[i];save();drawQ();drawGrid();};
+    typeset(qh);}
+  function confirmSubmit(){const un=S.ids.length-Object.keys(S.ans).length;const b=host.querySelector('#exsubmit');
+    if(un>0&&b.dataset.sure!=='1'){b.dataset.sure='1';b.textContent='יש '+un+' שאלות בלי תשובה. להגיש בכל זאת?';setTimeout(()=>{b.dataset.sure='';b.textContent='הגש מבחן';},4000);return;}examFinish();}
+  host.querySelector('#exsubmit').onclick=confirmSubmit;
+  drawGrid();drawQ();
+  const tEl=host.querySelector('#extimer');
+  examTimer=setInterval(()=>{const l=left();if(!document.body.contains(tEl)){clearInterval(examTimer);return;}tEl.textContent=fmtT(l);tEl.classList.toggle('low',l<300);if(l<=0){clearInterval(examTimer);examFinish();}},1000);
+}
+function examFinish(){const S=examState();if(!S)return;S.done=true;S.end=Math.min(Date.now(),S.start+EXAM_T*1000);
+  const c=S.ids.filter((id,i)=>S.ans[i]===quizOf(id[0])[id[1]].a).length;S.pct=Math.round(c/S.ids.length*100);
+  store.set('exam',S);const h=store.get('examHist',[]);h.push({p:S.pct,t:Date.now()});store.set('examHist',h.slice(-20));examRender();}
+function examReport(host,S){
+  const per={};S.ids.forEach((id,i)=>{const n=id[0];per[n]=per[n]||{c:0,t:0};per[n].t++;if(S.ans[i]===quizOf(n)[id[1]].a)per[n].c++;});
+  const c=S.ids.filter((id,i)=>S.ans[i]===quizOf(id[0])[id[1]].a).length,dur=(S.end-S.start)/1000;
+  const weak=Object.keys(per).filter(n=>per[n].c/per[n].t<0.6).map(Number);
+  const col=r=>r>=0.8?'var(--ok)':r>=0.6?'var(--warn)':'var(--bad)';
+  host.innerHTML='<div class="lhead"><div class="kicker">דוח מבחן</div><h1>התוצאה שלך</h1></div>'+
+    '<div class="bigscore"><span class="sc" style="color:'+col(c/S.ids.length)+'">'+S.pct+'%</span><div><b>'+c+' מתוך '+S.ids.length+' נכונות</b><div class="muted">זמן: '+fmtT(dur)+' מתוך 60:00 · '+(S.pct>=80?'מוכן למבחן בנושאים האלה':S.pct>=60?'בסיס טוב, יש מה לחזק':'כדאי לחזור על הנושאים החלשים')+'</div></div><span style="flex:1"></span><button type="button" class="btn solid" id="exagain">מבחן חדש</button></div>'+
+    '<div class="notes"><div class="note"><h3>פירוק לפי נושאים</h3><div class="tbars">'+ORDER.filter(n=>per[n]).map(n=>{const r=per[n].c/per[n].t;return '<div class="tbar"><span>'+n+'. '+LESSONS[n].title+'</span><span class="tb"><span style="width:'+(r*100)+'%;background:'+col(r)+'"></span></span><span class="v">'+per[n].c+'/'+per[n].t+'</span></div>';}).join('')+'</div></div>'+
+    '<div class="note fx-box"><h3>נושאים לחיזוק</h3>'+(weak.length?'<p>פחות מ-60% הצלחה. מומלץ לעבור על האלגוריתם ואז על הבוחן של השיעור:</p><div class="cta">'+weak.map(n=>'<a class="btn" href="#/l/'+n+'/'+(full(n)?'algo':'lab')+'">'+n+'. '+LESSONS[n].title+'</a>').join('')+'</div>':'<p>אין נושא מתחת ל-60%. כל הכבוד! נסה מבחן נוסף כדי לכסות שאלות אחרות.</p>')+'</div></div>'+
+    '<h2 style="margin-top:28px">סקירת שאלות</h2><div class="qgrid" id="rvgrid" style="margin:8px 0"></div><div class="quiz" id="rvlist"></div>';
+  host.querySelector('#exagain').onclick=()=>{store.set('exam',null);examRender();};
+  const g=host.querySelector('#rvgrid'),L=host.querySelector('#rvlist');
+  g.innerHTML=S.ids.map((id,i)=>{const ok=S.ans[i]===quizOf(id[0])[id[1]].a;return '<button type="button" class="'+(ok?'good':'badc')+'" data-i="'+i+'">'+(i+1)+'</button>';}).join('');
+  L.innerHTML=S.ids.map((id,i)=>{const Q=quizOf(id[0])[id[1]],j=S.ans[i];
+    return '<div class="q" id="rv-'+i+'"><div class="qn"><span>שאלה '+(i+1)+'</span><span class="badge gray">שיעור '+id[0]+'</span>'+(j===undefined?'<span class="badge gray">לא נענתה</span>':'')+'</div><p class="qt">'+Q.q+'</p><div class="opts">'+Q.o.map((o,k)=>'<button type="button" disabled class="'+(k===Q.a?'good':k===j?'badc':'')+'"><span class="L">'+LET[k]+'</span><span>'+o+'</span></button>').join('')+'</div><div class="ex"><p>'+(j===Q.a?'<b class="ok-t">נכון.</b> ':'<b class="bad-t">'+(j===undefined?'לא נענתה.':'לא נכון.')+'</b> ')+Q.e+'</p>'+(Q.x&&j!==undefined&&j!==Q.a&&Q.x[j]?'<p class="muted"><b>למה '+LET[j]+' שגויה:</b> '+Q.x[j]+'</p>':'')+'</div></div>';}).join('');
+  g.querySelectorAll('button').forEach(b=>b.onclick=()=>document.getElementById('rv-'+b.dataset.i).scrollIntoView({behavior:reduced?'auto':'smooth',block:'start'}));
+  typeset(L);refreshProgress();
+}
+
+/* ---------- operating-point calculator ---------- */
+const CALC_F={
+ nmos:[['VDD','V<sub>DD</sub> [V]',15],['bias','',0],['RG1','R<sub>G1</sub> (עליון) [kΩ]',2000],['RG2','R<sub>G2</sub> (תחתון) [kΩ]',1000],['VG','V<sub>G</sub> [V]',5],['RD','R<sub>D</sub> [kΩ]',5],['RS','R<sub>S</sub> [kΩ]',2],['Vt','V<sub>t</sub> [V]',1],['kn','k<sub>n</sub> = k\'<sub>n</sub>W/L [mA/V²]',1],['lam','λ [V⁻¹] (ל-r<sub>o</sub>)',0.01]],
+ pmos:[['VDD','V<sub>DD</sub> [V]',5],['bias','',0],['RG1','R<sub>G1</sub> (עליון) [kΩ]',1500],['RG2','R<sub>G2</sub> (תחתון) [kΩ]',1000],['VG','V<sub>G</sub> [V]',2],['RS','R<sub>S</sub> (ל-V<sub>DD</sub>) [kΩ]',0],['RD','R<sub>D</sub> (לאדמה) [kΩ]',2],['Vt','|V<sub>t</sub>| [V]',1],['kn','k<sub>p</sub> = k\'<sub>p</sub>W/L [mA/V²]',0.5],['lam','λ [V⁻¹] (ל-r<sub>o</sub>)',0.02]],
+ npn:[['VCC','V<sub>CC</sub> [V]',12],['bias','',0],['R1','R<sub>1</sub> (עליון) [kΩ]',68],['R2','R<sub>2</sub> (תחתון) [kΩ]',12],['VBB','V<sub>BB</sub> [V]',2],['RB','R<sub>B</sub> [kΩ]',10],['RC','R<sub>C</sub> [kΩ]',3.3],['RE','R<sub>E</sub> [kΩ]',1],['beta','β',100],['VBE','V<sub>BE</sub> [V]',0.7],['VCEs','V<sub>CE,sat</sub> [V]',0.2],['VA','V<sub>A</sub> [V] (0 = ∞)',100]]
+};
+function buildCalc(d){
+  d.innerHTML='<div class="lhead"><div class="kicker">כלי עזר</div><h1>מחשבון נקודת עבודה</h1><p class="sub">מזינים את ערכי המעגל ומקבלים מיד את נקודת העבודה ב-DC, את התחום המאומת ואת פרמטרי האות הקטן, יחד עם הפתרון צעד אחר צעד. טוב לבדיקת תשובות אחרי שפתרת לבד.</p></div>'+
+    '<div class="seg" id="cl-type" style="max-width:420px"><button type="button" data-v="nmos" aria-pressed="true">NMOS</button><button type="button" data-v="pmos" aria-pressed="false">PMOS</button><button type="button" data-v="npn" aria-pressed="false">BJT NPN</button></div>'+
+    '<div class="calc"><div class="controls"><div class="seg" id="cl-bias"><button type="button" data-v="div" aria-pressed="true">מחלק מתח</button><button type="button" data-v="dir" aria-pressed="false">מקור ישיר</button></div><div class="fields" id="cl-fields"></div><div class="presets"><button type="button" id="cl-ex">דוגמה מהשיעור</button></div></div>'+
+    '<div class="scopes"><div class="verdict" id="cl-verdict"></div><div id="cl-circ-host"></div><div class="readouts" id="cl-ro" style="margin-top:0"></div><div class="csteps"><h3>הפתרון צעד אחר צעד</h3><ol id="cl-steps"></ol></div></div></div>';
+  const V={};let type='nmos',bias='div';
+  const circs={};
+  function circuit(){const host=d.querySelector('#cl-circ-host');host.innerHTML='';const id='cl-circ-'+type+'-'+bias;host.innerHTML=circ(id,'<span>המעגל שמחושב</span>');
+    const C=Circuit(id,440,250);
+    if(type==='nmos'||type==='npn'){const bj=type==='npn';
+      if(bias==='div'){C.rail(150,20,bj?'V_{CC}':'V_{DD}');C.w([150,20],[150,32]);C.R([150,32],[150,122],bj?'R_1':'R_{G1}',{side:1,off:18});C.w([150,122],[150,140]);C.nd(150,140);C.R([150,140],[150,222],bj?'R_2':'R_{G2}',{side:1,off:18});C.G(150,222);}
+      else if(bj){C.V([90,222],[90,160],'V_{BB}',{side:-1,off:28});C.G(90,222);C.w([90,160],[90,140],[110,140]);C.R([110,140],[190,140],'R_B',{side:-1});C.w([190,140],[210,140]);}
+      else{C.V([150,222],[150,160],'V_G',{side:-1,off:28});C.G(150,222);C.w([150,160],[150,140]);}
+      C.rail(300,20,bj?'V_{CC}':'V_{DD}');C.w([300,20],[300,32]);C.R([300,32],[300,96],bj?'R_C':'R_D',{side:-1,off:18});C.w([300,96],[300,110]);
+      const t=bj?C.npn(290,140,{}):C.mos(290,140,{});C.w([300,170],[300,180]);C.R([300,180],[300,226],bj?'R_E':'R_S',{side:-1,off:18});C.G(300,226);
+      C.w(bj&&bias!=='div'?[210,140]:[150,140],bj?t.b:t.g);}
+    else{C.rail(300,20,'V_{DD}');C.w([300,20],[300,34]);C.R([300,34],[300,100],'R_S',{side:-1,off:18});C.w([300,100],[300,110]);const t=C.mos(290,140,{p:true});C.w([300,170],[300,180]);C.R([300,180],[300,226],'R_D',{side:-1,off:18});C.G(300,226);
+      if(bias==='div'){C.rail(150,20,'V_{DD}');C.w([150,20],[150,32]);C.R([150,32],[150,122],'R_{G1}',{side:1,off:18});C.w([150,122],[150,140]);C.nd(150,140);C.R([150,140],[150,222],'R_{G2}',{side:1,off:18});C.G(150,222);}
+      else{C.V([150,222],[150,160],'V_G',{side:-1,off:28});C.G(150,222);C.w([150,160],[150,140]);}
+      C.w([150,140],t.g);}
+  }
+  function fields(){const box=d.querySelector('#cl-fields');const F2=CALC_F[type];
+    box.innerHTML=F2.filter(f=>f[0]!=='bias').map(f=>'<div class="fld" data-f="'+f[0]+'"><label for="cf-'+f[0]+'">'+f[1]+'</label><input id="cf-'+f[0]+'" type="number" step="any" inputmode="decimal" value="'+(V[type+f[0]]!==undefined?V[type+f[0]]:f[2])+'"></div>').join('');
+    box.querySelectorAll('input').forEach(i=>i.addEventListener('input',()=>{V[type+i.id.slice(3)]=i.value;calc();}));
+    const hide=type==='npn'?(bias==='div'?['VBB','RB']:['R1','R2']):(bias==='div'?['VG']:['RG1','RG2']);
+    box.querySelectorAll('.fld').forEach(f=>f.classList.toggle('hide',hide.includes(f.dataset.f)));}
+  const g=k=>{const el=d.querySelector('#cf-'+k);const v=el?parseFloat(el.value):NaN;return isFinite(v)?v:0;};
+  const f3=(v,dg)=>isFinite(v)?(+v.toFixed(dg==null?3:dg)).toString():'∞';
+  function calc(){
+    const st=[],ro=[];let verdict='';
+    if(type==='npn'){
+      const VCC=g('VCC'),RC=g('RC')*1e3,RE=g('RE')*1e3,b=g('beta'),VBE=g('VBE'),VCEs=g('VCEs'),VA=g('VA');
+      let VBB,RB;if(bias==='div'){const R1=g('R1')*1e3,R2=g('R2')*1e3;VBB=VCC*R2/(R1+R2);RB=par(R1,R2);st.push('תבנין בבסיס: \\(V_{BB}=V_{CC}\\frac{R_2}{R_1+R_2}='+f3(VBB)+'\\text{V}\\), \\(R_B=R_1\\parallel R_2='+f3(RB/1e3)+'\\text{k}\\Omega\\).');}
+      else{VBB=g('VBB');RB=g('RB')*1e3;st.push('מקור בסיס ישיר: \\(V_{BB}='+f3(VBB)+'\\text{V}\\), \\(R_B='+f3(RB/1e3)+'\\text{k}\\Omega\\).');}
+      let mode,IB,IC,IE,VCE;
+      if(VBB<=VBE){mode='cut';IB=IC=IE=0;VCE=VCC;st.push('\\(V_{BB}\\le V_{BE}\\): צומת BE לא בממתח קדמי, ולכן <b>קטעון</b>. \\(I_C=0\\), \\(V_{CE}=V_{CC}\\).');}
+      else{IB=(VBB-VBE)/(RB+(b+1)*RE);IC=b*IB;IE=IB+IC;VCE=VCC-IC*RC-IE*RE;
+        st.push('הנחת פעיל קדמי. KVL בבסיס: \\(I_B=\\frac{V_{BB}-V_{BE}}{R_B+(\\beta+1)R_E}='+f3(IB*1e6,2)+'\\,\\mu\\text{A}\\).');
+        st.push('\\(I_C=\\beta I_B='+f3(IC*1e3)+'\\text{mA}\\), \\(I_E='+f3(IE*1e3)+'\\text{mA}\\).');
+        st.push('KVL בקולט: \\(V_{CE}=V_{CC}-I_CR_C-I_ER_E='+f3(VCE)+'\\text{V}\\).');
+        if(VCE>=VCEs){mode='act';st.push('בדיקה: \\(V_{CE}='+f3(VCE)+'\\ge V_{CE,sat}='+VCEs+'\\) ✓ <b>פעיל קדמי</b>.');}
+        else{mode='sat';const a11=RB+RE,a12=RE,b1=VBB-VBE,a21=RE,a22=RC+RE,b2=VCC-VCEs,det=a11*a22-a12*a21;IB=(b1*a22-a12*b2)/det;IC=(a11*b2-a21*b1)/det;IE=IB+IC;VCE=VCEs;
+          st.push('בדיקה: \\(V_{CE}\\lt V_{CE,sat}\\) ✗, ולכן <b>רוויה</b>. קובעים \\(V_{CE}='+VCEs+'\\text{V}\\) ופותרים שתי משוואות KVL: \\(I_B='+f3(IB*1e6,2)+'\\mu\\text{A}\\), \\(I_C='+f3(IC*1e3)+'\\text{mA}\\), \\(\\beta_{forced}='+f3(IC/IB,1)+'\\lt\\beta\\).');}}
+      const names={cut:pill('קטעון','bad'),act:pill('פעיל קדמי','ok'),sat:pill('רוויה','warn')};
+      verdict=names[mode]+'<span>'+(mode==='act'?'מתאים למגבר: אפשר לעבור לאות קטן.':mode==='sat'?'הטרנזיסטור כמתג סגור. כדי לחזור לפעיל: הגדל R<sub>B</sub> או הקטן R<sub>C</sub>.':'אין הולכה: V<sub>BB</sub> נמוך מדי.')+'</span>';
+      const gm=IC/VT,rpi=b/gm,re=(b/(b+1))/gm,ro_=VA>0?VA/IC:Infinity;
+      ro.push(['I<sub>B</sub>',si(IB,'A')],['I<sub>C</sub>',si(IC,'A')],['I<sub>E</sub>',si(IE,'A')],['V<sub>CE</sub>',fx(VCE,3)+' V'],['V<sub>E</sub> / V<sub>C</sub>',fx(IE*RE,2)+' / '+fx(VCC-IC*RC,2)+' V']);
+      if(mode==='act'){ro.push(['g<sub>m</sub> = I<sub>C</sub>/V<sub>T</sub>',si(gm,'S')],['r<sub>π</sub> = β/g<sub>m</sub>',si(rpi,'Ω')],['r<sub>e</sub> = α/g<sub>m</sub>',si(re,'Ω')],['r<sub>o</sub> = V<sub>A</sub>/I<sub>C</sub>',si(ro_,'Ω')]);
+        st.push('אות קטן: \\(g_m=\\frac{I_C}{V_T}='+f3(gm*1e3,2)+'\\,\\text{mA/V}\\), \\(r_\\pi=\\frac{\\beta}{g_m}='+f3(rpi/1e3,3)+'\\text{k}\\Omega\\), \\(r_e='+f3(re,1)+'\\Omega\\)'+(isFinite(ro_)?', \\(r_o='+f3(ro_/1e3,1)+'\\text{k}\\Omega\\)':'')+'.');}
+    } else {
+      const P=type==='pmos',VDD=g('VDD'),RD=g('RD')*1e3,RS=g('RS')*1e3,Vt=Math.abs(g('Vt')),kn=g('kn')*1e-3,lam=g('lam');
+      let VG;if(bias==='div'){const R1=g('RG1')*1e3,R2=g('RG2')*1e3;VG=VDD*R2/(R1+R2);st.push('\\(i_G=0\\), מחלק מתח לא מועמס: \\(V_G=V_{DD}\\frac{R_{G2}}{R_{G1}+R_{G2}}='+f3(VG)+'\\text{V}\\).');}else{VG=g('VG');st.push('מתח שער נתון: \\(V_G='+f3(VG)+'\\text{V}\\).');}
+      const Veff=P?VDD-VG:VG,drv=Veff-Vt; // effective gate drive relative to source rail
+      const sv=P?'V_{SG}':'V_{GS}',dv=P?'V_{SD}':'V_{DS}';
+      let reg,ID,VOV,VDS;
+      if(drv<=0){reg='cut';ID=0;VOV=drv;VDS=VDD;st.push('\\('+sv+'\\le|V_t|\\) גם בלי זרם, ולכן <b>קטעון</b>: \\(I_D=0\\).');}
+      else{
+        if(RS===0){VOV=drv;st.push('\\(R_S=0\\), ולכן \\('+sv+'='+f3(Veff)+'\\text{V}\\) ו-\\(V_{OV}='+f3(VOV)+'\\text{V}\\).');}
+        else{const a=0.5*kn*RS;VOV=(-1+Math.sqrt(1+4*a*drv))/(2*a);const other=(-1-Math.sqrt(1+4*a*drv))/(2*a);
+          st.push('הנחת רוויה. \\('+sv+'='+(P?'V_{DD}-V_G-I_DR_S':'V_G-I_DR_S')+'\\) עם \\(I_D=\\tfrac12k V_{OV}^2\\) נותן \\('+f3(a*1e0,4)+'V_{OV}^2+V_{OV}-'+f3(drv)+'=0\\).');
+          st.push('שורשים: \\(V_{OV}='+f3(VOV)+'\\) או \\('+f3(other)+'\\). השלילי פסול (קטעון), ולכן \\(V_{OV}='+f3(VOV)+'\\text{V}\\).');}
+        ID=0.5*kn*VOV*VOV;VDS=VDD-ID*(RD+RS);
+        st.push('\\(I_D=\\tfrac12kV_{OV}^2='+f3(ID*1e3)+'\\text{mA}\\), \\('+dv+'=V_{DD}-I_D(R_D+R_S)='+f3(VDS)+'\\text{V}\\).');
+        if(VDS>=VOV){reg='sat';st.push('בדיקה: \\('+dv+'='+f3(VDS)+'\\ge V_{OV}='+f3(VOV)+'\\) ✓ <b>רוויה</b>.');}
+        else{reg='tri';
+          const f=I=>{const vgs=Veff-I*RS,vov=vgs-Vt,vds=VDD-I*(RD+RS);return kn*(vov*vds-0.5*vds*vds)-I;};
+          const Imax=VDD/(RD+RS||1e-9);let lo=null,hi=null,prev=f(1e-12),pI=1e-12;const N=4000;
+          for(let i=1;i<=N;i++){const I=Imax*i/N,v=f(I);const vds=VDD-I*(RD+RS),vov=Veff-I*RS-Vt;if(vds<vov&&vov>0&&vds>=0&&(prev>0)!==(v>0)){lo=pI;hi=I;break;}prev=v;pI=I;}
+          if(lo!=null){for(let k=0;k<80;k++){const m=(lo+hi)/2;if((f(lo)>0)===(f(m)>0))lo=m;else hi=m;}ID=(lo+hi)/2;}else{ID=Imax;}
+          VDS=VDD-ID*(RD+RS);VOV=Veff-ID*RS-Vt;
+          st.push('בדיקה: \\('+dv+'\\lt V_{OV}\\) ✗, ולכן <b>טריודה</b>. פותרים \\(I_D=k\\left(V_{OV}'+dv+'-\\tfrac12'+dv+'^2\\right)\\) יחד עם KVL: \\(I_D='+f3(ID*1e3)+'\\text{mA}\\), \\('+dv+'='+f3(VDS)+'\\text{V}\\).');}}
+      const names={cut:pill('קטעון','bad'),sat:pill('רוויה','ok'),tri:pill('טריודה','warn')};
+      verdict=names[reg]+'<span>'+(reg==='sat'?'מתאים למגבר: מקור זרם שנשלט במתח.':reg==='tri'?'הטרנזיסטור מתנהג כנגד (מתג סגור). להחזרה לרוויה: הקטן R<sub>D</sub> או את '+(P?'V<sub>SG</sub>':'V<sub>GS</sub>')+'.':'אין תעלה: מתח השער קטן מ-V<sub>t</sub>.')+'</span>';
+      const VS=P?VDD-ID*RS:ID*RS,VD=P?ID*RD:VDD-ID*RD;
+      ro.push(['I<sub>D</sub>',si(ID,'A')],[P?'V<sub>SG</sub>':'V<sub>GS</sub>',fx(Veff-ID*RS,3)+' V'],['V<sub>OV</sub>',fx(VOV,3)+' V'],[P?'V<sub>SD</sub>':'V<sub>DS</sub>',fx(VDS,3)+' V'],['V<sub>G</sub> / V<sub>S</sub> / V<sub>D</sub>',fx(VG,2)+' / '+fx(VS,2)+' / '+fx(VD,2)+' V']);
+      if(reg==='sat'){const gm=2*ID/VOV,ro_=lam>0?1/(lam*ID):Infinity;ro.push(['g<sub>m</sub> = 2I<sub>D</sub>/V<sub>OV</sub>',si(gm,'S')],['r<sub>o</sub> = 1/λI<sub>D</sub>',si(ro_,'Ω')],['g<sub>m</sub>r<sub>o</sub>',isFinite(ro_)?(gm*ro_).toFixed(0):'∞']);
+        st.push('אות קטן: \\(g_m=\\frac{2I_D}{V_{OV}}='+f3(gm*1e3)+'\\,\\text{mA/V}\\)'+(isFinite(ro_)?', \\(r_o=\\frac1{\\lambda I_D}='+f3(ro_/1e3,1)+'\\text{k}\\Omega\\)':'')+'.');}
+      else if(reg==='tri'&&VDS>0)ro.push(['r<sub>DS</sub> ≈ V<sub>DS</sub>/I<sub>D</sub>',si(VDS/ID,'Ω')]);
+    }
+    d.querySelector('#cl-verdict').innerHTML='<b>התחום המאומת:</b> '+verdict;
+    readouts('cl-ro',ro);const ol=d.querySelector('#cl-steps');ol.innerHTML=st.map(s=>'<li>'+s+'</li>').join('');typeset(ol);
+  }
+  const EX={nmos:{VDD:15,RG1:2000,RG2:1000,RD:5,RS:2,Vt:1,kn:1,lam:0.01},pmos:{VDD:5,RG1:1500,RG2:1000,RS:0,RD:2,Vt:1,kn:0.5,lam:0.02},npn:{VCC:12,R1:68,R2:12,RC:3.3,RE:1,beta:100,VBE:0.7,VCEs:0.2,VA:100}};
+  d.querySelector('#cl-ex').onclick=()=>{bias='div';d.querySelectorAll('#cl-bias button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v==='div'?'true':'false'));Object.keys(EX[type]).forEach(k=>V[type+k]=EX[type][k]);fields();circuit();calc();};
+  seg('cl-type',v=>{type=v;fields();circuit();calc();});
+  seg('cl-bias',v=>{bias=v;fields();circuit();calc();});
+  fields();circuit();calc();
+}
+
+/* ---------- router ---------- */
 function route(){
   const h=location.hash||'#/';let m;
-  if((m=h.match(/^#\/l\/(\d)/))&&LESSONS[+m[1]]){const n=+m[1];page('l'+n,d=>buildLesson(d,n));navMark('home');}
-  else if(h.startsWith('#/f')){page('f',buildFormulas);navMark('f');}
-  else if(h.startsWith('#/q')){page('q',buildPractice);navMark('q');}
-  else{page('home',buildHome);navMark('home');updateHomeProgress();const s=document.getElementById('h-score');if(s){const c=ORDER.reduce((a,n)=>a+lessonProgress(n).correct,0),t=ORDER.reduce((a,n)=>a+lessonProgress(n).tot,0);s.textContent=c+'/'+t;}}
-  window.scrollTo(0,0);kickLoop();
+  closeDrawer();
+  if((m=h.match(/^#\/l\/(\d)(?:\/(\w+))?(?:\/([\w-]+))?/))&&LESSONS[+m[1]]){
+    const n=+m[1],k=TABS.some(t=>t.k===m[2])?m[2]:'theory';
+    cur={page:'l',n,tab:k};const d=page('l'+n,d=>buildLesson(d,n));showTab(d,n,k,m[3]);navMark('home');
+    document.getElementById('mtitle').textContent=n+'. '+LESSONS[n].title;
+    if(!m[3])window.scrollTo(0,0);kickLoop();return;}
+  if(h.startsWith('#/f')){cur={page:'f',n:0,tab:''};page('f',buildFormulas);navMark('f');document.getElementById('mtitle').textContent='דף נוסחאות';}
+  else if(h.startsWith('#/exam')){cur={page:'exam',n:0,tab:''};const p=page('exam',buildExam);if(p._init)examRender();p._init=1;navMark('exam');document.getElementById('mtitle').textContent='סימולטור מבחן';}
+  else if(h.startsWith('#/calc')){cur={page:'calc',n:0,tab:''};page('calc',buildCalc);navMark('calc');document.getElementById('mtitle').textContent='מחשבון נקודת עבודה';}
+  else if(h.startsWith('#/q')){cur={page:'q',n:0,tab:''};page('q',buildPractice);navMark('');document.getElementById('mtitle').textContent='תרגול מעורב';}
+  else{cur={page:'home',n:0,tab:''};page('home',buildHome);navMark('home');homeRefresh();document.getElementById('mtitle').textContent='אלקטרוניקה תקבילית';}
+  refreshProgress();window.scrollTo(0,0);kickLoop();
 }
 window.addEventListener('hashchange',route);
-(function(){
-  const b=document.getElementById('flowtog');
-  const upd=()=>{document.body.classList.toggle('electrons',electronMode);b.setAttribute('aria-pressed',electronMode?'true':'false');b.querySelector('span').textContent=electronMode?'זרימת אלקטרונים':'זרם קונבנציונלי';};
-  b.addEventListener('click',()=>{electronMode=!electronMode;store.set('electrons',electronMode);upd();});upd();
-})();
-route();
+applyTheme();route();
 
 })();
 </script>
-
 </body>
 </html>
