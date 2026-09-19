@@ -425,6 +425,26 @@ body.drawer-open .scrim2{display:block}
 .csteps li{margin-bottom:7px}
 .verdict{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
 footer{padding-block:28px 0;color:var(--muted);font-size:13.5px}
+/* ---- read aloud ---- */
+.spk{display:inline-flex;align-items:center;gap:5px;vertical-align:middle;margin-inline-start:10px;
+  font:600 12px/1 var(--display);color:var(--muted);background:var(--surface);border:1px solid var(--line);
+  border-radius:999px;padding:5px 10px;cursor:pointer;transition:color .15s,border-color .15s,background .15s}
+.spk svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.spk svg path:first-child{fill:currentColor;stroke-width:1}
+.spk:hover{color:var(--accent);border-color:var(--accent)}
+.spk.on{color:var(--on-accent);background:var(--accent);border-color:var(--accent)}
+.spk.on svg .w1{animation:spkw .9s ease-in-out infinite}
+.spk.on svg .w2{animation:spkw .9s ease-in-out .15s infinite}
+@keyframes spkw{0%,100%{opacity:.25}50%{opacity:1}}
+h2 .spk,h3 .spk,.qn .spk,header .spk{font-weight:600}
+.lhead .spk{margin-inline-start:0;margin-top:12px}
+.q .qn .spk{margin-inline-start:auto}
+.sp-now{background:var(--accent-soft);box-shadow:0 0 0 6px var(--accent-soft);border-radius:4px;transition:background .2s}
+.spk-msg{flex-basis:100%;margin-top:8px;font:500 12.5px/1.5 var(--body);color:var(--warn);
+  background:var(--surface2);border:1px solid var(--line);border-radius:10px;padding:8px 11px}
+:root[data-tts="off"] .spk{display:none}
+@media (prefers-reduced-motion:reduce){.spk.on svg .w1,.spk.on svg .w2{animation:none}}
+
 </style>
 
 </head>
@@ -600,6 +620,338 @@ function presets(map){Object.keys(map).forEach(k=>{const b=document.querySelecto
 function wrapFx(root){root.querySelectorAll('.fx').forEach(el=>{if(el.querySelector('.f'))return;const f=document.createElement('span');f.className='f';
   [...el.childNodes].forEach(n=>{if(!(n.nodeType===1&&n.classList.contains('c')))f.appendChild(n);});el.appendChild(f);});}
 
+/* ---------- read aloud: LaTeX/HTML -> spoken Hebrew ---------- */
+const TTS=(function(){
+const SYN=window.speechSynthesis;
+const OK=!!(SYN&&window.SpeechSynthesisUtterance);
+const CHROMEY=/Chrome|CriOS|Edg/.test(navigator.userAgent);
+let voice=null,rate=store.get('ttsRate',1),enabled=store.get('ttsOn',true);
+let job=null,keep=0,uid=0;
+
+/* ---- lexicon ---- */
+const LTR={A:'איי',B:'בי',C:'סי',D:'די',E:'אי',F:'אף',G:"ג'י",H:"אייצ'",I:'איי',J:"ג'יי",K:'קיי',L:'אל',M:'אם',N:'אן',O:'או',P:'פי',Q:'קיו',R:'אר',S:'אס',T:'טי',U:'יו',V:'וי',W:'דאבליו',X:'אקס',Y:'וואי',Z:'זד'};
+const GRK={alpha:'אלפא',beta:'ביתא',gamma:'גמא',Gamma:'גמא',delta:'דלתא',Delta:'דלתא',epsilon:'אפסילון',varepsilon:'אפסילון',zeta:'זטא',eta:'אטא',theta:'תטא',Theta:'תטא',kappa:'קאפא',lambda:'למדא',Lambda:'למדא',mu:'מיקרו',nu:'נו',xi:'קסי',rho:'רו',sigma:'סיגמא',Sigma:'סכום',tau:'טאו',phi:'פי',Phi:'פי',varphi:'פי',chi:'חי',psi:'פסי',omega:'אומגה',Omega:'אוהם'};
+/* whole tokens, keyed base_sub (no braces) */
+const VAR={
+ 'V_T':'וי טי','V_GS':"וי ג'י אס",'V_DS':'וי די אס','V_SD':'וי אס די','V_SG':"וי אס ג'י",'V_OV':'וי או וי','V_CE':'וי סי אי','V_EC':'וי אי סי','V_BE':'וי בי אי','V_EB':'וי אי בי','V_CB':'וי סי בי','V_BC':'וי בי סי','V_CC':'וי סי סי','V_DD':'וי די די','V_SS':'וי אס אס','V_EE':'וי אי אי','V_BB':'וי בי בי','V_SB':'וי אס בי','V_CM':'וי סי אם','V_A':'מתח ארלי','V_Z':'וי זד','V_D':'וי די','V_S':'וי אס','V_P':'וי פי','V_r':'מתח הגלית',
+ 'I_D':'איי די','I_C':'איי סי','I_B':'איי בי','I_E':'איי אי','I_S':'איי אס','I_Z':'איי זד','I_L':'זרם העומס','I_REF':'זרם הייחוס','I_o':'איי או',
+ 'g_m':"ג'י אם",'r_o':'אר או','r_0':'אר או','r_e':'אר אי','r_d':'אר די','r_s':'אר אס','r_Z':'אר זד','r_pi':'אר פאי','r_DS':'אר די אס',
+ 'R_in':'התנגדות הכניסה','R_out':'התנגדות המוצא','R_L':'אר אל','R_D':'אר די','R_S':'אר אס','R_C':'אר סי','R_E':'אר אי','R_G':"אר ג'י",'R_B':'אר בי','R_f':'אר אף','R_id':'אר איי די','R_SS':'אר אס אס','R_EE':'אר אי אי','R_o':'אר או','R_i':'אר איי',
+ 'v_in':'מתח הכניסה','v_out':'מתח המוצא','V_in':'מתח הכניסה','V_out':'מתח המוצא','v_id':'המתח ההפרשי','v_o':'וי או','v_i':'וי איי','v_s':'וי אס','v_d':'וי די','v_gs':"וי ג'י אס",'v_ds':'וי די אס','v_be':'וי בי אי','v_D':'וי די','v_S':'וי אס',
+ 'A_v':'איי וי','A_V':'איי וי','A_d':'ההגבר ההפרשי','A_CM':'ההגבר המשותף','A_f':'איי אף','A_i':'איי איי','A_z':'איי זד','A_OL':'איי או אל','A_vo':'איי וי או','G_v':"ג'י וי",'G_m':"ג'י אם",
+ 'k_n':'קיי אן','k_p':'קיי פי','K_n':'קיי אן','C_ox':'סי או אקס','W_L':'דאבליו חלקי אל','N_P':'אן פי','N_S':'אן אס','P_Z':'פי זד','Z_f':'זד אף'};
+const SUB={'in':'כניסה','out':'מוצא','max':'מקסימלי','min':'מינימלי','sat':'רוויה','ref':'ייחוס','REF':'ייחוס','rms':'אר אם אס','RMS':'אר אם אס','dc':'די סי','DC':'די סי','ac':'איי סי','AC':'איי סי','th':'סף','peak':'שיא','sig':'מקור','eff':'אפקטיבי','tot':'כולל','se':'חד צדדי','diff':'הפרשי','CM':'משותף','OL':'לולאה פתוחה'};
+const TXT={V:'וולט',mV:'מיליוולט',kV:'קילווולט',A:'אמפר',mA:'מיליאמפר',uA:'מיקרואמפר',k:'קילו',M:'מגה',m:'מילי',n:'ננו',p:'פיקו',u:'מיקרו',F:'פאראד',uF:'מיקרופאראד',nF:'ננופאראד',pF:'פיקופאראד',Hz:'הרץ',kHz:'קילוהרץ',W:'ואט',mW:'מיליוואט',s:'שניות',ms:'מילישניות',short:'קצר',open:'נתק',sat:'רוויה',ON:'מוליכה',OFF:'סגורה',negative:'שלילי',positive:'חיובי',bridge:'גשר'};
+const UNI={V:'וולט',A:'אמפר',F:'פאראד',Hz:'הרץ',W:'ואט',s:'שניות','\u03a9':'אוהם',dB:'דציבל'};
+const PRE={k:'קילו',K:'קילו',M:'מגה',G:'ג\'יגה',m:'מילי',u:'מיקרו','\u00b5':'מיקרו','\u03bc':'מיקרו',n:'ננו',p:'פיקו'};
+const PROSE={MOSFET:'מוספט',MOSFETs:'מוספטים',BJT:"בי ג'יי טי",NMOS:'אן מוס',PMOS:'פי מוס',CMOS:'סי מוס',PN:'פי אן',NPN:'אן פי אן',PNP:'פי אן פי',CMRR:'סי אם אר אר',PIV:'פי איי וי',KCL:'קיי סי אל',KVL:'קיי וי אל',DC:'די סי',AC:'איי סי',RMS:'אר אם אס',LED:'לד',IV:'איי וי',CS:'סי אס',CG:"סי ג'י",CD:'סי די',CE:'סי אי',CB:'סי בי',CC:'סי סי',OP:'או פי',AMP:'אמפ',dB:'דציבל',Early:'ארלי',Wilson:'וילסון',Widlar:'וידלר'};
+
+/* ---- LaTeX -> Hebrew ---- */
+function letters(w){return String(w).split('').map(c=>LTR[c.toUpperCase()]||c).join(' ');}
+function subSay(x){
+  x=String(x).trim();
+  if(x.indexOf(',')>0&&x.indexOf('{')<0)return x.split(',').map(subSay).join(' ');
+  const g=x.replace(/^\\/,'');
+  if(SUB[g])return SUB[g];
+  if(GRK[g]&&/^\\[a-zA-Z]+$/.test(x))return GRK[g];
+  if(/^\d+$/.test(x))return x;
+  if(/^[A-Za-z]+\d*$/.test(x))return letters(x.replace(/\d+$/,''))+(/\d+$/.test(x)?' '+x.match(/\d+$/)[0]:'');
+  return texSay(x);
+}
+function baseSay(b){
+  if(b.charAt(0)==='\\'){const g=b.slice(1);return GRK[g]||g;}
+  return LTR[b.toUpperCase()]||b;
+}
+function powSay(p){
+  p=String(p);
+  if(p==='2')return 'בריבוע';
+  if(p==='3')return 'בשלישית';
+  return 'בחזקת '+subSay(p);
+}
+const OPS={'=':' שווה ','+':' ועוד ','<':' קטן מ ','>':' גדול מ ',',':', ','(':' ',')':' ','[':' ',']':' ','|':' קו '};
+const CMD={cdot:' כפול ',times:' כפול ',div:' חלקי ',parallel:' במקביל ל ',approx:' בערך ',sim:' בערך ',
+ le:' קטן או שווה ל ',leq:' קטן או שווה ל ',ge:' גדול או שווה ל ',geq:' גדול או שווה ל ',lt:' קטן מ ',gt:' גדול מ ',
+ ne:' שונה מ ',neq:' שונה מ ',gg:' הרבה יותר גדול מ ',ll:' הרבה יותר קטן מ ',
+ pm:' פלוס מינוס ',mp:' מינוס פלוס ',to:' שואף ל ',rightarrow:' שואף ל ',longrightarrow:' שואף ל ',
+ Rightarrow:' ולכן ',Leftrightarrow:' אם ורק אם ',iff:' אם ורק אם ',implies:' ולכן ',
+ infty:' אינסוף ',ln:' לן של ',log:' לוג של ',exp:' אי בחזקת ',sin:' סינוס ',cos:' קוסינוס ',tan:' טנגנס ',
+ lim:' הגבול של ',int:' אינטגרל של ',sum:' הסכום של ',dots:' ועוד ',ldots:' ועוד ',cdots:' ועוד ',
+ max:' מקסימלי ',min:' מינימלי ',checkmark:' תקין ',
+ quad:', ',qquad:', ',',':' ',';':' ','!':'',':':' ','%':' אחוז ','&':' כאשר ','\\':', '};
+const DROP=/^(left|right|displaystyle|limits|mathrm|mathbf|bm|boldsymbol|nolimits|big|Big|bigg|Bigg|,|;|!|:)$/;
+
+function texSay(src){
+  const s=String(src)
+    .replace(/\\left\s*\./g,'').replace(/\\right\s*\./g,'')
+    .replace(/\\right\s*\|\s*_\{([^{}]*)\}/g,' \\evalat{$1} ')
+    .replace(/\\right\s*\|\s*_([A-Za-z0-9]+)/g,' \\evalat{$1} ')
+    .replace(/\\left\s*\|/g,'\\abs{').replace(/\\right\s*\|/g,'}')
+    .replace(/\|([^|{}]{1,40})\|/g,'\\abs{$1}');
+  let i=0,out='';
+  function grp(){
+    while(s[i]===' ')i++;
+    if(s[i]==='{'){let d=0,st=++i;while(i<s.length){if(s[i]==='{')d++;else if(s[i]==='}'){if(!d)break;d--;}i++;}const c=s.slice(st,i);i++;return c;}
+    if(s[i]==='\\'){const m=/^\\[a-zA-Z]+/.exec(s.slice(i));if(m){i+=m[0].length;return m[0];}i++;return s[i-1];}
+    return s[i++]||'';
+  }
+  function tail(name){ /* attach _sub and ^pow that follow */
+    let sub='',pow='';
+    for(let g=0;g<2;g++){
+      while(s[i]===' ')i++;
+      if(s[i]==='_'){i++;sub=grp();}
+      else if(s[i]==='^'){i++;pow=grp();}
+      else break;
+    }
+    return {sub,pow};
+  }
+  while(i<s.length){
+    const c=s[i];
+    if(c==='\\'){
+      const m=/^\\([a-zA-Z]+)/.exec(s.slice(i));
+      if(!m){ // \\ , \, etc
+        const two=s.substr(i,2);i+=2;
+        out+=(CMD[two[1]]!==undefined?CMD[two[1]]:(two==='\\\\'?', ':' '));continue;}
+      const name=m[1];i+=m[0].length;
+      if(DROP.test(name))continue;
+      if(name==='frac'||name==='dfrac'||name==='tfrac'){const a=grp(),b=grp();
+        const da=/^\s*d\s*([A-Za-z].*)$/.exec(a),dbb=/^\s*d\s*([A-Za-z].*)$/.exec(b);
+        out+=da&&dbb?' הנגזרת של '+texSay(da[1])+' לפי '+texSay(dbb[1])+' ':' '+texSay(a)+' חלקי '+texSay(b)+' ';
+        continue;}
+      if(name==='sqrt'){if(s[i]==='['){while(i<s.length&&s[i]!==']')i++;i++;}out+=' שורש של '+texSay(grp())+' ';continue;}
+      if(name==='text'||name==='textrm'||name==='mbox'||name==='textbf'){const t=grp();out+=' '+(TXT[t]||PROSE[t]||(/^[A-Za-z]{1,5}$/.test(t)?letters(t):t))+' ';continue;}
+      if(name==='abs'){out+=' הערך המוחלט של '+texSay(grp())+' ';continue;}
+      if(name==='evalat'){out+=' כאשר '+texSay(grp())+' ';continue;}
+      if(name==='boxed'||name==='hat'||name==='dot'||name==='bar'||name==='overline'||name==='vec'||name==='underline'||name==='underbrace'||name==='overbrace'){out+=' '+texSay(grp())+' ';continue;}
+      if(name==='underset'||name==='overset'||name==='stackrel'){grp();out+=' '+texSay(grp())+' ';continue;}
+      if(name==='xrightarrow'){if(s[i]==='['){while(i<s.length&&s[i]!==']')i++;i++;}grp();out+=' שואף ל ';continue;}
+      if(name==='begin'||name==='end'){grp();out+=name==='begin'?' לפי המקרים: ':' ';continue;}
+      if(name==='cases'||name==='array'||name==='matrix'){continue;}
+      if(GRK[name]){const t=tail(name);const key=null;out+=' '+GRK[name]+(t.sub?' '+subSay(t.sub):'')+(t.pow?' '+powSay(t.pow):'')+' ';continue;}
+      if(CMD[name]!==undefined){const t=tail(name);out+=CMD[name]+(t.sub?' '+subSay(t.sub)+' ':'')+(t.pow?' '+powSay(t.pow)+' ':'');continue;}
+      out+=' ';continue;
+    }
+    if(/[A-Za-z]/.test(c)){
+      let b=c,pr=false;i++;
+      if(s[i]==="'"){i++;pr=true;}
+      const t=tail(b);
+      if(s[i]==="'"){i++;pr=true;}
+      if(pr)b+="'";
+      const bare=b.replace(/'/g,''),key=bare+(t.sub?'_'+String(t.sub).replace(/[{}\\]/g,''):'');
+      let name=VAR[key];
+      if(!name)name=baseSay(bare)+(t.sub?' '+subSay(t.sub):'');
+      if(b.indexOf("'")>=0)name+=' תג';
+      out+=' '+name+(t.pow?' '+powSay(t.pow):'')+' ';
+      continue;
+    }
+    if(/\d/.test(c)){
+      const m=/^\d+(\.\d+)?/.exec(s.slice(i));i+=m[0].length;
+      const t=tail('');out+=' '+m[0]+(t.pow?' '+powSay(t.pow):'')+' ';continue;
+    }
+    if(c==='-'){ /* unary vs binary */
+      const prev=out.replace(/\s+$/,'').slice(-1);
+      out+=(prev===''||'=+-*/(,<>'.indexOf(prev)>=0)?' מינוס ':' פחות ';i++;continue;}
+    if(c==='/'){out+=' חלקי ';i++;continue;}
+    if(c==='*'){out+=' כפול ';i++;continue;}
+    if(c==='^'){i++;out+=' '+powSay(grp())+' ';continue;}
+    if(c==='_'){i++;out+=' '+subSay(grp())+' ';continue;}
+    if(c==='{'||c==='}'){i++;continue;}
+    if(OPS[c]!==undefined){out+=OPS[c];i++;continue;}
+    if(c==='&'){out+=' כאשר ';i++;continue;}
+    out+=c;i++;
+  }
+  return out.replace(/\s+/g,' ').trim();
+}
+
+/* ---- HTML -> speech text ---- */
+const ENT={'&nbsp;':' ','&amp;':' וגם ','&lt;':' קטן מ ','&gt;':' גדול מ ','&quot;':'"','&#39;':"'",'&minus;':' מינוס ','&times;':' כפול ','&deg;':' מעלות ','&rarr;':' שואף ל ','&infin;':' אינסוף ','&Omega;':' אוהם ','&mu;':' מיקרו ','&beta;':' ביתא ','&alpha;':' אלפא ','&pi;':' פאי ','&approx;':' בערך ','&middot;':' '};
+function htmlSay(raw){
+  let t=String(raw);
+  t=t.replace(/<(script|style|svg|canvas|figure|figcaption)\b[\s\S]*?<\/\1>/gi,' ');
+  t=t.replace(/<button\b[^>]*class="[^"]*\bspk\b[^"]*"[\s\S]*?<\/button>/gi,' ');
+  t=t.replace(/<(canvas|svg|img|input)\b[^>]*>/gi,' ');
+  t=t.replace(/([A-Za-z])\s*<sub[^>]*>([\s\S]*?)<\/sub>/gi,(m,b,x)=>' '+texSay(b+'_{'+strip(x).trim()+'}')+' ');
+  t=t.replace(/<sub[^>]*>([\s\S]*?)<\/sub>/gi,(m,x)=>' '+subSay(strip(x).trim())+' ');
+  t=t.replace(/<sup[^>]*>([\s\S]*?)<\/sup>/gi,(m,x)=>' '+powSay(strip(x).trim())+' ');
+  t=t.replace(/\\\[([\s\S]*?)\\\]/g,(m,x)=>'. '+texSay(x)+'. ');
+  t=t.replace(/\\\(([\s\S]*?)\\\)/g,(m,x)=>' '+texSay(x)+' ');
+  t=t.replace(/<\/(p|li|h1|h2|h3|h4|tr|div|section|article|blockquote)>/gi,'. ');
+  t=t.replace(/<\/(td|th)>/gi,', ');
+  t=t.replace(/<br\s*\/?>/gi,'. ');
+  t=t.replace(/<[^>]+>/g,' ');
+  Object.keys(ENT).forEach(k=>{t=t.split(k).join(ENT[k]);});
+  t=t.replace(/&#(\d+);/g,(m,d)=>String.fromCharCode(+d)).replace(/&[a-z]+;/gi,' ');
+  t=t.replace(/(\d+(?:\.\d+)?)\s*([kKMGmunp\u00b5\u03bc]?)(V|A|F|Hz|W|s|\u03a9|dB)(?![A-Za-z])/g,
+    (m,num,pre,u)=>num+' '+(pre?(PRE[pre]||''):'')+UNI[u]);
+  t=t.replace(/[−−]/g,' מינוס ').replace(/[≈]/g,' בערך ').replace(/[≤]/g,' קטן או שווה ל ').replace(/[≥]/g,' גדול או שווה ל ')
+     .replace(/[∞]/g,' אינסוף ').replace(/[∥]/g,' במקביל ל ').replace(/[·×]/g,' כפול ').replace(/[→←]/g,' שואף ל ')
+     .replace(/[Ω]/g,' אוהם ').replace(/[µμ]/g,' מיקרו ').replace(/[±]/g,' פלוס מינוס ').replace(/[✓]/g,' תקין ').replace(/[✗]/g,' שגוי ')
+     .replace(/[≪]/g,' הרבה יותר קטן מ ').replace(/[≫]/g,' הרבה יותר גדול מ ').replace(/[◆▾←→]/g,' ');
+  /* latin words left in the prose */
+  t=t.replace(/[A-Za-z][A-Za-z']{0,9}/g,w=>{
+    if(PROSE[w])return PROSE[w];
+    if(/^[A-Z]{2,5}$/.test(w))return letters(w);
+    if(w.length<=2)return letters(w);
+    return w;});
+  t=t.replace(/([\u0590-\u05FF])-\s+/g,'$1-');
+  t=t.replace(/\s*\.\s*(\.\s*)+/g,'. ').replace(/\s+([,.])/g,'$1').replace(/\s+/g,' ').trim();
+  return t;
+}
+const strip=h=>String(h).replace(/<[^>]+>/g,'');
+
+/* ---- collect readable blocks (runs BEFORE MathJax replaces the LaTeX) ---- */
+const SKIPT=/^(SCRIPT|STYLE|SVG|CANVAS|FIGURE|NOSCRIPT|IMG|INPUT|SELECT|TEXTAREA|MJX-CONTAINER|MJX-ASSISTIVE-MML)$/;
+const BLKT=/^(P|LI|H1|H2|H3|H4|H5|H6|BLOCKQUOTE|TD|TH|DIV|SECTION|ARTICLE|UL|OL|TABLE|TBODY|THEAD|TFOOT|TR|DL|DT|DD|HEADER|FOOTER|SUMMARY|DETAILS|PRE|ASIDE|NAV|MAIN|FORM|BUTTON)$/;
+const SKIPC=['spk','sn','spk-skip','controls','presets','checks','seg','chips','legend','readouts','pnav','ltabs','score','sbar','cnt'];
+function skipEl(el){
+  const tag=el.tagName.toUpperCase();
+  if(SKIPT.test(tag))return true;
+  /* only the quiz answer buttons carry content; every other button is chrome */
+  if(tag==='BUTTON')return !(el.parentNode&&el.parentNode.classList&&el.parentNode.classList.contains('opts'));
+  const cl=el.classList;
+  for(let i=0;i<SKIPC.length;i++)if(cl.contains(SKIPC[i]))return true;
+  return false;
+}
+function collect(host){
+  const out=[];
+  (function walk(el){
+    let buf='';
+    const flush=()=>{const t=htmlSay(buf);buf='';
+      if(t&&/[֐-׿0-9A-Za-z]/.test(t))out.push({el:el,t:t});};
+    const kids=el.childNodes;
+    for(let i=0;i<kids.length;i++){
+      const nd=kids[i];
+      if(nd.nodeType===3){buf+=nd.nodeValue;continue;}
+      if(nd.nodeType!==1)continue;
+      if(skipEl(nd))continue;
+      if(BLKT.test(nd.tagName.toUpperCase())){flush();walk(nd);continue;}
+      buf+=nd.outerHTML;
+    }
+    flush();
+  })(host);
+  return out;
+}
+/* split long text so speech engines do not truncate it */
+function pieces(t){
+  const SEP=String.fromCharCode(1);
+  const parts=t.replace(/([.:!?])\s+/g,'$1'+SEP).split(SEP),out=[];let cur='';
+  parts.forEach(function(p){
+    if((cur+' '+p).trim().length>180){if(cur)out.push(cur.trim());cur=p;}
+    else cur=(cur+' '+p).trim();});
+  if(cur)out.push(cur.trim());
+  return out.length?out:[t];
+}
+
+/* ---- engine ---- */
+function pickVoice(){
+  if(!OK)return null;
+  const vs=SYN.getVoices()||[];
+  const he=vs.filter(v=>/^(he|iw)/i.test(v.lang||''));
+  voice=he.find(v=>v.localService)||he[0]||null;
+  return voice;
+}
+if(OK){pickVoice();SYN.onvoiceschanged=pickVoice;}
+function clear(){
+  if(job&&job.host)job.host.querySelectorAll('.sp-now').forEach(e=>e.classList.remove('sp-now'));
+  document.querySelectorAll('.spk.on').forEach(b=>{b.classList.remove('on');b.setAttribute('aria-label','הקראה');});
+  if(keep){clearInterval(keep);keep=0;}
+  job=null;
+}
+function stop(){if(OK)try{SYN.cancel();}catch(e){}clear();}
+function run(host,btn){
+  stop();
+  const bs=host._blocks||collect(host);
+  if(!bs.length)return;
+  const q=[];bs.forEach(b=>pieces(b.t).forEach(p=>q.push({el:b.el,t:p})));
+  const my=++uid;
+  job={host,btn,q,i:0,my};
+  btn.classList.add('on');btn.setAttribute('aria-label','עצור הקראה');
+  if(CHROMEY)keep=setInterval(()=>{if(SYN.speaking&&!SYN.paused){SYN.pause();SYN.resume();}},9000);
+  /* cancel() is async; queueing in the same tick gets the utterance dropped */
+  setTimeout(()=>{if(job&&job.my===my)next();},200);
+}
+function next(){
+  if(!job||job.my!==uid)return;
+  if(job.i>=job.q.length){stop();return;}
+  const it=job.q[job.i++],my=job.my;
+  if(job.host)job.host.querySelectorAll('.sp-now').forEach(e=>e.classList.remove('sp-now'));
+  it.el.classList.add('sp-now');
+  if(!isInView(it.el))it.el.scrollIntoView({block:'center',behavior:reduced?'auto':'smooth'});
+  if(SYN.paused)try{SYN.resume();}catch(e){}
+  const u=new SpeechSynthesisUtterance(it.t);
+  if(voice)u.voice=voice;
+  u.lang=(voice&&voice.lang)||'he-IL';u.rate=rate;u.pitch=1;
+  let started=false,done=false;
+  const fin=()=>{if(done)return;done=true;if(job&&job.my===my)next();};
+  u.onstart=()=>{started=true;};
+  u.onend=fin;u.onerror=fin;
+  /* some engines silently swallow the first utterance after a cancel: retry */
+  (function go(tries){
+    try{SYN.speak(u);}catch(e){stop();return;}
+    setTimeout(()=>{
+      if(done||started||!job||job.my!==my)return;
+      if(tries<2){try{SYN.cancel();}catch(e){}go(tries+1);}
+      else fin();
+    },800);
+  })(0);
+}
+function isInView(el){const r=el.getBoundingClientRect();return r.top>=70&&r.bottom<=innerHeight-20;}
+
+/* ---- buttons ---- */
+function mkBtn(host){
+  const b=document.createElement('button');
+  b.type='button';b.className='spk';b.setAttribute('aria-label','הקראה');
+  b.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h3.5L12 5v14l-4.5-4H4z"/><path class="w1" d="M15.5 9.5a3.5 3.5 0 0 1 0 5"/><path class="w2" d="M18 7a7 7 0 0 1 0 10"/></svg><span>הקראה</span>';
+  b.onclick=e=>{e.stopPropagation();
+    if(!OK||!voice){warn(b);return;}
+    if(job&&job.btn===b){stop();return;}
+    run(host,b);};
+  return b;
+}
+function warn(b){
+  if(document.querySelector('.spk-msg'))return;
+  const m=document.createElement('div');m.className='spk-msg';
+  m.textContent=OK?'אין קול עברי מותקן בדפדפן הזה. באייפון, מאק ואנדרואיד ההקראה עובדת; ב-Windows צריך להוסיף חבילת שפה עברית בהגדרות המערכת.':'הדפדפן הזה לא תומך בהקראה.';
+  b.parentNode.insertBefore(m,b.nextSibling);
+  setTimeout(()=>m.remove(),7000);
+}
+const HEAD='h2,h3,header,.qn,.lhead';
+function attach(host){
+  if(!OK||host._spk)return;
+  host._blocks=collect(host);
+  if(!host._blocks.length)return;
+  host._spk=1;
+  const b=mkBtn(host);
+  const h=host.matches(HEAD)?host:host.querySelector(':scope > h2, :scope > h3, :scope > header, :scope > .qn');
+  (h||host).appendChild(b);
+}
+const HOSTS='.th-sec,.flowc,.prob,.q,.ex,section.mod,.lhead';
+function prep(root){
+  if(!OK||!root)return;
+  try{
+    if(root.matches&&root.matches(HOSTS))attach(root);
+    root.querySelectorAll(HOSTS).forEach(attach);
+  }catch(e){}
+}
+
+/* ---- settings pill ---- */
+const STEPS=[{on:false,r:1,t:'הקראה כבויה',i:'🔇'},{on:true,r:.85,t:'הקראה איטית',i:'🔈'},{on:true,r:1,t:'הקראה רגילה',i:'🔊'},{on:true,r:1.25,t:'הקראה מהירה',i:'⏩'}];
+function stepIdx(){if(!enabled)return 0;const i=STEPS.findIndex(s=>s.on&&Math.abs(s.r-rate)<.01);return i<0?2:i;}
+function apply(){
+  document.documentElement.setAttribute('data-tts',enabled?'on':'off');
+  if(!enabled)stop();
+  const b=document.getElementById('ttsbtn');
+  if(b){const s=STEPS[stepIdx()];b.textContent=s.i+' '+s.t;b.setAttribute('aria-pressed',enabled?'true':'false');}
+}
+function cycle(){
+  const s=STEPS[(stepIdx()+1)%STEPS.length];
+  enabled=s.on;rate=s.r;store.set('ttsOn',enabled);store.set('ttsRate',rate);apply();
+}
+/* keep reading when the tab is hidden: listening while doing something else is the point */
+window.addEventListener('beforeunload',stop);
+return {prep,stop,apply,cycle,supported:OK,texSay,htmlSay};
+})();
+
+
 /* ---------- html builders ---------- */
 const lg=(c,t,k)=>'<span class="lg'+(k?' '+k:'')+'" style="--c:var(--'+c+')">'+t+'</span>';
 const scope=(id,cls,legend,label)=>'<figure class="scope"><canvas id="'+id+'"'+(cls?' class="'+cls+'"':'')+' aria-label="'+(label||'גרף')+'"></canvas>'+(legend?'<figcaption>'+legend+'</figcaption>':'')+'</figure>';
@@ -609,7 +961,7 @@ const F=(label,f)=>'<span class="fx">'+(label?'<span class="c">'+label+'</span>'
 function section(root,o){
   const s=document.createElement('section');s.className='mod';s.id=o.id;s.dataset.title=o.short||o.title;
   s.innerHTML='<div class="eyebrow">'+(o.tag||'')+'</div><h2>'+o.title+'</h2>'+(o.lead?'<p class="lead">'+o.lead+'</p>':'')+(o.body||'');
-  root.appendChild(s);wrapFx(s);return s;
+  root.appendChild(s);wrapFx(s);TTS.prep(s);return s;
 }
 
 /* ---------- visibility-driven animation for canvases ---------- */
@@ -4309,7 +4661,7 @@ const strip=s=>String(s).replace(/<[^>]+>/g,'');
 const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
 
 /* ---------- MathJax ---------- */
-function typeset(el){if(!el)return;const go=()=>{if(window.MathJax&&MathJax.typesetPromise){MathJax.typesetPromise([el]).catch(()=>{});}else setTimeout(go,250);};go();}
+function typeset(el){if(!el)return;TTS.prep(el);const go=()=>{if(window.MathJax&&MathJax.typesetPromise){MathJax.typesetPromise([el]).catch(()=>{});}else setTimeout(go,250);};go();}
 
 /* ---------- progress store ---------- */
 function quizOf(n){return full(n)&&CONTENT[n].quiz?CONTENT[n].quiz:LESSONS[n].quiz;}
@@ -4365,7 +4717,7 @@ function sideHTML(){
     '<div class="oprog"><div class="row"><span>התקדמות בקורס</span><b>'+cp.pct+'%</b></div><div class="pbar"><span style="width:'+cp.pct+'%"></span></div><div class="row" style="margin-top:6px"><span>'+cp.c+'/'+cp.tot+' תשובות נכונות</span></div></div>'+
     '<div class="qlinks">'+ql('#/','home','🏠','בית')+ql('#/f','f','Σ','נוסחאות')+ql('#/exam','exam','⏱️','סימולטור מבחן')+ql('#/calc','calc','🧮','מחשבון עבודה')+ql('#/q','q','🎲','תרגול מעורב',1)+'</div>'+
     tree+
-    '<div class="sidefoot"><button type="button" class="pillbtn" id="themebtn"></button><button type="button" class="pillbtn" id="flowtog" aria-pressed="false" title="החלפת תצוגת הזרם"><i></i><span></span></button></div>';
+    '<div class="sidefoot"><button type="button" class="pillbtn" id="themebtn"></button><button type="button" class="pillbtn" id="flowtog" aria-pressed="false" title="החלפת תצוגת הזרם"><i></i><span></span></button><button type="button" class="pillbtn" id="ttsbtn" title="הקראה קולית של התוכן"></button></div>';
   bindSideButtons();
 }
 function refreshProgress(){sideHTML();document.querySelectorAll('[data-lp]').forEach(el=>{const p=lessonProg(+el.dataset.lp);el.style.width=p.pct+'%';});
@@ -4381,6 +4733,9 @@ function bindSideButtons(){
   const upd=()=>{document.body.classList.toggle('electrons',electronMode);b.setAttribute('aria-pressed',electronMode?'true':'false');b.querySelector('span').textContent=electronMode?'זרימת אלקטרונים':'זרם קונבנציונלי';};
   b.onclick=()=>{electronMode=!electronMode;store.set('electrons',electronMode);upd();};upd();
   document.getElementById('themebtn').onclick=cycleTheme;applyTheme();
+  const tb=document.getElementById('ttsbtn');
+  if(tb){if(!TTS.supported)tb.remove();else tb.onclick=TTS.cycle;}
+  TTS.apply();
   side.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>document.body.classList.remove('side-open')));
 }
 document.getElementById('themebtn2').onclick=cycleTheme;
@@ -4454,6 +4809,7 @@ function buildLesson(d,n){
     '<div class="ltabs" role="tablist" aria-label="שלבי השיעור">'+TABS.map((t,i)=>'<button type="button" role="tab" id="tab-'+n+'-'+t.k+'" data-k="'+t.k+'" aria-selected="false" aria-controls="pn-'+n+'-'+t.k+'"><span>'+t.i+'</span><span>'+(i+1)+'. '+t.t+'</span><span class="dot" data-tabdot="'+n+':'+t.k+'" hidden></span></button>').join('')+'</div>'+
     TABS.map(t=>'<div class="panel" role="tabpanel" tabindex="-1" id="pn-'+n+'-'+t.k+'" aria-labelledby="tab-'+n+'-'+t.k+'" hidden></div>').join('');
   d.querySelectorAll('.ltabs button').forEach(b=>b.onclick=()=>{location.hash='#/l/'+n+'/'+b.dataset.k;});
+  TTS.prep(d.querySelector('.lhead'));
   d._built={};
 }
 function showTab(d,n,k,scrollTo){
@@ -4474,7 +4830,7 @@ function soon(what,n){return '<div class="soon"><b>'+what+' לשיעור הזה 
 function bindGo(root){root.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{location.hash=b.dataset.go;});}
 const BUILD={
 theory(p,n){const C=CONTENT[n];
-  if(!C){p.innerHTML='<div class="th"><section class="th-sec"><h2><span class="sn">01</span>סקירה</h2><p>'+LESSONS[n].intro+'</p></section><section class="th-sec"><h2><span class="sn">02</span>הנוסחאות המרכזיות</h2>'+LESSONS[n].formulas.map(f=>F(f[0]+':',f[1])).join('')+'</section></div>'+soon('הסבר תיאורטי מורחב',n);wrapFx(p);return;}
+  if(!C){p.innerHTML='<div class="th"><section class="th-sec"><h2><span class="sn">01</span>סקירה</h2><p>'+LESSONS[n].intro+'</p></section><section class="th-sec"><h2><span class="sn">02</span>הנוסחאות המרכזיות</h2>'+LESSONS[n].formulas.map(f=>F(f[0]+':',f[1])).join('')+'</section></div>'+soon('הסבר תיאורטי מורחב',n);wrapFx(p);TTS.prep(p);return;}
   p.innerHTML='<div class="th">'+C.theory.map((s,i)=>'<section class="th-sec"><h2><span class="sn">'+String(i+1).padStart(2,'0')+'</span>'+s.t+'</h2>'+s.h+'</section>').join('')+'</div>';
   bindGo(p);typeset(p);},
 lab(p,n){const root=document.createElement('div');
@@ -4715,7 +5071,7 @@ function buildCalc(d){
 /* ---------- router ---------- */
 function route(){
   const h=location.hash||'#/';let m;
-  closeDrawer();
+  TTS.stop();closeDrawer();
   if((m=h.match(/^#\/l\/(\d)(?:\/(\w+))?(?:\/([\w-]+))?/))&&LESSONS[+m[1]]){
     const n=+m[1],k=TABS.some(t=>t.k===m[2])?m[2]:'theory';
     cur={page:'l',n,tab:k};const d=page('l'+n,d=>buildLesson(d,n));showTab(d,n,k,m[3]);navMark('home');
