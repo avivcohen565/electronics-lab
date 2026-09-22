@@ -4946,7 +4946,7 @@ function mountQ2(host,px){
 /* ---------------- Q3: CS (NMOS depletion) → CE → CB ---------------- */
 function q3Calc(p){
   const {ICS,RE,RC,beta,rpi,k,Vt,VDD,RD,RSS,RB}=p;
-  const VOV=Math.sqrt(ICS/k);           // ID = k·(VGS−Vt)²  (k = ½kn'W/L)
+  const VOV=Math.round(Math.sqrt(ICS/k)*1e3)/1e3; // ID = k·(VGS−Vt)²; מעוגל ל-3 ספרות כמו בפתרון הרשמי (0.218V)
   const VGS=Vt+VOV,VA=-VGS,VDS=VDD-RD*ICS-VA,gm=2*k*VOV;
   const Ri3=rpi/(beta+1);               // כניסת CB (Q2) מהפולט
   const Ri4=rpi+(beta+1)*RE;            // כניסת CE עם ניוון (Q3)
