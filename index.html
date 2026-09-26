@@ -7008,6 +7008,109 @@ notes('<h3>מה לראות</h3><ul><li>הזרם דרך R<sub>1</sub> ו-R<sub>f<
 }
 const b9=LESSONS[9].build;LESSONS[9].build=function(root){b9.call(this,root);labPwr(root);};
 })();
+/* ---- l9-lpf.js ---- */
+/* ==== שיעור 9: האינטגרטור המעשי = מסנן מעביר-נמוכים אקטיבי — לאן הולך הזרם בתדר נמוך וגבוה ==== */
+(function(){
+function labLpf(root){
+section(root,{id:'l9-lpf',tag:'אינטגרטור מעשי',title:'אינטגרטור מעשי: בתדר נמוך הזרם עובר ב-R<sub>f</sub>, בתדר גבוה בקבל',short:'אינטגרטור מעשי',
+lead:'זה המגבר ההופך עם קבל <b>במקביל</b> ל-<span class="m">R<sub>f</sub></span>: הנוסחה מהקורס <span class="m">A<sub>v</sub> = −R<sub>f</sub>/(R(1+jωR<sub>f</sub>C))</span>. זרם הכניסה <span class="m">v<sub>in</sub>/R</span> נכנס לאדמה הווירטואלית וחייב לצאת דרך ענף המשוב; השאלה היא <b>באיזה ענף</b>. בתדר נמוך הקבל "פתוח" והזרם עובר ב-R<sub>f</sub>: מגבר רגיל בהגבר −R<sub>f</sub>/R. בתדר גבוה הקבל "קצר" ובולע את הזרם: המוצא קטן, מוזז ב-90°, ופרופורציוני לאינטגרל של הכניסה. תדר הפינה: <span class="m">f<sub>c</sub> = 1/(2πR<sub>f</sub>C)</span>.',
+body:'<div class="lab"><div class="controls"><div class="seg" id="l9lpf-src"><button type="button" data-v="sin" aria-pressed="true">סינוס</button><button type="button" data-v="sq" aria-pressed="false">גל ריבועי</button></div><div class="presets"><button type="button" data-preset="l9lpf-lo">f ≪ f<sub>c</sub>: מגבר</button><button type="button" data-preset="l9lpf-c">f = f<sub>c</sub>: −3dB</button><button type="button" data-preset="l9lpf-hi">f ≫ f<sub>c</sub>: אינטגרטור</button></div><div class="sliders" id="l9lpf-ctl"></div></div>'+
+'<div class="scopes">'+circ('cx-l9lpf',lg('t1','זרם','dot')+lg('t3','ענף הקבל'),true)+scope('c-l9lpf','short',lg('t2','v<sub>in</sub>(t)')+lg('t1','v<sub>out</sub>(t)'),'זמן')+scope('c-l9lpf2','short',lg('t1','|A<sub>v</sub>(f)| [dB]')+lg('t3','f נוכחי','dot')+lg('t5','f<sub>c</sub>','dash'),'תגובת תדר')+'</div></div><div class="readouts" id="r-l9lpf"></div>'+
+notes('<h3>מה לראות</h3><ul><li>ב-f ≪ f<sub>c</sub> הנקודות בענף הקבל כמעט לא זזות: כל הזרם ב-R<sub>f</sub>, ההגבר −R<sub>f</sub>/R והמוצא הפוך בדיוק (180°).</li><li>ב-f = f<sub>c</sub> שני הענפים נושאים אותו זרם (|i<sub>C</sub>| = |i<sub>Rf</sub>|), ההגבר יורד ב-3dB (פי 1/√2) והפאזה 180°−45°.</li><li>ב-f ≫ f<sub>c</sub> הקבל לוקח הכול: <span class="m">v<sub>out</sub> ≈ −(1/RC)∫v<sub>in</sub>dt</span>. סינוס יוצא קוסינוס (הזזה של 90° נוספים) והמשרעת יורדת פי 10 לכל פי 10 בתדר (−20dB/dec). גל ריבועי יוצא משולש.</li><li>בלי R<sub>f</sub> (אינטגרטור אידיאלי) כל היסט DC קטן בכניסה היה נצבר עד לרוויה. R<sub>f</sub> מגביל את הגבר ה-DC ל-−R<sub>f</sub>/R, ולכן הוא "מעשי".</li></ul>',
+'<h3>הנוסחאות</h3>'+F('','A<sub>v</sub> = −Z<sub>f</sub>/R = −R<sub>f</sub>/(R(1+jωR<sub>f</sub>C))')+F('','f<sub>c</sub> = 1/(2πR<sub>f</sub>C)')+F('|A<sub>v</sub>|:','(R<sub>f</sub>/R)/√(1+(f/f<sub>c</sub>)²)')+F('f ≫ f<sub>c</sub>:','v<sub>out</sub> ≈ −(1/RC)∫v<sub>in</sub>dt')+F('KCL:','v<sub>in</sub>/R + v<sub>out</sub>/R<sub>f</sub> + C·dv<sub>out</sub>/dt = 0')+F('יחס הזרמים:','|i<sub>C</sub>|/|i<sub>Rf</sub>| = f/f<sub>c</sub>'))});
+(function(){
+  const C=Circuit('cx-l9lpf',460,255),cv=reg('c-l9lpf'),cv2=reg('c-l9lpf2');
+  const o=C.oa(250,140);
+  C.V([50,215],[50,160],'v_{in}',{kind:'ac',side:1,off:26});C.w([50,160],[50,128],[80,128]);C.R([80,128],[150,128],'R',{side:-1});C.w([150,128],o.m);C.nd(175,128);C.w([50,215],[50,230]);C.G(50,230);
+  C.w([175,128],[175,40]);C.nd(175,80);C.R([175,80],[335,80],'R_f',{side:1,id:'rf'});C.Cap([175,40],[335,40],'C',{side:-1,id:'c'});C.w([335,40],[335,140]);C.nd(335,80);C.nd(335,140);
+  C.w(o.o,[420,140]);C.term(420,140);C.T(420,126,'v_{out}','big','middle');C.T(420,160,'','val','middle',null,'vo');C.nd(380,140);C.R([380,140],[380,215],'R_L',{side:-1});C.G(380,215);C.w(o.p,[208,215]);C.G(208,215);
+  C.T(175,148,'0V','val2','middle');C.T(110,110,'','val2','middle',null,'iin');C.T(255,100,'','val','middle',null,'irf');C.T(352,30,'','val','start',null,'ic');
+  C.flow('in',[[50,160],[50,128],[175,128]]);C.flow('rf',[[175,128],[175,80],[335,80],[335,140]]);C.flow('c',[[175,80],[175,40],[335,40],[335,80]]);C.flow('l',[[335,140],[380,140],[380,215]]);
+  C.bindPlay();
+  const getS=seg('l9lpf-src',()=>upd());
+  const st=sliders('l9lpf-ctl',[
+    {key:'A',id:'l9lpf-a',label:'משרעת v<sub>in</sub>',min:0.1,max:2,step:0.1,value:0.5,fmt:v=>v.toFixed(1)+' V'},
+    {key:'f',id:'l9lpf-f',label:'תדר f',min:1,max:5,step:0.05,value:2,map:v=>Math.pow(10,v),fmt:v=>si(v,'Hz')},
+    {key:'R',id:'l9lpf-r',label:'R',min:1,max:100,step:1,value:10,map:v=>v*1000,fmt:v=>si(v,'Ω')},
+    {key:'Rf',id:'l9lpf-rf',label:'R<sub>f</sub>',min:1,max:1000,step:1,value:100,map:v=>v*1000,fmt:v=>si(v,'Ω')},
+    {key:'Cc',id:'l9lpf-c',label:'C',min:0.1,max:100,step:0.1,value:1.6,map:v=>v*1e-9,fmt:v=>si(v,'F')},
+    {key:'RL',id:'l9lpf-rl',label:'R<sub>L</sub>',min:1,max:100,step:1,value:10,map:v=>v*1000,fmt:v=>si(v,'Ω')}],upd);
+  const N=400;let VI=[],VO=[],IC=[],IRF=[],fc=1,tau=1;
+  function build(){const {A,f,R,Rf,Cc}=st,s=getS(),T=1/f,dt=T/N;VI=[];VO=[];IC=[];IRF=[];let v=0;const e=Math.exp(-dt/tau);
+    for(let k=0;k<N*8;k++){const ph=(k%N)/N,x=s==='sin'?A*Math.sin(2*Math.PI*ph):(ph<0.5?A:-A);const vss=-(Rf/R)*x;const vn=vss+(v-vss)*e;const ic=Cc*(vn-v)/dt;v=vn;
+      if(k>=6*N){VI.push([(k-6*N)/N,x]);VO.push([(k-6*N)/N,v]);IC.push(ic);IRF.push(v/Rf);}}}
+  function paint(ph){const i=Math.floor(((ph%2)/2)*N*2)%(2*N),{R,Rf,RL,A}=st,vi=VI[i][1],vo=VO[i][1],iin=vi/R,irf=IRF[i],ic=IC[i],il=vo/RL,Im=Math.max(A/R,1e-12);
+    C.I('in',clamp(Math.abs(iin)/Im,0,1)*0.9,Math.sign(iin)||1);C.I('rf',clamp(Math.abs(irf)/Im,0,1)*0.9,Math.sign(-irf)||1);C.I('c',clamp(Math.abs(ic)/Im,0,1)*0.9,Math.sign(-ic)||1);C.I('l',clamp(Math.abs(il)/(Math.max(...VO.map(p=>Math.abs(p[1])))/RL+1e-12),0,1)*0.8,Math.sign(vo)||1);
+    C.st('c',Math.abs(ic)>Math.abs(irf)?'on':'dim');C.st('rf',Math.abs(ic)>Math.abs(irf)?'dim':'on');
+    C.set('vo','= '+fx(vo,2)+' V');C.set('iin','i_{in} = '+si(iin,'A'));C.set('irf','i_{Rf} = '+si(-irf,'A'));C.set('ic','i_C = '+si(-ic,'A'));
+    const ym=Math.max(A,...VO.map(p=>Math.abs(p[1])))*1.15;
+    draw(cv,{x0:0,x1:2,y0:-ym,y1:ym,xl:'t / T',yl:'[V]',cursor:ph%2,series:[{c:'t2',w:1.8,pts:VI},{c:'t1',w:2.6,pts:VO}]});
+    const P=[];for(let k=0;k<=200;k++){const l=1+4*k/200,f=Math.pow(10,l);P.push([l,db((Rf/R)/Math.hypot(1,f/fc))]);}
+    const g0=db(Rf/R),gf=db((Rf/R)/Math.hypot(1,st.f/fc));
+    draw(cv2,{x0:1,x1:5,y0:Math.min(g0-45,-10),y1:g0+8,xl:'log₁₀ f [Hz]',yl:'|A_v| [dB]',series:[{c:'t5',w:1.2,dash:[5,4],pts:[[Math.log10(fc),g0-60],[Math.log10(fc),g0+10]]},{c:'axis',w:1,dash:[3,4],pts:[[1,g0],[5,g0]]},{c:'t1',w:2.4,pts:P}],points:[{x:Math.log10(st.f),y:gf,c:'t3',r:5,label:gf.toFixed(1)+' dB'}]});}
+  C.tick=(t)=>paint(t*0.25);
+  function upd(){const {R,Rf,Cc,f,A}=st;fc=1/(2*Math.PI*Rf*Cc);tau=Rf*Cc;build();
+    const mag0=Rf/R,magf=mag0/Math.hypot(1,f/fc),phase=180-Math.atan(f/fc)*180/Math.PI,vop=Math.max(...VO.map(p=>Math.abs(p[1])));
+    readouts('r-l9lpf',[['הגבר DC −R<sub>f</sub>/R',(-mag0).toFixed(1)+' ('+db(mag0).toFixed(1)+' dB)'],['f<sub>c</sub> = 1/(2πR<sub>f</sub>C)',si(fc,'Hz')],['f / f<sub>c</sub>',(f/fc).toPrecision(3)],['|A<sub>v</sub>(f)|',magf.toFixed(2)+' ('+db(magf).toFixed(1)+' dB)'],['פאזה',phase.toFixed(0)+'°'],['|i<sub>C</sub>|/|i<sub>Rf</sub>| = f/f<sub>c</sub>',(f/fc).toPrecision(3)],['v<sub>out</sub> שיא (נמדד)',fx(vop,3)+' V'],['תחום',f<fc/3?pill('מגבר: −R_f/R'.replace('R_f','R<sub>f</sub>'),'ok'):f>3*fc?pill('אינטגרטור: −(1/RC)∫v_in'.replace('v_in','v<sub>in</sub>'),'warn'):pill('אזור הפינה','mute'),'html']]);
+    paint(C.t*0.25);}
+  presets({'l9lpf-lo':{'l9lpf-f':2,'l9lpf-r':10,'l9lpf-rf':100,'l9lpf-c':1.6},'l9lpf-c':{'l9lpf-f':3,'l9lpf-r':10,'l9lpf-rf':100,'l9lpf-c':1.6},'l9lpf-hi':{'l9lpf-f':4.3,'l9lpf-r':10,'l9lpf-rf':100,'l9lpf-c':1.6}});
+  upd();
+})();
+}
+const b9=LESSONS[9].build;LESSONS[9].build=function(root){b9.call(this,root);labLpf(root);};
+})();
+/* ---- l9-prec.js ---- */
+/* ==== שיעור 9: מיישר מדויק חי — הדיודה בתוך הלולאה, ומגבר השרת "בולע" את 0.7V ==== */
+(function(){
+function labPrec(root){
+section(root,{id:'l9-prec',tag:'מיישר מדויק חי',title:'מיישר מדויק בפעולה: הדיודה בתוך הלולאה, ו-0.7V נעלם',short:'מיישר מדויק חי',
+lead:'מיישר עם דיודה רגילה מאבד 0.7V ולא עובד על אותות קטנים. כאן הדיודות יושבות <b>בתוך לולאת המשוב</b>: מגבר השרת מזיז את המוצא שלו <span class="m">v<sub>oa</sub></span> ב-0.7V נוספים כדי שהאדמה הווירטואלית תישאר 0 והמוצא יהיה בדיוק <span class="m">−(R<sub>2</sub>/R<sub>1</sub>)v<sub>in</sub></span>. עקוב אחרי הזרם: בחצי מחזור אחד הוא עובר דרך D<sub>2</sub> ו-R<sub>2</sub> אל המוצא, ובשני דרך D<sub>1</sub> ישר למגבר, והמוצא נשאר 0.',
+body:'<div class="lab"><div class="controls"><div class="presets"><button type="button" data-preset="l9prec-a">אות קטן 100mV (דיודה רגילה לא הייתה עובדת)</button><button type="button" data-preset="l9prec-b">הגבר 2</button><button type="button" data-preset="l9prec-c">אות גדול: רוויה</button></div><div class="sliders" id="l9prec-ctl"></div></div>'+
+'<div class="scopes">'+circ('cx-l9prec',lg('t1','זרם','dot')+lg('t4','דיודה מוליכה'),true)+scope('c-l9prec','short',lg('t2','v<sub>in</sub>(t)')+lg('t1','v<sub>out</sub>(t)')+lg('t3','v<sub>oa</sub>(t) מוצא המגבר','dash')+lg('t5','דיודה רגילה: v<sub>in</sub>−0.7','dash'),'זמן')+scope('c-l9prec2','short',lg('t1','v<sub>out</sub>(v<sub>in</sub>)')+lg('t3','נקודה נוכחית','dot'),'אופיין מעבר')+'</div></div><div class="readouts" id="r-l9prec"></div>'+
+notes('<h3>מה לראות</h3><ul><li>כש-<span class="m">v<sub>in</sub> &lt; 0</span>: המגבר רוצה מוצא חיובי, D<sub>2</sub> מוליכה, הזרם <span class="m">−v<sub>in</sub>/R<sub>1</sub></span> מגיע דרך R<sub>2</sub> ו-D<sub>2</sub> ממוצא המגבר. v<sub>out</sub> = −(R<sub>2</sub>/R<sub>1</sub>)v<sub>in</sub> <b>בלי</b> 0.7V, כי המגבר מרים את v<sub>oa</sub> ב-0.7V מעל v<sub>out</sub> (הקו המקווקו).</li><li>כש-<span class="m">v<sub>in</sub> &gt; 0</span>: D<sub>2</sub> נחסמת, D<sub>1</sub> מוליכה ומחזיקה את v<sub>oa</sub> ב-−0.7V; דרך R<sub>2</sub> לא זורם זרם ולכן v<sub>out</sub> = 0 בדיוק. בלי D<sub>1</sub> המגבר היה נתקע ברוויה שלילית ומגיב לאט.</li><li>הקטן את האות ל-100mV: מיישר דיודה רגילה (הקו האפור) לא היה מוציא כלום. המדויק עובד עד mV בודדים.</li><li>הקו במעגל ההופך: v<sub>out</sub> חיובי לכניסה שלילית. גל שלם מדויק מוסיף מגבר מסכם (נוסחת הקורס v<sub>o</sub> = (R<sub>2</sub>/2R<sub>1</sub>)|v<sub>in</sub>|).</li></ul>',
+'<h3>הנוסחאות</h3>'+F('v<sub>in</sub> &lt; 0:','v<sub>out</sub> = −(R<sub>2</sub>/R<sub>1</sub>)v<sub>in</sub>, v<sub>oa</sub> = v<sub>out</sub> + V<sub>D0</sub>')+F('v<sub>in</sub> &gt; 0:','v<sub>out</sub> = 0, v<sub>oa</sub> = −V<sub>D0</sub>')+F('','הזרם: i = v<sub>in</sub>/R<sub>1</sub> תמיד, השאלה רק דרך איזו דיודה')+F('דיודה רגילה:','v<sub>out</sub> = v<sub>in</sub> − 0.7 (ורק אם v<sub>in</sub> &gt; 0.7)'))});
+(function(){
+  const C=Circuit('cx-l9prec',470,300),cv=reg('c-l9prec'),cv2=reg('c-l9prec2'),VD=0.7;
+  const o=C.oa(240,140);
+  C.V([50,215],[50,160],'v_{in}',{kind:'ac',side:1,off:26});C.w([50,160],[50,128],[80,128]);C.R([80,128],[150,128],'R_1',{side:-1});C.w([150,128],o.m);C.nd(175,128);C.w([50,215],[50,230]);C.G(50,230);
+  C.w(o.o,[300,140]);C.nd(300,140);C.T(330,150,'','val2','start',null,'voa');
+  // D1: anode at node, cathode at op-amp output (upper path)
+  C.w([175,128],[175,90],[210,90]);C.D([210,90],[270,90],'D_1',{side:-1,id:'d1'});C.w([270,90],[300,90],[300,140]);
+  // D2: anode at op-amp output, cathode to R2 -> node (lower path)
+  C.w([300,140],[300,205],[280,205]);C.D([280,205],[220,205],'D_2',{side:1,id:'d2'});C.w([220,205],[200,205]);C.nd(200,205);C.R([200,205],[200,128],'R_2',{side:1,id:'r2'});
+  C.w([200,205],[200,235],[440,235]);C.term(440,235);C.T(440,221,'v_{out}','big','middle');C.T(440,256,'','val','middle',null,'vo');
+  C.nd(380,235);C.R([380,235],[380,280],'R_L',{side:-1});C.G(380,280);
+  C.w(o.p,[198,215]);C.G(198,215);
+  C.T(175,146,'0V','val2','middle');C.T(110,110,'','val2','middle',null,'iin');C.T(455,110,'','he','end',null,'mode');
+  C.flow('in',[[50,160],[50,128],[175,128]]);C.flow('d1',[[175,128],[175,90],[300,90],[300,140]]);C.flow('d2',[[300,140],[300,205],[200,205],[200,128]]);C.flow('l',[[200,205],[200,235],[380,235],[380,280]]);
+  C.bindPlay();
+  const st=sliders('l9prec-ctl',[
+    {key:'A',id:'l9prec-a',label:'משרעת v<sub>in</sub>',min:0.05,max:12,step:0.05,value:2,fmt:v=>v.toFixed(2)+' V'},
+    {key:'R1',id:'l9prec-r1',label:'R<sub>1</sub>',min:1,max:100,step:1,value:10,map:v=>v*1000,fmt:v=>si(v,'Ω')},
+    {key:'R2',id:'l9prec-r2',label:'R<sub>2</sub>',min:1,max:100,step:1,value:10,map:v=>v*1000,fmt:v=>si(v,'Ω')},
+    {key:'RL',id:'l9prec-rl',label:'R<sub>L</sub>',min:1,max:100,step:1,value:10,map:v=>v*1000,fmt:v=>si(v,'Ω')},
+    {key:'VCC',id:'l9prec-vcc',label:'V<sub>CC</sub>',min:3,max:15,step:0.5,value:12,fmt:v=>'±'+v.toFixed(1)+' V'}],upd);
+  const N=400;let VI=[],VO=[],VOA=[],VP=[];
+  const solve=(vi)=>{const {R1,R2,VCC}=st;if(vi<0){let vo=-R2/R1*vi,voa=vo+VD;if(voa>VCC){voa=VCC;vo=VCC-VD;}return {vo,voa,d:2};}return {vo:0,voa:Math.max(-VCC,-VD),d:vi>0?1:0};};
+  function build(){const {A}=st;VI=[];VO=[];VOA=[];VP=[];for(let k=0;k<N;k++){const t=2*k/N,vi=A*Math.sin(2*Math.PI*t),s=solve(vi);VI.push([t,vi]);VO.push([t,s.vo]);VOA.push([t,s.voa]);VP.push([t,Math.max(0,vi-VD)]);}}
+  function paint(ph){const i=Math.floor(((ph%2)/2)*N)%N,{R1,R2,RL,A}=st,vi=VI[i][1],s=solve(vi),iin=vi/R1,il=s.vo/RL,Im=A/R1+1e-12;
+    C.I('in',clamp(Math.abs(iin)/Im,0,1)*0.9,Math.sign(iin)||1);C.I('d1',s.d===1?clamp(Math.abs(iin)/Im,0,1)*0.9:0,1);C.I('d2',s.d===2?clamp(Math.abs(iin)/Im,0,1)*0.9:0,1);C.I('l',clamp(Math.abs(il)/(A*R2/R1/RL+1e-12),0,1)*0.8,1);
+    C.st('d1',s.d===1?'on':'dim');C.st('d2',s.d===2?'on':'dim');C.st('r2',s.d===2?'on':'dim');
+    C.set('vo','= '+fx(s.vo,2)+' V');C.set('voa','v_{oa} = '+fx(s.voa,2)+' V');C.set('iin','i = '+si(iin,'A'));C.set('mode',s.d===2?'D₂ מוליכה: v_out = −(R₂/R₁)v_in':s.d===1?'D₁ מוליכה: v_out = 0':'');
+    const y=Math.max(A,A*R2/R1+VD,1)*1.15;
+    draw(cv,{x0:0,x1:2,y0:-y,y1:y,xl:'t / T',yl:'[V]',cursor:ph%2,series:[{c:'t5',w:1.2,dash:[3,4],pts:VP},{c:'t2',w:1.6,pts:VI},{c:'t3',w:1.4,dash:[6,4],pts:VOA},{c:'t1',w:2.6,pts:VO}]});
+    const L=Math.max(A,1)*1.1,vtc=[];for(let k=0;k<=200;k++){const x=-L+2*L*k/200;vtc.push([x,solve(x).vo]);}
+    draw(cv2,{x0:-L,x1:L,y0:-0.2*L,y1:Math.max(L*R2/R1,1)*1.1,xl:'v_in [V]',yl:'v_out [V]',series:[{c:'t5',w:1.2,dash:[3,4],pts:[[-L,0],[VD,0],[L,L-VD]]},{c:'t1',w:2.6,pts:vtc}],points:[{x:vi,y:s.vo,c:'t3',r:5}]});}
+  C.tick=(t)=>paint(t*0.25);
+  function upd(){const {A,R1,R2,VCC}=st;build();
+    readouts('r-l9prec',[['הגבר בחצי המחזור השלילי −R<sub>2</sub>/R<sub>1</sub>',(-R2/R1).toFixed(2)],['v<sub>out</sub> שיא',fx(Math.min(A*R2/R1,VCC-VD),2)+' V'],['v<sub>oa</sub> מקסימלי (שיא + 0.7V)',fx(Math.min(A*R2/R1+VD,VCC),2)+' V'],['v<sub>oa</sub> בחצי החיובי','−0.70 V (D₁ מחזיקה)'],['מיישר דיודה רגילה היה נותן',A>VD?fx(A-VD,2)+' V שיא':pill('0 V: האות קטן מ-0.7V','bad'),A>VD?undefined:'html'],['מצב',A*R2/R1+VD>VCC?pill('רוויה: v_oa הגיע ל-V_CC'.replace('v_oa','v<sub>oa</sub>').replace('V_CC','V<sub>CC</sub>'),'bad'):pill('ליניארי','ok'),'html']]);
+    paint(C.t*0.25);}
+  presets({'l9prec-a':{'l9prec-a':0.1,'l9prec-r1':10,'l9prec-r2':10,'l9prec-vcc':12},'l9prec-b':{'l9prec-a':2,'l9prec-r1':10,'l9prec-r2':20,'l9prec-vcc':12},'l9prec-c':{'l9prec-a':8,'l9prec-r1':10,'l9prec-r2':20,'l9prec-vcc':12}});
+  upd();
+})();
+}
+const b9=LESSONS[9].build;LESSONS[9].build=function(root){b9.call(this,root);labPrec(root);};
+})();
 /* ==== LIVE-ADDITIONS END ==== */
 
 /* ---------- lesson page with 5 tabs ---------- */
