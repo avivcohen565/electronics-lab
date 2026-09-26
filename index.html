@@ -2270,7 +2270,7 @@ lead:'בחר מעגל. הזרם (נקודות) עובר דרך R<sub>1</sub> ו-
 body:'<div class="lab"><div class="controls"><div class="seg" id="oa-sel"><button type="button" data-v="inv" aria-pressed="true">הופך</button><button type="button" data-v="non" aria-pressed="false">לא הופך</button><button type="button" data-v="buf" aria-pressed="false">חוצץ</button><button type="button" data-v="sum" aria-pressed="false">מסכם</button><button type="button" data-v="dif" aria-pressed="false">הפרש</button><button type="button" data-v="int" aria-pressed="false">אינטגרטור</button><button type="button" data-v="der" aria-pressed="false">גוזר</button></div><div class="sliders" id="oa-ctl"></div></div>'+
 '<div class="scopes"><div id="oa-hosts"></div>'+scope('c-oa','short',lg('t2','v<sub>in</sub>')+lg('t1','v<sub>out</sub>')+lg('t5','±V<sub>CC</sub>','dash'),'כניסה ומוצא')+'</div></div><div class="readouts" id="r-oa"></div>'+
 notes('<h3>כללי הזהב (מגבר אידיאלי עם משוב שלילי)</h3><ol><li><span class="m">V<sup>+</sup> = V<sup>−</sup></span></li><li><span class="m">I<sup>+</sup> = I<sup>−</sup> = 0</span></li><li>לעולם לא כותבים KCL בצומת המוצא של המגבר (הוא מספק כל זרם שצריך).</li></ol><p style="margin-top:8px">הגדל את ההגבר או את האמפליטודה עד שהמוצא נחתך ב-±V<sub>CC</sub>: שם המגבר ברוויה והכללים כבר לא תקפים.</p>',
-'<h3>נוסחאות</h3><div id="oa-f"></div>')});
+'<h3>נוסחאות</h3><div id="oa-fx"></div>')});
 (function(){
   const host=document.getElementById('oa-hosts'),types=['inv','non','buf','sum','dif','int','der'],CC={};
   types.forEach(k=>{host.insertAdjacentHTML('beforeend',circ('cx-oa-'+k,lg('t1','זרם','dot')+'<span id="cap-'+k+'"></span>',true));});
@@ -2351,7 +2351,7 @@ notes('<h3>כללי הזהב (מגבר אידיאלי עם משוב שלילי)<
     sum:['v<sub>out</sub> = −R<sub>f</sub>·Σ v<sub>k</sub>/R<sub>k</sub>','הזרמים מכל הכניסות מתחברים באדמה הווירטואלית'],dif:['v<sub>out</sub> = (1+R<sub>3</sub>/R<sub>1</sub>)(R<sub>4</sub>/(R<sub>2</sub>+R<sub>4</sub>)·v<sub>2</sub> − R<sub>3</sub>/(R<sub>1</sub>+R<sub>3</sub>)·v<sub>1</sub>)','אם R<sub>3</sub>/R<sub>1</sub> = R<sub>4</sub>/R<sub>2</sub>: v<sub>out</sub> = (R<sub>3</sub>/R<sub>1</sub>)(v<sub>2</sub> − v<sub>1</sub>)'],
     int:['v<sub>out</sub>(t) = −(1/RC)∫v<sub>in</sub>dτ + v<sub>C</sub>(0)','מעשי: A<sub>v</sub> = −R<sub>f</sub>/(R(1+jωR<sub>f</sub>C))'],der:['v<sub>out</sub>(t) = −RC·dv<sub>in</sub>/dt','גל משולש נכנס → גל ריבועי יוצא']};
   function upd(){show();build();const t=getT(),{A,R1,Rf,R2,R4,C,f}=st;
-    document.getElementById('oa-f').innerHTML=FX[t].map(x=>F('',x)).join('');
+    document.getElementById('oa-fx').innerHTML=FX[t].map(x=>F('',x)).join('');
     const gain={inv:-Rf/R1,non:1+Rf/R1,buf:1,sum:-Rf/R1,dif:Rf/R1}[t];
     const sat=Math.max(...W.vo.map(Math.abs))>=st.VCC-1e-9;
     const items=[['מצב המוצא',sat?pill('רוויה (נחתך)','bad'):pill('ליניארי','ok'),'html']];
@@ -6364,6 +6364,796 @@ return {lab1,lab4,lab8,lab9,build};
 
 /* ---- הוספת מודולי המעבדה של שאלון X לשיעורים 1, 4, 8, 9 ---- */
 [[1,'lab1'],[4,'lab4'],[8,'lab8'],[9,'lab9']].forEach(([k,fn])=>{const b=LESSONS[k].build;LESSONS[k].build=function(root){b.call(this,root);X26[fn](root);};});
+/* ==== LIVE-ADDITIONS BEGIN (מעגלים חיים ותוכן לימודי נוספים) ==== */
+/* ---- l3-sw.js ---- */
+/* ==== שיעור 3: NMOS כמתג/מהפך עם R_D ועומס קיבולי — קטעון, רוויה, טריודה בזמן ==== */
+(function(){
+function labSw3(root){
+section(root,{id:'l3-sw',tag:'מתג ומהפך',title:'NMOS כמתג: גל ריבועי בשער, ומי טוען את הקבל',short:'NMOS כמתג',
+lead:'המעגל הבסיסי ביותר עם MOSFET: <span class="m">R<sub>D</sub></span> מ-<span class="m">V<sub>DD</sub></span> לניקוז, השער מקבל גל ריבועי. מתחת ל-<span class="m">V<sub>t</sub></span> אין תעלה (קטעון, <span class="m">v<sub>out</sub> = V<sub>DD</sub></span>). מעליו הטרנזיסטור עובר <b>לרגע</b> ברוויה ומתיישב בטריודה: התנגדות קטנה לאדמה, <span class="m">v<sub>out</sub></span> נמוך. עם קבל עומס <span class="m">C<sub>L</sub></span> רואים את הזרם שטוען ופורק אותו: ב-R<sub>D</sub> בעלייה, ובטרנזיסטור בירידה.',
+body:'<div class="lab"><div class="controls"><div class="presets"><button type="button" data-preset="l3sw-a">מתג בלי קבל</button><button type="button" data-preset="l3sw-b">עם C<sub>L</sub> = 200pF</button><button type="button" data-preset="l3sw-c">R<sub>D</sub> גדול: ירידה מהירה, עלייה איטית</button><button type="button" data-preset="l3sw-d">שיפוע איטי: רואים את הרוויה</button></div><div class="sliders" id="l3sw-ctl"></div></div>'+
+'<div class="scopes">'+circ('cx-l3sw',lg('t1','זרם','dot')+lg('t4','רוויה')+lg('warn','טריודה'),true)+scope('c-l3sw','short',lg('t2','v<sub>in</sub>(t) = v<sub>GS</sub>')+lg('t1','v<sub>out</sub>(t) = v<sub>DS</sub>')+lg('t5','V<sub>t</sub>','dash'),'זמן')+scope('c-l3sw2','short',lg('t1','VTC סטטי (בלי קבל)')+lg('t3','נקודה נוכחית','dot')+lg('scope-axis','v<sub>DS</sub> = v<sub>GS</sub> − V<sub>t</sub> (גבול רוויה)'),'אופיין מעבר')+'</div></div><div class="readouts" id="r-l3sw"></div>'+
+notes('<h3>מה לראות</h3><ul><li>בלי קבל, ה-VTC הוא הכול: שלושה קטעים. קטעון (שטוח ב-V<sub>DD</sub>), רוויה (ירידה תלולה, ריבועית) וטריודה (מתקרב ל-0 לאט). המעבר לטריודה קורה בדיוק כש-<span class="m">v<sub>DS</sub> = v<sub>GS</sub> − V<sub>t</sub></span>, הקו האפור.</li><li>הוסף C<sub>L</sub>: ההשהיות נעשות אסימטריות. <b>ירידה</b>: הטרנזיסטור פורק את הקבל עם זרם גדול (<span class="m">k(V<sub>DD</sub>−V<sub>t</sub>)<sup>2</sup></span>), מהר. <b>עלייה</b>: רק R<sub>D</sub> טוען, עם קבוע זמן <span class="m">R<sub>D</sub>C<sub>L</sub></span>, לאט. לכן במהפכי CMOS יש PMOS במקום R<sub>D</sub>.</li><li>בעלייה של v<sub>in</sub> הזרם ב-R<sub>D</sub> והזרם בטרנזיסטור <b>שונים</b>: ההפרש הוא זרם הקבל (הנקודות בענף C<sub>L</sub>).</li><li>הגדל את R<sub>D</sub>: ברוויה ההגבר של המעבר (<span class="m">−g<sub>m</sub>R<sub>D</sub></span>) גדל, ה-VTC תלול יותר, אבל הטעינה איטית יותר.</li></ul>',
+'<h3>הנוסחאות</h3>'+F('קטעון:','v<sub>GS</sub> &lt; V<sub>t</sub> → I<sub>D</sub> = 0, v<sub>out</sub> = V<sub>DD</sub>')+F('רוויה:','I<sub>D</sub> = k(v<sub>GS</sub> − V<sub>t</sub>)<sup>2</sup>, k = ½k\'<sub>n</sub>W/L')+F('טריודה:','I<sub>D</sub> = k(2(v<sub>GS</sub> − V<sub>t</sub>)v<sub>DS</sub> − v<sub>DS</sub><sup>2</sup>)')+F('קו העומס:','I<sub>D</sub> = (V<sub>DD</sub> − v<sub>out</sub>)/R<sub>D</sub>')+F('גבול:','רוויה ↔ טריודה ב-v<sub>DS</sub> = v<sub>GS</sub> − V<sub>t</sub>')+F('עם קבל:','C<sub>L</sub>·dv<sub>out</sub>/dt = (V<sub>DD</sub> − v<sub>out</sub>)/R<sub>D</sub> − I<sub>D</sub>')+F('התנגדות ON:','r<sub>DS</sub> ≈ 1/(2k(V<sub>DD</sub> − V<sub>t</sub>))'))});
+(function(){
+  const C=Circuit('cx-l3sw',440,250),cv=reg('c-l3sw'),cv2=reg('c-l3sw2');
+  C.rail(300,18,'V_{DD}');C.w([300,18],[300,30]);C.R([300,30],[300,90],'R_D',{side:1,id:'rd'});C.w([300,90],[300,100]);
+  const m=C.mos(290,130,{id:'m'});C.w(m.s,[300,215]);C.G(300,215);C.nd(300,100);
+  C.w(m.g,[150,130],[150,150]);C.V([150,210],[150,150],'v_{in}',{kind:'ac',side:1,off:30});C.w([150,210],[150,215]);C.G(150,215);
+  C.w([300,100],[410,100]);C.term(410,100);C.T(410,86,'v_{out}','big','middle');C.T(410,120,'','val','middle',null,'vo');
+  C.nd(360,100);C.Cap([360,100],[360,170],'C_L',{side:-1,id:'cl'});C.w([360,170],[360,215]);C.G(360,215);
+  C.T(318,62,'','val','start',null,'ird');C.T(318,190,'','val','start',null,'id');C.T(200,112,'','val2','middle',null,'vg');C.T(432,200,'','he','end',null,'reg');
+  C.flow('rd',[[300,18],[300,100]]);C.flow('m',[[300,100],[300,160],[300,215]]);C.flow('cl',[[300,100],[360,100],[360,215]]);
+  C.bindPlay();
+  const st=sliders('l3sw-ctl',[
+    {key:'VDD',id:'l3sw-vdd',label:'V<sub>DD</sub>',min:2,max:12,step:0.5,value:5,fmt:v=>v.toFixed(1)+' V'},
+    {key:'Vt',id:'l3sw-vt',label:'V<sub>t</sub>',min:0.3,max:2.5,step:0.1,value:1,fmt:v=>v.toFixed(1)+' V'},
+    {key:'k',id:'l3sw-k',label:'k = ½k\'<sub>n</sub>W/L',min:0.05,max:2,step:0.05,value:0.5,map:v=>v*1e-3,fmt:v=>si(v,'A/V²')},
+    {key:'RD',id:'l3sw-rd',label:'R<sub>D</sub>',min:0.2,max:20,step:0.2,value:1,map:v=>v*1000,fmt:v=>si(v,'Ω')},
+    {key:'CL',id:'l3sw-cl',label:'C<sub>L</sub> (0 = בלי קבל)',min:0,max:500,step:10,value:0,map:v=>v*1e-12,fmt:v=>v===0?'אין':si(v,'F')},
+    {key:'T',id:'l3sw-t',label:'מחזור הגל הריבועי',min:0.2,max:10,step:0.1,value:2,map:v=>v*1e-6,fmt:v=>si(v,'s')},
+    {key:'tr',id:'l3sw-tr',label:'זמן עלייה/ירידה (% מהמחזור)',min:0,max:30,step:1,value:2,fmt:v=>v+' %'}],upd);
+  const ID=(vgs,vds)=>{const {Vt,k}=st,vov=vgs-Vt;if(vov<=0||vds<=0)return 0;return vds>=vov?k*vov*vov:k*(2*vov*vds-vds*vds);};
+  const region=(vgs,vds)=>vgs<=st.Vt?'cut':vds>=vgs-st.Vt?'sat':'tri';
+  function vstat(vgs){const {VDD,RD,Vt,k}=st,vov=vgs-Vt;if(vov<=0)return VDD;let v=VDD-k*vov*vov*RD;if(v>=vov)return v;
+    const a=k,b=-(2*k*vov+1/RD),c=VDD/RD;return (-b-Math.sqrt(Math.max(0,b*b-4*a*c)))/(2*a);}
+  function vin(ph){const {VDD}=st,r=Math.max(0.002,st.tr/100),p=((ph%1)+1)%1;if(p<r)return VDD*p/r;if(p<0.5)return VDD;if(p<0.5+r)return VDD*(1-(p-0.5)/r);return 0;}
+  const N=600;let VI=[],VO=[],IDs=[],IRD=[];
+  function build(){const {VDD,RD,CL,T}=st;VI=[];VO=[];IDs=[];IRD=[];let v=VDD;const dt=T/N;
+    if(CL>0){for(let k=0;k<N*3;k++){const g=vin(k/N);const ird=(VDD-v)/RD,id=ID(g,v);v+=(ird-id)/CL*dt;v=clamp(v,0,VDD);if(k>=N){VI.push(g);VO.push(v);IDs.push(id);IRD.push(ird);}}}
+    else{for(let k=0;k<2*N;k++){const g=vin(k/N),vo=vstat(g);VI.push(g);VO.push(vo);IDs.push(ID(g,vo));IRD.push((VDD-vo)/RD);}}}
+  function paint(ph){const i=Math.floor(((ph%2)/2)*(2*N))%(2*N),{VDD,RD,Vt}=st,g=VI[i],vo=VO[i],id=IDs[i],ird=IRD[i],ic=ird-id,Im=Math.max(VDD/RD,ID(VDD,VDD))*1.0,reg=region(g,vo);
+    C.I('rd',mag(ird,Im));C.I('m',mag(id,Im));C.I('cl',st.CL>0?mag(ic,Im):0,Math.sign(ic)||1);C.st('cl',st.CL>0?null:'dim');
+    C.st('m',reg==='cut'?'dim':reg==='sat'?'on':'hot');
+    C.set('vo','= '+fx(vo,2)+' V');C.set('ird','i_{RD} = '+si(ird,'A'));C.set('id','i_D = '+si(id,'A'));C.set('vg','v_{GS} = '+fx(g,2)+' V');C.set('reg',reg==='cut'?'קטעון · אין תעלה':reg==='sat'?'רוויה · תעלה צבוטה':'טריודה · מתג סגור');
+    const P1=[],P2=[];for(let k=0;k<2*N;k++){const x=2*k/(2*N);P1.push([x,VI[k]]);P2.push([x,VO[k]]);}
+    draw(cv,{x0:0,x1:2,y0:-0.2,y1:VDD*1.12,xl:'t / T',yl:'[V]',cursor:ph%2,series:[{c:'t5',w:1.2,dash:[4,4],pts:[[0,Vt],[2,Vt]]},{c:'t2',w:1.6,pts:P1},{c:'t1',w:2.6,pts:P2}]});
+    const vtc=[],bnd=[];for(let k=0;k<=200;k++){const x=VDD*k/200;vtc.push([x,vstat(x)]);bnd.push([x,Math.max(0,x-Vt)]);}
+    draw(cv2,{x0:0,x1:VDD,y0:0,y1:VDD*1.08,xl:'v_GS [V]',yl:'v_DS [V]',bands:[{x0:0,x1:Vt,c:'t5',a:.08,label:'קטעון'}],series:[{c:'axis',w:1.2,dash:[5,4],pts:bnd},{c:'t1',w:2.6,pts:vtc}],points:[{x:g,y:vo,c:'t3',r:5,label:reg==='cut'?'קטעון':reg==='sat'?'רוויה':'טריודה'}]});}
+  C.tick=(t)=>paint(t*0.25);
+  function upd(){const {VDD,RD,Vt,k,CL}=st;build();
+    const vov=VDD-Vt,ron=vov>0?1/(2*k*vov):Infinity,vlo=vstat(VDD),vsat=Vt+(Math.sqrt(1+4*k*RD*VDD)-1)/(2*k*RD),gm=2*k*(vsat-Vt);
+    readouts('r-l3sw',[['v<sub>out</sub> ברמה נמוכה (טריודה)',fx(vlo,3)+' V'],['r<sub>DS(on)</sub> ≈ 1/(2k(V<sub>DD</sub>−V<sub>t</sub>))',si(ron,'Ω')],['I<sub>D</sub> ברמה נמוכה',si(ID(VDD,vlo),'A')],['v<sub>GS</sub> שבו נכנסים לטריודה',fx(vsat,2)+' V'],['הגבר ב-VTC ברוויה −g<sub>m</sub>R<sub>D</sub> (בגבול)',(-gm*RD).toFixed(1)],['קבוע זמן טעינה R<sub>D</sub>C<sub>L</sub>',CL>0?si(RD*CL,'s'):'—'],['זרם פריקה מקסימלי k(V<sub>DD</sub>−V<sub>t</sub>)²',si(k*vov*vov,'A')],['הספק ב-R<sub>D</sub> במצב ON',si((VDD-vlo)*(VDD-vlo)/RD,'W')]]);
+    paint(C.t*0.25);}
+  presets({'l3sw-a':{'l3sw-vdd':5,'l3sw-vt':1,'l3sw-k':0.5,'l3sw-rd':1,'l3sw-cl':0,'l3sw-t':2,'l3sw-tr':2},'l3sw-b':{'l3sw-vdd':5,'l3sw-vt':1,'l3sw-k':0.5,'l3sw-rd':1,'l3sw-cl':200,'l3sw-t':2,'l3sw-tr':2},'l3sw-c':{'l3sw-vdd':5,'l3sw-vt':1,'l3sw-k':0.5,'l3sw-rd':5,'l3sw-cl':200,'l3sw-t':6,'l3sw-tr':2},'l3sw-d':{'l3sw-vdd':5,'l3sw-vt':1,'l3sw-k':0.5,'l3sw-rd':1,'l3sw-cl':0,'l3sw-t':2,'l3sw-tr':30}});
+  upd();
+})();
+}
+const b3=LESSONS[3].build;LESSONS[3].build=function(root){b3.call(this,root);labSw3(root);};
+})();
+/* ---- l5-sw.js ---- */
+/* ==== שיעור 5: BJT כמתג — גל ריבועי בבסיס, קטעון ↔ רוויה ==== */
+(function(){
+function labSw(root){
+section(root,{id:'l5-sw',tag:'מתג',title:'BJT כמתג: גל ריבועי בבסיס, המנורה נדלקת וכבית',short:'BJT כמתג',
+lead:'זה השימוש הכי נפוץ בטרנזיסטור מחוץ למגברים: כניסה לוגית דרך <span class="m">R<sub>B</sub></span> לבסיס, עומס (כאן נורה/נגד <span class="m">R<sub>C</sub></span>) בקולט. כשהכניסה נמוכה הטרנזיסטור <b>בקטעון</b> (מתג פתוח, <span class="m">V<sub>CE</sub> = V<sub>CC</sub></span>). כשהיא גבוהה מספיק הוא <b>ברוויה</b> (מתג סגור, <span class="m">V<sub>CE</sub> ≈ 0.2V</span>). באמצע, לרגע, הוא עובר דרך התחום הפעיל. עקוב אחרי זרם הבסיס הקטן וזרם הקולט הגדול.',
+body:'<div class="lab"><div class="controls"><div class="presets"><button type="button" data-preset="l5sw-a">מתג טוב (רוויה עמוקה)</button><button type="button" data-preset="l5sw-b">R<sub>B</sub> גדול מדי (נשאר פעיל)</button><button type="button" data-preset="l5sw-c">מעבר איטי</button></div><div class="sliders" id="l5sw-ctl"></div></div>'+
+'<div class="scopes">'+circ('cx-l5sw',lg('t1','זרם','dot')+lg('t4','פעיל')+lg('warn','רוויה'),true)+scope('c-l5sw','short',lg('t2','v<sub>in</sub>(t)')+lg('t1','v<sub>CE</sub>(t)')+lg('t5','V<sub>CE,sat</sub>','dash'),'מתח')+scope('c-l5sw2','short',lg('t3','i<sub>C</sub>(t)')+lg('t4','βi<sub>B</sub> (אילו היה פעיל)','dash'),'זרם קולט')+'</div></div><div class="readouts" id="r-l5sw"></div>'+
+notes('<h3>מה לראות</h3><ul><li>ברוויה <span class="m">I<sub>C</sub> = (V<sub>CC</sub> − 0.2)/R<sub>C</sub></span> נקבע על ידי <b>העומס</b>, לא על ידי β. הגרף המקווקו (βI<sub>B</sub>) גבוה בהרבה: זה "עודף ההיגוי" שמבטיח רוויה.</li><li>הגדל את <span class="m">R<sub>B</sub></span> עד ש-<span class="m">βI<sub>B</sub> &lt; I<sub>C,sat</sub></span>: הטרנזיסטור נתקע בתחום הפעיל, <span class="m">V<sub>CE</sub></span> לא יורד ל-0.2V, וההספק עליו (<span class="m">V<sub>CE</sub>·I<sub>C</sub></span>) גדול. מתג גרוע.</li><li>הארך את זמן העלייה: רואים את <span class="m">V<sub>CE</sub></span> יורד <b>בהדרגה</b> דרך התחום הפעיל. במתג רוצים לעבור את התחום הזה כמה שיותר מהר.</li><li>β<sub>forced</sub> = I<sub>C</sub>/I<sub>B</sub> ברוויה קטן מ-β. זה הסימן המספרי לרוויה.</li></ul>',
+'<h3>הנוסחאות</h3>'+F('קטעון:','v<sub>in</sub> &lt; 0.7V → I<sub>B</sub> = I<sub>C</sub> = 0, V<sub>CE</sub> = V<sub>CC</sub>')+F('זרם בסיס:','I<sub>B</sub> = (v<sub>in</sub> − 0.7)/R<sub>B</sub>')+F('פעיל:','I<sub>C</sub> = βI<sub>B</sub>, V<sub>CE</sub> = V<sub>CC</sub> − I<sub>C</sub>R<sub>C</sub>')+F('רוויה:','I<sub>C,sat</sub> = (V<sub>CC</sub> − 0.2)/R<sub>C</sub> &lt; βI<sub>B</sub>')+F('תנאי לרוויה:','I<sub>B</sub> &gt; I<sub>C,sat</sub>/β (בפועל לוקחים פי 2–10)')+F('הספק:','P = V<sub>CE</sub>·I<sub>C</sub> + V<sub>BE</sub>·I<sub>B</sub>'))});
+(function(){
+  const C=Circuit('cx-l5sw',440,250),cv=reg('c-l5sw'),cv2=reg('c-l5sw2'),VCEs=0.2;
+  C.rail(300,18,'V_{CC}');C.w([300,18],[300,30]);C.R([300,30],[300,85],'R_C (נורה)',{side:1,id:'rc',off:22});C.w([300,85],[300,95]);
+  const q=C.npn(290,125,{id:'q'});C.w([300,155],[300,215]);C.G(300,215);
+  C.w(q.b,[250,125]);C.R([250,125],[160,125],'R_B',{side:-1,id:'rb'});C.w([160,125],[110,125],[110,150]);C.V([110,210],[110,150],'v_{in}',{kind:'ac',side:1,off:30,id:'vs'});C.w([110,210],[110,215]);C.G(110,215);
+  C.flow('c',[[300,30],[300,95],[300,155],[300,215]]);C.flow('b',[[110,150],[110,125],[270,125],[285,140]]);
+  C.T(318,65,'','val','start',null,'ic');C.T(200,108,'','val','middle',null,'ib');C.T(345,130,'','val2','start',null,'vce');C.T(110,100,'','val2','middle',null,'vi');
+  C.T(432,178,'','he','end',null,'mode');
+  C.bindPlay();
+  const st=sliders('l5sw-ctl',[
+    {key:'VH',id:'l5sw-vh',label:'רמה גבוהה של v<sub>in</sub>',min:0.5,max:10,step:0.1,value:5,fmt:v=>v.toFixed(1)+' V'},
+    {key:'RB',id:'l5sw-rb',label:'R<sub>B</sub>',min:1,max:500,step:1,value:10,map:v=>v*1000,fmt:v=>si(v,'Ω')},
+    {key:'RC',id:'l5sw-rc',label:'R<sub>C</sub>',min:0.1,max:10,step:0.1,value:1,map:v=>v*1000,fmt:v=>si(v,'Ω')},
+    {key:'VCC',id:'l5sw-vcc',label:'V<sub>CC</sub>',min:3,max:15,step:0.5,value:5,fmt:v=>v.toFixed(1)+' V'},
+    {key:'beta',id:'l5sw-beta',label:'β',min:20,max:300,step:5,value:100,fmt:v=>String(v)},
+    {key:'tr',id:'l5sw-tr',label:'זמן עלייה/ירידה (% מהמחזור)',min:0,max:30,step:1,value:3,fmt:v=>v+' %'}],upd);
+  function solve(vin){const {RB,RC,VCC,beta}=st;
+    if(vin<=0.7)return {mode:'cut',IB:0,IC:0,VCE:VCC};
+    const IB=(vin-0.7)/RB,ICa=beta*IB,ICs=(VCC-VCEs)/RC;
+    if(ICa<ICs)return {mode:'act',IB,IC:ICa,VCE:VCC-ICa*RC};
+    return {mode:'sat',IB,IC:ICs,VCE:VCEs};}
+  // trapezoid input: 0 → VH, rise/fall time tr (fraction of period)
+  function vin(ph){const {VH}=st,r=Math.max(0.002,st.tr/100),p=((ph%1)+1)%1;
+    if(p<r)return VH*p/r;if(p<0.5)return VH;if(p<0.5+r)return VH*(1-(p-0.5)/r);return 0;}
+  let P1=[],P2=[],P3=[],P4=[];
+  function paint(ph){const v=vin(ph),s=solve(v),ICs=(st.VCC-VCEs)/st.RC,Im=Math.max(ICs,1e-6);
+    C.I('c',mag(s.IC,Im));C.I('b',mag(s.IB,Im));
+    C.st('q',s.mode==='cut'?'dim':s.mode==='sat'?'hot':'on');C.st('rc',s.mode==='sat'?'hot':s.mode==='act'?'on':'dim');
+    C.set('ic','I_C = '+si(s.IC,'A'));C.set('ib','I_B = '+si(s.IB,'A'));C.set('vce','V_{CE} = '+fx(s.VCE,2)+' V');C.set('vi',fx(v,2)+' V');
+    C.set('mode',s.mode==='cut'?'קטעון · מתג פתוח':s.mode==='sat'?'רוויה · מתג סגור':'פעיל · מעבר');
+    draw(cv,{x0:0,x1:2,y0:-0.5,y1:Math.max(st.VCC,st.VH)*1.15,xl:'t / T',yl:'[V]',cursor:ph%2,bands:[{y0:0,y1:VCEs,c:'warn',a:.18}],series:[{c:'t5',w:1.2,dash:[4,4],pts:[[0,VCEs],[2,VCEs]]},{c:'t2',w:1.8,pts:P1},{c:'t1',w:2.6,pts:P2}]});
+    const ymax=Math.max(ICs,...P4.map(p=>p[1]/1e3))*1e3*1.15;
+    draw(cv2,{x0:0,x1:2,y0:0,y1:Math.max(ymax,ICs*1e3*1.15),xl:'t / T',yl:'i_C [mA]',cursor:ph%2,series:[{c:'axis',w:1,dash:[3,4],pts:[[0,ICs*1e3],[2,ICs*1e3]]},{c:'t4',w:1.4,dash:[5,4],pts:P4},{c:'t3',w:2.6,pts:P3}]});}
+  C.tick=(t)=>paint(t*0.25);
+  function upd(){const {RB,RC,VCC,beta,VH}=st,ICs=(VCC-VCEs)/RC;P1=[];P2=[];P3=[];P4=[];
+    for(let i=0;i<=400;i++){const ph=2*i/400,v=vin(ph),s=solve(v);P1.push([ph,v]);P2.push([ph,s.VCE]);P3.push([ph,s.IC*1e3]);P4.push([ph,Math.min(beta*s.IB,ICs*3)*1e3]);}
+    const hi=solve(VH),need=ICs/beta,P=hi.VCE*hi.IC+0.7*hi.IB;
+    readouts('r-l5sw',[['מצב ברמה הגבוהה',pill(hi.mode==='sat'?'רוויה · מתג סגור':hi.mode==='act'?'פעיל · מתג "חצי סגור"':'קטעון','html'==='x'?'':hi.mode==='sat'?'ok':hi.mode==='act'?'warn':'mute'),'html'],['I<sub>B</sub> ברמה הגבוהה',si(hi.IB,'A')],['I<sub>C,sat</sub> = (V<sub>CC</sub>−0.2)/R<sub>C</sub>',si(ICs,'A')],['βI<sub>B</sub>',si(beta*hi.IB,'A')],['I<sub>B</sub> מינימלי לרוויה = I<sub>C,sat</sub>/β',si(need,'A')],['עודף היגוי βI<sub>B</sub>/I<sub>C,sat</sub>',hi.IB>0?(beta*hi.IB/ICs).toFixed(1)+'×':'—'],['β<sub>forced</sub> = I<sub>C</sub>/I<sub>B</sub>',hi.IB>0?(hi.IC/hi.IB).toFixed(1):'—'],['V<sub>CE</sub> ברמה הגבוהה',fx(hi.VCE,2)+' V'],['הספק על הטרנזיסטור (ON)',si(P,'W')],['R<sub>B</sub> מקסימלי לרוויה',si((VH-0.7)/need,'Ω')]]);
+    paint(C.t*0.25);}
+  presets({'l5sw-a':{'l5sw-vh':5,'l5sw-rb':10,'l5sw-rc':1,'l5sw-vcc':5,'l5sw-beta':100,'l5sw-tr':3},'l5sw-b':{'l5sw-vh':5,'l5sw-rb':150,'l5sw-rc':1,'l5sw-vcc':5,'l5sw-beta':100,'l5sw-tr':3},'l5sw-c':{'l5sw-vh':5,'l5sw-rb':10,'l5sw-rc':1,'l5sw-vcc':5,'l5sw-beta':100,'l5sw-tr':25}});
+  upd();
+})();
+}
+const b5=LESSONS[5].build;LESSONS[5].build=function(root){b5.call(this,root);labSw(root);};
+})();
+/* ---- l5-cel.js ---- */
+/* ==== שיעור 5: מגבר CE שלם וחי — ממתח במחלק, קבלי צימוד ועקיפה, אות DC+AC ==== */
+(function(){
+function labCel(root){
+section(root,{id:'l5-cel',tag:'מעגל חי',title:'מגבר CE שלם: DC במחלק, AC דרך הקבלים',short:'CE חי',
+lead:'המעגל המלא שמופיע במבחנים: מחלק <span class="m">R<sub>1</sub>/R<sub>2</sub></span> קובע את מתח הבסיס, <span class="m">R<sub>E</sub></span> מייצב את נקודת העבודה, <span class="m">C<sub>E</sub></span> עוקף אותו לאות, ו-<span class="m">C<sub>in</sub></span>, <span class="m">C<sub>out</sub></span> מפרידים בין ה-DC ל-AC. עקוב אחרי הנקודות: בענפי ה-DC הן זורמות בכיוון קבוע ורק "נושמות" עם האות, ובענפי הקבלים הן מתנדנדות קדימה ואחורה, כי דרך קבל עובר רק AC.',
+body:'<div class="lab"><div class="controls"><div class="presets"><button type="button" data-preset="l5cel-ex">מעגל טיפוסי (12V, β=100)</button><button type="button" data-preset="l5cel-big">אות גדול: קטימה</button><button type="button" data-preset="l5cel-sat">R<sub>C</sub> גדול: Q ליד רוויה</button><button type="button" data-preset="l5cel-load">R<sub>sig</sub> גדול: העמסת הכניסה</button></div><div class="sliders" id="l5cel-ctl"></div></div>'+
+'<div class="scopes">'+circ('cx-l5cel',lg('t1','זרם DC+AC','dot')+lg('t4','פעיל')+lg('warn','רוויה'),true)+scope('c-l5cel','short',lg('t2','v<sub>sig</sub>(t)')+lg('t3','v<sub>b</sub>(t) אחרי R<sub>sig</sub>‖R<sub>in</sub>'),'כניסה [mV]')+scope('c-l5cel2','short',lg('t1','v<sub>out</sub>(t)')+lg('t3','G<sub>v</sub>·v<sub>sig</sub> (ליניארי)','dash')+lg('t5','גבולות קטימה','dash'),'מוצא [V]')+'</div></div><div class="readouts" id="r-l5cel"></div>'+
+notes('<h3>מה לראות</h3><ul><li><b>DC</b>: הקבלים נתק. הזרם עובר רק ב-R<sub>1</sub>, R<sub>2</sub>, R<sub>C</sub>, R<sub>E</sub> ובטרנזיסטור. זו נקודת העבודה Q.</li><li><b>AC</b>: הקבלים קצר. האות נכנס דרך C<sub>in</sub>, "רואה" את <span class="m">R<sub>in</sub> = R<sub>1</sub>‖R<sub>2</sub>‖r<sub>π</sub></span>, מוגבר ב-<span class="m">−g<sub>m</sub>(R<sub>C</sub>‖R<sub>L</sub>)</span> ויוצא דרך C<sub>out</sub> אל R<sub>L</sub>. הזרם ב-R<sub>L</sub> מחליף כיוון כל חצי מחזור.</li><li>הגדל את R<sub>sig</sub>: המתח שמגיע לבסיס קטן (מחלק R<sub>in</sub>/(R<sub>in</sub>+R<sub>sig</sub>)). הגבר גבוה לא עוזר אם הכניסה "בולעת" את האות.</li><li>הגדל את האות מעבר ל-~10mV: העיוות מתחיל (הקירוב v<sub>be</sub> ≪ V<sub>T</sub> נשבר), ואז קטימה: למעלה בקטעון (i<sub>C</sub>=0), למטה ברוויה (V<sub>CE</sub>=0.2V).</li><li>הגדל את R<sub>C</sub>: ההגבר עולה, אבל V<sub>CE,Q</sub> יורד והקטימה ברוויה מגיעה מוקדם. תמיד יש פשרה בין הגבר לטווח מוצא.</li></ul>',
+'<h3>הנוסחאות</h3>'+F('DC:','V<sub>BB</sub> = V<sub>CC</sub>·R<sub>2</sub>/(R<sub>1</sub>+R<sub>2</sub>), R<sub>B</sub> = R<sub>1</sub>‖R<sub>2</sub>')+F('','I<sub>B</sub> = (V<sub>BB</sub> − 0.7)/(R<sub>B</sub> + (β+1)R<sub>E</sub>), I<sub>C</sub> = βI<sub>B</sub>')+F('','V<sub>CE</sub> = V<sub>CC</sub> − I<sub>C</sub>R<sub>C</sub> − I<sub>E</sub>R<sub>E</sub>')+F('AC:','g<sub>m</sub> = I<sub>C</sub>/V<sub>T</sub>, r<sub>π</sub> = β/g<sub>m</sub>')+F('','R<sub>in</sub> = R<sub>1</sub>‖R<sub>2</sub>‖r<sub>π</sub> (R<sub>E</sub> מעוקף)')+F('','A<sub>v</sub> = −g<sub>m</sub>(R<sub>C</sub>‖R<sub>L</sub>)')+F('','G<sub>v</sub> = A<sub>v</sub>·R<sub>in</sub>/(R<sub>in</sub>+R<sub>sig</sub>)'))});
+(function(){
+  const C=Circuit('cx-l5cel',520,300),cv=reg('c-l5cel'),cv2=reg('c-l5cel2');
+  C.rail(200,18,'V_{CC}');C.w([200,18],[200,30]);C.R([200,30],[200,120],'R_1',{side:-1,id:'r1'});C.w([200,120],[200,180]);C.nd(200,150);
+  C.R([200,180],[200,250],'R_2',{side:-1,id:'r2'});C.w([200,250],[200,265]);C.G(200,265);
+  C.V([40,230],[40,170],'v_{sig}',{kind:'ac',side:1,off:30});C.w([40,170],[40,150],[60,150]);C.R([60,150],[112,150],'R_{sig}',{side:-1});C.w([112,150],[122,150]);C.Cap([122,150],[170,150],'C_{in}',{side:-1});C.w([170,150],[270,150]);C.w([40,230],[40,265]);C.G(40,265);
+  const q=C.npn(290,150,{id:'q'});
+  C.rail(300,18,'V_{CC}');C.w([300,18],[300,30]);C.R([300,30],[300,100],'R_C',{side:1,id:'rc'});C.w([300,100],[300,120]);C.nd(300,110);
+  C.w([300,110],[340,110]);C.Cap([340,110],[390,110],'C_{out}',{side:-1});C.w([390,110],[480,110]);C.nd(430,110);C.R([430,110],[430,200],'R_L',{side:-1,id:'rl'});C.w([430,200],[430,265]);C.G(430,265);C.term(480,110);
+  C.T(480,96,'v_{out}','big','middle');C.T(480,132,'','val','middle',null,'vo');
+  C.w([300,180],[300,200]);C.nd(300,200);C.R([300,200],[300,255],'R_E',{side:1,id:'re'});C.w([300,255],[300,265]);C.G(300,265);
+  C.w([300,200],[360,200]);C.Cap([360,200],[360,255],'C_E',{side:-1});C.w([360,255],[360,265]);C.G(360,265);
+  C.T(230,138,'','val2','middle',null,'vb');C.T(318,75,'','val','start',null,'ic');C.T(340,140,'','val2','start',null,'vce');C.T(120,120,'','val2','middle',null,'vs');C.T(120,105,'v_{sig}','hi','middle');
+  C.flow('r1',[[200,18],[200,150]]);C.flow('r2',[[200,150],[200,265]]);C.flow('b',[[200,150],[270,150],[285,165]]);C.flow('sig',[[40,170],[40,150],[200,150]],{signal:true});
+  C.flow('c',[[300,18],[300,110],[300,120]]);C.flow('out',[[300,110],[430,110],[430,265]],{signal:true});C.flow('e',[[300,180],[300,265]]);C.flow('ce',[[300,200],[360,200],[360,265]],{signal:true});
+  C.bindPlay();
+  const st=sliders('l5cel-ctl',[
+    {key:'vs',id:'l5cel-vs',label:'v<sub>sig</sub> (שיא)',min:1,max:200,step:1,value:3,map:v=>v/1000,fmt:v=>si(v,'V')},
+    {key:'Rsig',id:'l5cel-rsig',label:'R<sub>sig</sub>',min:0,max:20,step:0.5,value:1,map:v=>v*1000,fmt:v=>si(v,'Ω')},
+    {key:'R1',id:'l5cel-r1',label:'R<sub>1</sub>',min:10,max:300,step:5,value:100,map:v=>v*1000,fmt:v=>si(v,'Ω')},
+    {key:'R2',id:'l5cel-r2',label:'R<sub>2</sub>',min:1,max:100,step:1,value:22,map:v=>v*1000,fmt:v=>si(v,'Ω')},
+    {key:'RC',id:'l5cel-rc',label:'R<sub>C</sub>',min:0.5,max:15,step:0.1,value:4.7,map:v=>v*1000,fmt:v=>si(v,'Ω')},
+    {key:'RE',id:'l5cel-re',label:'R<sub>E</sub>',min:0.1,max:5,step:0.1,value:1,map:v=>v*1000,fmt:v=>si(v,'Ω')},
+    {key:'RL',id:'l5cel-rl',label:'R<sub>L</sub>',min:1,max:100,step:1,value:10,map:v=>v*1000,fmt:v=>si(v,'Ω')},
+    {key:'beta',id:'l5cel-beta',label:'β',min:20,max:300,step:5,value:100,fmt:v=>String(v)},
+    {key:'VCC',id:'l5cel-vcc',label:'V<sub>CC</sub>',min:5,max:24,step:0.5,value:12,fmt:v=>v.toFixed(1)+' V'}],upd);
+  let Q={},W={};const N=400;
+  function dc(){const {R1,R2,RC,RE,beta,VCC}=st,VBB=VCC*R2/(R1+R2),RB=par(R1,R2);
+    let IB=Math.max(0,(VBB-0.7)/(RB+(beta+1)*RE)),IC=beta*IB,IE=IB+IC,VE=IE*RE,VC=VCC-IC*RC,VCE=VC-VE,mode='act';
+    if(IB<=0){mode='cut';}
+    else if(VCE<0.2){mode='sat';// solve with VCE=0.2: VB=0.7+VE, IB=(VBB-0.7-IE*RE)/RB, IC=(VCC-0.2-IE*RE)/RC, IE=IB+IC → linear in IE
+      const IEs=(VBB-0.7)/RB+(VCC-0.2)/RC;const k=1+RE/RB+RE/RC;IE=IEs/k;IB=(VBB-0.7-IE*RE)/RB;IC=IE-IB;VE=IE*RE;VCE=0.2;VC=VE+0.2;}
+    const VB=(mode==='cut')?VBB:0.7+VE,gm=IC/VT,rpi=IC>0?beta/gm:Infinity,Rin=par(par(R1,R2),rpi),RLp=par(RC,st.RL),Av=-gm*RLp,k=Rin/(Rin+st.Rsig),Gv=Av*k;
+    Q={mode,IB,IC,IE,VB,VC,VE,VCE,gm,rpi,Rin,RLp,Av,k,Gv,VBB,RB,IR1:(VCC-VB)/R1,IR2:VB/R2};}
+  function build(){const {vs}=st,{IC,RLp,k,VCE,mode}=Q;const vsg=[],vb=[],vo=[],lin=[],ic=[];let mx=-1e9,mn=1e9;
+    const up=IC*RLp,lo=-(VCE-0.2);
+    for(let i=0;i<N;i++){const t=2*i/N,s=vs*Math.sin(2*Math.PI*t),vbe=k*s;let icc=mode==='cut'?0:IC*Math.exp(Math.min(vbe,0.5)/VT);let v=-(icc-IC)*RLp;
+      if(v>up){v=up;icc=0;}if(v<lo){v=lo;icc=IC-lo/RLp;}
+      vsg.push([t,s*1e3]);vb.push([t,vbe*1e3]);vo.push([t,v]);lin.push([t,Q.Gv*s]);ic.push(icc);mx=Math.max(mx,v);mn=Math.min(mn,v);}
+    W={vsg,vb,vo,lin,ic,up,lo,mx,mn};}
+  function paint(ph){const i=Math.floor(((ph%2)/2)*N)%N,{vs,R1,R2,RC,RE,RL,Rsig,VCC}=st,icc=W.ic[i],ib=icc/st.beta,ie=icc+ib,vo=W.vo[i][1],vbe=W.vb[i][1]/1e3;
+    const iac=icc-Q.IC,iout=vo/RL,isig=(W.vsg[i][1]/1e3-vbe)/Math.max(Rsig,1),Imax=Math.max(Q.IC*2.5,1e-4),Iac=Math.max(Math.abs(Q.IC*(Math.exp(vs*Q.k/VT)-1)),1e-6);
+    C.I('r1',mag(Q.IR1,Imax));C.I('r2',mag(Q.IR2,Imax));C.I('b',mag(ib,Imax));C.I('c',mag(icc,Imax));C.I('e',mag(ie,Imax));
+    C.I('sig',clamp(Math.abs(isig)/Math.max(Math.abs(vs/(Rsig+Q.Rin)),1e-9)*0.8,0,1)*(vs>0?1:0),Math.sign(isig)||1);
+    C.I('out',clamp(Math.abs(iout)/Math.max(Math.abs(W.mx-W.mn)/2/RL,1e-9)*0.8,0,1),Math.sign(iout)||1);
+    C.I('ce',clamp(Math.abs(iac)/Iac*0.8,0,1),Math.sign(iac)||1);
+    const sat=vo<=W.lo+1e-9,cut=vo>=W.up-1e-9&&Q.IC>0;
+    C.st('q',Q.mode==='cut'?'dim':(sat||Q.mode==='sat')?'hot':'on');
+    C.set('vb','v_B = '+fx(Q.VB+vbe,2)+' V');C.set('ic','i_C = '+si(icc,'A'));C.set('vce','V_{CE} = '+fx(Q.VCE-vo,2)+' V');C.set('vo','= '+fx(vo,2)+' V');C.set('vs',fx(W.vsg[i][1],1)+' mV');
+    const ym=Math.max(vs*1e3,1)*1.2;
+    draw(cv,{x0:0,x1:2,y0:-ym,y1:ym,xl:'t / T',yl:'[mV]',cursor:ph%2,series:[{c:'t2',w:1.6,pts:W.vsg},{c:'t3',w:2.2,pts:W.vb}]});
+    const lim=Math.max(0.2,Math.min(Math.max(Math.abs(Q.Gv*vs),W.up,Math.abs(W.lo))*1.12,Math.max(Math.abs(Q.Gv*vs),Math.abs(W.mx),Math.abs(W.mn))*1.4));
+    draw(cv2,{x0:0,x1:2,y0:-lim,y1:lim,xl:'t / T',yl:'v_out [V]',cursor:ph%2,series:[{c:'t5',w:1.2,dash:[4,4],pts:[[0,W.up],[2,W.up]]},{c:'t5',w:1.2,dash:[4,4],pts:[[0,W.lo],[2,W.lo]]},{c:'t3',w:1.6,dash:[6,4],pts:W.lin},{c:'t1',w:2.6,pts:W.vo}]});}
+  C.tick=(t)=>paint(t*0.25);
+  function upd(){dc();build();const {vs}=st;
+    const Avm=(W.mx-W.mn)/(2*vs*Q.k),asym=(W.mx+W.mn)/Math.max(1e-9,W.mx-W.mn)*100;let s;
+    if(Q.mode==='sat')s=pill('Q ברוויה: אין הגבר','bad');else if(Q.mode==='cut')s=pill('Q בקטעון','bad');else if(W.mx>=W.up-1e-6||W.mn<=W.lo+1e-6)s=pill('קטימה ('+(W.mn<=W.lo+1e-6?'רוויה':'קטעון')+')','bad');else if(Math.abs(asym)>5)s=pill('עיוות '+Math.abs(asym).toFixed(0)+'%','warn');else s=pill('ליניארי · אות קטן','ok');
+    readouts('r-l5cel',[['מצב',s,'html'],['V<sub>BB</sub> / R<sub>B</sub>',fx(Q.VBB,2)+' V / '+si(Q.RB,'Ω')],['I<sub>B</sub> / I<sub>C</sub>',si(Q.IB,'A')+' / '+si(Q.IC,'A')],['V<sub>B</sub> / V<sub>E</sub> / V<sub>C</sub>',fx(Q.VB,2)+' / '+fx(Q.VE,2)+' / '+fx(Q.VC,2)+' V'],['V<sub>CE,Q</sub>',fx(Q.VCE,2)+' V'],['g<sub>m</sub> / r<sub>π</sub>',si(Q.gm,'S')+' / '+si(Q.rpi,'Ω')],['R<sub>in</sub> = R<sub>1</sub>‖R<sub>2</sub>‖r<sub>π</sub>',si(Q.Rin,'Ω')],['R<sub>in</sub>/(R<sub>in</sub>+R<sub>sig</sub>)',Q.k.toFixed(3)],['A<sub>v</sub> = −g<sub>m</sub>(R<sub>C</sub>‖R<sub>L</sub>)',Q.Av.toFixed(1)],['G<sub>v</sub> = v<sub>out</sub>/v<sub>sig</sub>',Q.Gv.toFixed(1)+' (נמדד: '+(-Avm*Q.k).toFixed(1)+')'],['v<sub>out</sub> שיא',fx(Math.max(Math.abs(W.mx),Math.abs(W.mn)),2)+' V'],['טווח מוצא (קטעון / רוויה)','+'+fx(W.up,2)+' / '+fx(W.lo,2)+' V']]);
+    paint(C.t*0.25);}
+  presets({'l5cel-ex':{'l5cel-vs':3,'l5cel-rsig':1,'l5cel-r1':100,'l5cel-r2':22,'l5cel-rc':4.7,'l5cel-re':1,'l5cel-rl':10,'l5cel-beta':100,'l5cel-vcc':12},'l5cel-big':{'l5cel-vs':60,'l5cel-rsig':1,'l5cel-r1':100,'l5cel-r2':22,'l5cel-rc':4.7,'l5cel-re':1,'l5cel-rl':10,'l5cel-beta':100,'l5cel-vcc':12},'l5cel-sat':{'l5cel-vs':3,'l5cel-rsig':1,'l5cel-r1':100,'l5cel-r2':22,'l5cel-rc':8.5,'l5cel-re':1,'l5cel-rl':10,'l5cel-beta':100,'l5cel-vcc':12},'l5cel-load':{'l5cel-vs':3,'l5cel-rsig':10,'l5cel-r1':100,'l5cel-r2':22,'l5cel-rc':4.7,'l5cel-re':1,'l5cel-rl':10,'l5cel-beta':100,'l5cel-vcc':12}});
+  upd();
+})();
+}
+const b5=LESSONS[5].build;LESSONS[5].build=function(root){b5.call(this,root);labCel(root);};
+})();
+/* ---- l6-out.js ---- */
+/* ==== שיעור 6: מקור זרם תחת עומס משתנה — התנגדות מוצא ותחום העבודה (compliance) בזמן ==== */
+(function(){
+function labOut(root){
+section(root,{id:'l6-out',tag:'מעגל חי בזמן',title:'מקור זרם "מושלם"? סורקים את מתח המוצא ורואים כמה הזרם זז',short:'סריקת V_o',
+lead:'מקור זרם אידיאלי מספק אותו זרם לכל מתח מוצא. במציאות שני דברים מקלקלים את זה: <b>התנגדות המוצא</b> (הזרם עולה קצת עם V<sub>o</sub>, שיפוע 1/R<sub>out</sub>) ו<b>תחום העבודה</b> (מתחת ל-V<sub>o,min</sub> הטרנזיסטור יוצא מרוויה והזרם קורס). כאן מקור מתח משולש "מושך" את מתח המוצא של המראה למעלה ולמטה, ואתה רואה את הזרם בענף המוצא בזמן אמת. השווה מראה בסיסית לקסקודה/וילסון.',
+body:'<div class="lab"><div class="controls"><div class="seg" id="l6out-dev"><button type="button" data-v="mos" aria-pressed="true">MOSFET</button><button type="button" data-v="bjt" aria-pressed="false">BJT</button></div><div class="seg" id="l6out-top"><button type="button" data-v="basic" aria-pressed="true">מראה בסיסית</button><button type="button" data-v="casc" aria-pressed="false">קסקודה / וילסון</button></div><div class="presets"><button type="button" data-preset="l6out-a">λ=0.05, סריקה 0–5V</button><button type="button" data-preset="l6out-b">אידיאלי (λ=0)</button><button type="button" data-preset="l6out-c">סריקה רק בתחום הרוויה</button></div><div class="sliders" id="l6out-ctl"></div></div>'+
+'<div class="scopes">'+circ('cx-l6out',lg('t1','זרם','dot')+lg('t4','ברוויה / פעיל')+lg('warn','טריודה / רוויית BJT'),true)+scope('c-l6out','short',lg('t1','I<sub>o</sub>(t) [mA]')+lg('t2','V<sub>o</sub>(t) מנורמל','dash')+lg('t5','V<sub>o,min</sub>','dash'),'זמן')+scope('c-l6out2','short',lg('t1','I<sub>o</sub>(V<sub>o</sub>)')+lg('t3','נקודה נוכחית','dot')+lg('t4','תחום עבודה תקין'),'אופיין המוצא')+'</div></div><div class="readouts" id="r-l6out"></div>'+
+notes('<h3>מה לראות</h3><ul><li>במראה בסיסית עם λ=0.05 הזרם עולה ב-~5% לכל וולט: <span class="m">R<sub>out</sub> = r<sub>o</sub> = 1/(λI<sub>o</sub>)</span>. בקסקודה השיפוע כמעט אפס: <span class="m">R<sub>out</sub> ≈ g<sub>m</sub>r<sub>o</sub>·r<sub>o</sub></span> (MOS) או <span class="m">βr<sub>o</sub>/2</span> (וילסון).</li><li>המחיר של הקסקודה: תחום העבודה מתחיל גבוה יותר (<span class="m">2V<sub>OV</sub></span> במקום <span class="m">V<sub>OV</sub></span>; ב-BJT ≈ 0.9V במקום 0.2V). כשהסריקה יורדת מתחת לזה, הזרם קורס והנקודות בענף המוצא כמעט נעצרות.</li><li>שים לב שהזרם בענף הייחוס לא משתנה בכלל: Q1 מחובר כדיודה ו-V<sub>GS</sub> שלו קבוע. רק ענף המוצא "מרגיש" את העומס.</li><li>המסקנה למגברים: מקור זרם כעומס פעיל נותן R<sub>out</sub> ענקית ולכן הגבר גדול, אבל "אוכל" חלק מטווח המוצא.</li></ul>',
+'<h3>הנוסחאות</h3>'+F('MOS:','I<sub>o</sub> = I<sub>REF</sub>·(W/L)<sub>2</sub>/(W/L)<sub>1</sub>·(1+λ(V<sub>o</sub> − V<sub>GS</sub>)), V<sub>o</sub> ≥ V<sub>OV</sub>')+F('','R<sub>out</sub> = r<sub>o</sub> = 1/(λI<sub>o</sub>); קסקודה: R<sub>out</sub> ≈ (g<sub>m</sub>r<sub>o</sub>)r<sub>o</sub>')+F('BJT:','I<sub>o</sub> = I<sub>REF</sub>·β/(β+2)·(1+(V<sub>o</sub> − V<sub>BE</sub>)/V<sub>A</sub>), V<sub>o</sub> ≥ V<sub>CE,sat</sub>')+F('','R<sub>out</sub> = r<sub>o</sub> = V<sub>A</sub>/I<sub>o</sub>; וילסון: R<sub>out</sub> = βr<sub>o</sub>/2')+F('ΔI לכל ΔV:','ΔI<sub>o</sub> = ΔV<sub>o</sub>/R<sub>out</sub>'))});
+(function(){
+  const C=Circuit('cx-l6out',440,250),cv=reg('c-l6out'),cv2=reg('c-l6out2');
+  mk('path',{d:'M80 18 L300 18',class:'k'},C.svg);C.T(190,12,'V_{DD}','hi','middle');
+  C.w([110,18],[110,35]);C.V([110,35],[110,85],'I_{REF}',{kind:'i',side:1,off:30});C.w([110,85],[110,120]);
+  const q1=C.mos(120,150,{flip:-1,label:'Q1',id:'q1'}),q2=C.mos(250,150,{label:'Q2',id:'q2'});
+  C.nd(110,105);C.w([110,105],[185,105],[185,150]);C.w(q1.g,q2.g);C.nd(185,150);
+  C.w([110,180],[110,210]);C.G(110,210);C.w([260,180],[260,210]);C.G(260,210);
+  C.w([260,120],[260,60],[360,60],[360,90]);C.V([360,160],[360,90],'v_o(t)',{kind:'ac',side:-1,off:30});C.w([360,160],[360,210]);C.G(360,210);C.nd(260,80);
+  C.T(160,95,'I_{G} = 0','hi','middle');C.T(272,110,'','val','start',null,'io');C.T(320,45,'','val2','middle',null,'vo');C.T(96,118,'','val','end',null,'iref');
+  C.T(430,235,'','he','end',null,'mode');
+  C.flow('ref',[[110,35],[110,120],[110,180],[110,210]]);C.flow('o',[[360,90],[360,60],[260,60],[260,120],[260,180],[260,210]]);
+  C.bindPlay();
+  const getD=seg('l6out-dev',()=>upd()),getT=seg('l6out-top',()=>upd());
+  const st=sliders('l6out-ctl',[
+    {key:'IREF',id:'l6out-iref',label:'I<sub>REF</sub>',min:0.1,max:5,step:0.1,value:1,map:v=>v/1000,fmt:v=>si(v,'A')},
+    {key:'m',id:'l6out-m',label:'יחס (W/L)<sub>2</sub>/(W/L)<sub>1</sub> או m',min:0.5,max:4,step:0.5,value:1,fmt:v=>v.toFixed(1)},
+    {key:'VOV',id:'l6out-vov',label:'V<sub>OV</sub> (MOS)',min:0.1,max:1,step:0.05,value:0.3,fmt:v=>v.toFixed(2)+' V'},
+    {key:'lam',id:'l6out-lam',label:'λ (MOS) · 1/V<sub>A</sub> (BJT)',min:0,max:0.2,step:0.005,value:0.05,fmt:v=>v.toFixed(3)+' 1/V'},
+    {key:'beta',id:'l6out-beta',label:'β (BJT)',min:20,max:300,step:5,value:100,fmt:v=>String(v)},
+    {key:'Vlo',id:'l6out-vlo',label:'V<sub>o</sub> מינימלי בסריקה',min:0,max:4,step:0.1,value:0,fmt:v=>v.toFixed(1)+' V'},
+    {key:'Vhi',id:'l6out-vhi',label:'V<sub>o</sub> מקסימלי בסריקה',min:1,max:10,step:0.5,value:5,fmt:v=>v.toFixed(1)+' V'}],upd);
+  const Vt=1;
+  function model(){const d=getD(),t=getT(),{IREF,m,VOV,lam,beta}=st;
+    if(d==='mos'){const VGS=Vt+VOV,I0=m*IREF,Vmin=t==='basic'?VOV:2*VOV,gmro=lam>0?(2/VOV)/lam:Infinity;
+      const slope=t==='basic'?lam:(isFinite(gmro)?lam/gmro:0);// dI/I per volt
+      return {I0,Vmin,Vref:VGS,slope,Rout:slope>0?1/(slope*I0):Infinity,name:t==='basic'?'מראה MOS בסיסית':'קסקודה MOS',lo:'טריודה'};}
+    const I0=m*IREF*beta/(beta+2)*(t==='basic'?1:(1+2/(beta*beta+2*beta))/(beta/(beta+2))),Vmin=t==='basic'?0.2:0.9;
+    const slope=t==='basic'?lam:lam*2/beta;
+    return {I0,Vmin,Vref:0.7,slope,Rout:slope>0?1/(slope*I0):Infinity,name:t==='basic'?'מראה BJT בסיסית':'מראה וילסון',lo:'רוויה'};}
+  let M=null;
+  const Io=(v)=>{const {I0,Vmin,Vref,slope}=M;const early=1+slope*(v-Vref);if(v>=Vmin)return I0*early;const x=Math.max(0,v/Vmin);return I0*(2*x-x*x)*(1+slope*(Vmin-Vref));};
+  const N=400;let T=[],VO=[],IO=[];
+  function build(){const {Vlo,Vhi}=st;T=[];VO=[];IO=[];for(let k=0;k<N;k++){const x=k/N,tri=x<0.5?2*x:2-2*x,v=Vlo+(Vhi-Vlo)*tri;T.push(x);VO.push(v);IO.push(Io(v));}}
+  function paint(ph){const i=Math.floor((ph%1)*N)%N,v=VO[i],io=IO[i],{IREF,Vhi}=st,Im=Math.max(M.I0*1.3,IREF);
+    C.I('ref',mag(IREF,Im));C.I('o',mag(io,Im));C.st('q2',v>=M.Vmin?'on':'hot');C.st('q1','on');
+    C.set('io','I_o = '+si(io,'A'));C.set('vo','v_o = '+fx(v,2)+' V');C.set('iref','I_{REF} = '+si(IREF,'A'));C.set('mode',v>=M.Vmin?M.name+' · תקין':M.name+' · '+M.lo+'!');
+    const P1=[],P2=[];for(let k=0;k<N;k++){P1.push([T[k],VO[k]]);P2.push([T[k],IO[k]/M.I0]);}
+    const ym=M.I0*1e3*1.35,sc=ym/(Vhi*1.1);
+    draw(cv,{x0:0,x1:1,y0:0,y1:ym,xl:'t / T',yl:'I_o [mA]  (V_o מנורמל, מקווקו)',cursor:ph%1,series:[{c:'t5',w:1.2,dash:[4,4],pts:[[0,M.Vmin*sc],[1,M.Vmin*sc]]},{c:'t2',w:1.6,dash:[6,4],pts:P1.map(p=>[p[0],p[1]*sc])},{c:'t1',w:2.6,pts:P2.map(p=>[p[0],p[1]*M.I0*1e3])}]});
+    const cur=[];for(let k=0;k<=200;k++){const x=Vhi*1.05*k/200;cur.push([x,Io(x)*1e3]);}
+    draw(cv2,{x0:0,x1:Vhi*1.05,y0:0,y1:M.I0*1e3*1.3,xl:'V_o [V]',yl:'I_o [mA]',bands:[{x0:M.Vmin,x1:Vhi*1.05,c:'t4',a:.08}],series:[{c:'axis',w:1,dash:[3,4],pts:[[0,M.I0*1e3],[Vhi*1.05,M.I0*1e3]]},{c:'t1',w:2.6,pts:cur}],points:[{x:v,y:io*1e3,c:'t3',r:5,label:si(io,'A')}]});}
+  C.tick=(t)=>paint(t*0.12);
+  function upd(){const d=getD();document.getElementById('l6out-vov').disabled=d!=='mos';document.getElementById('l6out-beta').disabled=d==='mos';M=model();build();
+    const {Vlo,Vhi}=st,dI=(Io(Vhi)-Io(Math.max(Vlo,M.Vmin)))/M.I0*100;
+    readouts('r-l6out',[['I<sub>o</sub> נומינלי',si(M.I0,'A')],['V<sub>o,min</sub> (תחום עבודה)',fx(M.Vmin,2)+' V'],['R<sub>out</sub>',isFinite(M.Rout)?si(M.Rout,'Ω'):'∞'],['שינוי I<sub>o</sub> לאורך הסריקה (בתחום התקין)',dI.toFixed(2)+'%'],['ΔI<sub>o</sub> לכל 1V',isFinite(M.Rout)?si(1/M.Rout,'A'):'0'],['הסריקה יורדת מתחת ל-V<sub>o,min</sub>?',Vlo<M.Vmin?pill('כן: הזרם קורס בחלק מהמחזור','warn'):pill('לא: מקור זרם תקין כל הזמן','ok'),'html']]);
+    paint(C.t*0.12);}
+  presets({'l6out-a':{'l6out-iref':1,'l6out-m':1,'l6out-vov':0.3,'l6out-lam':0.05,'l6out-beta':100,'l6out-vlo':0,'l6out-vhi':5},'l6out-b':{'l6out-lam':0},'l6out-c':{'l6out-vlo':1.5,'l6out-vhi':5}});
+  upd();
+})();
+}
+const b6=LESSONS[6].build;LESSONS[6].build=function(root){b6.call(this,root);labOut(root);};
+})();
+/* ---- l7-sig.js ---- */
+/* ==== שיעור 7: זוג הפרש בזמן — אות הפרשי קטן רוכב על רעש משותף גדול ==== */
+(function(){
+function labSig(root){
+section(root,{id:'l7-sig',tag:'מעגל חי בזמן',title:'האות ההפרשי עובר, הרעש המשותף נמחק: בזמן אמת',short:'הפרשי מול משותף',
+lead:'לשני השערים נכנס אותו "זמזום" גדול ואיטי (רעש משותף, למשל 50Hz מהרשת), ועליו רוכב אות הפרשי קטן ומהיר בפאזות הפוכות. עקוב אחרי הזרמים בשני הענפים: הם מתחלפים זה בזה בקצב האות ההפרשי, אבל <b>סכומם קבוע</b> (מקור הזרם). לכן בהפרש המוצאים <span class="m">v<sub>o2</sub> − v<sub>o1</sub></span> הזמזום נעלם, ורק כשמקור הזרם לא אידיאלי (<span class="m">R<sub>SS</sub></span> סופי) חלק ממנו דולף.',
+body:'<div class="lab"><div class="controls"><div class="seg" id="l7sig-type"><button type="button" data-v="mos" aria-pressed="true">MOSFET</button><button type="button" data-v="bjt" aria-pressed="false">BJT</button></div><div class="presets"><button type="button" data-preset="l7sig-ideal">מקור זרם אידיאלי</button><button type="button" data-preset="l7sig-rss">R<sub>SS</sub> = 20kΩ</button><button type="button" data-preset="l7sig-big">אות גדול: יוצא מהתחום הליניארי</button></div><div class="sliders" id="l7sig-ctl"></div></div>'+
+'<div class="scopes">'+circ('cx-l7sig',lg('t1','זרם','dot'),true)+scope('c-l7sig','short',lg('t2','v<sub>G1</sub>(t)')+lg('t3','v<sub>G2</sub>(t)'),'כניסות: רעש משותף + אות הפרשי')+scope('c-l7sig2','short',lg('t2','v<sub>o1</sub>')+lg('t3','v<sub>o2</sub>')+lg('t1','v<sub>o2</sub> − v<sub>o1</sub> (הפרשי)'),'מוצאים [V, סביב נקודת העבודה]')+'</div></div><div class="readouts" id="r-l7sig"></div>'+
+notes('<h3>מה לראות</h3><ul><li>עם מקור זרם אידיאלי, המוצאים החד-צדדיים v<sub>o1</sub>, v<sub>o2</sub> נקיים לגמרי מהזמזום: הזרם הכולל קבוע, ולכן v<sub>S</sub> (המקור המשותף) פשוט עוקב אחרי הרעש והזרמים לא משתנים.</li><li>הקטן את R<sub>SS</sub>: v<sub>S</sub> שזז מושך זרם נוסף דרך R<sub>SS</sub>, שני הענפים "נושמים" יחד עם הזמזום, וכל מוצא חד-צדדי מקבל אותו (<span class="m">A<sub>CM</sub> = −R<sub>D</sub>/2R<sub>SS</sub></span>). בהפרש הוא עדיין מתבטל, כי הוא זהה בשני הצדדים.</li><li>הגדל את האות ההפרשי מעבר ל-<span class="m">√2·V<sub>OV</sub></span> (MOS) או ~4V<sub>T</sub> (BJT): כל הזרם עובר לצד אחד, המוצא ההפרשי נחתך.</li><li>CMRR = A<sub>d</sub>/A<sub>CM</sub> = g<sub>m</sub>R<sub>SS</sub>: לכן משקיעים במקור זרם עם התנגדות מוצא גבוהה (קסקודה, שיעור 6).</li></ul>',
+'<h3>הנוסחאות</h3>'+F('','v<sub>G1,2</sub> = v<sub>CM</sub> ± v<sub>id</sub>/2')+F('MOS:','i<sub>D1,2</sub> = I/2 ± g<sub>m</sub>v<sub>id</sub>/2, g<sub>m</sub> = I/V<sub>OV</sub>')+F('BJT:','i<sub>E1,2</sub> = I/(1+e<sup>∓v<sub>id</sub>/V<sub>T</sub></sup>), g<sub>m</sub> = I/2V<sub>T</sub>')+F('הפרשי:','A<sub>d</sub> = (v<sub>o2</sub>−v<sub>o1</sub>)/v<sub>id</sub> = g<sub>m</sub>R<sub>D</sub>')+F('משותף (חד-צדדי):','A<sub>CM</sub> = −R<sub>D</sub>/(2R<sub>SS</sub>)')+F('','CMRR = g<sub>m</sub>R<sub>SS</sub>, CMRR<sub>dB</sub> = 20log(CMRR)'))});
+(function(){
+  const C=Circuit('cx-l7sig',460,290),cv=reg('c-l7sig'),cv2=reg('c-l7sig2');
+  const xl=170,xr=290,y=130;
+  C.rail(xl+10,22,'V_{DD}');C.w([xl+10,22],[xl+10,34]);C.R([xl+10,34],[xl+10,96],'R_D',{side:1,off:18});C.w([xl+10,96],[xl+10,110]);
+  C.rail(xr-10,22,'V_{DD}');C.w([xr-10,22],[xr-10,34]);C.R([xr-10,34],[xr-10,96],'R_D',{side:-1,off:18});C.w([xr-10,96],[xr-10,110]);
+  const q1=C.mos(xl,y,{id:'q1'}),q2=C.mos(xr,y,{flip:-1,id:'q2'});C.nd(xl+10,103);C.nd(xr-10,103);
+  C.T(xl-4,99,'','val','end',null,'o1');C.T(xr+4,99,'','val','start',null,'o2');
+  C.w([xl+10,160],[xl+10,190],[xr-10,190],[xr-10,160]);const xm=(xl+xr)/2;C.nd(xm,190);
+  C.w([xm,190],[xm,202]);C.w([xm-24,202],[xm+24,202]);C.R([xm-24,202],[xm-24,248],'R_{SS}',{side:1,off:14,id:'rss'});C.V([xm+24,202],[xm+24,248],'I',{kind:'i',side:-1,off:18,id:'isrc'});C.w([xm-24,248],[xm+24,248]);C.nd(xm,202);C.nd(xm,248);C.w([xm,248],[xm,258]);
+  C.rail(xm,258,'-V_{SS}',true);
+  C.w(q1.g,[60,y]);C.V([60,y+56],[60,y],'v_{G1}',{kind:'ac',side:-1,off:24});C.G(60,y+56);
+  C.w(q2.g,[400,y]);C.V([400,y+56],[400,y],'v_{G2}',{kind:'ac',side:1,off:24});C.G(400,y+56);
+  C.T(xl+22,178,'','val','start',null,'i1');C.T(xr-22,178,'','val','end',null,'i2');C.T(xm,180,'','val2','middle',null,'vs');
+  C.T(60,y-18,'','val2','middle',null,'g1');C.T(400,y-18,'','val2','middle',null,'g2');
+  C.flow('a',[[xl+10,34],[xl+10,103],[xl+10,160],[xl+10,190],[xm,190]]);C.flow('b',[[xr-10,34],[xr-10,103],[xr-10,160],[xr-10,190],[xm,190]]);C.flow('t',[[xm,190],[xm,202]]);C.flow('ti',[[xm+24,202],[xm+24,248],[xm,248],[xm,258]]);C.flow('tr',[[xm-24,202],[xm-24,248],[xm,248]]);
+  C.bindPlay();
+  const getT=seg('l7sig-type',()=>upd());
+  const st=sliders('l7sig-ctl',[
+    {key:'vd',id:'l7sig-vd',label:'אות הפרשי v<sub>id</sub> (שיא)',min:1,max:400,step:1,value:40,map:v=>v/1000,fmt:v=>si(v,'V')},
+    {key:'vcm',id:'l7sig-vcm',label:'רעש משותף (שיא)',min:0,max:2,step:0.05,value:1,fmt:v=>v.toFixed(2)+' V'},
+    {key:'I',id:'l7sig-i',label:'I (זנב)',min:0.2,max:4,step:0.1,value:1,map:v=>v/1000,fmt:v=>si(v,'A')},
+    {key:'VOV',id:'l7sig-vov',label:'V<sub>OV</sub> (MOS)',min:0.1,max:0.8,step:0.02,value:0.2,fmt:v=>v.toFixed(2)+' V'},
+    {key:'RD',id:'l7sig-rd',label:'R<sub>D</sub> / R<sub>C</sub>',min:1,max:20,step:0.5,value:5,map:v=>v*1000,fmt:v=>si(v,'Ω')},
+    {key:'RSS',id:'l7sig-rss',label:'R<sub>SS</sub> של מקור הזרם',min:3,max:6.1,step:0.05,value:6.1,map:v=>v>=6.1?Infinity:Math.pow(10,v),fmt:v=>isFinite(v)?si(v,'Ω'):'∞ (אידיאלי)'},
+    {key:'VDD',id:'l7sig-vdd',label:'V<sub>DD</sub>',min:3,max:15,step:0.5,value:10,fmt:v=>v.toFixed(1)+' V'}],upd);
+  const Vt=1;const N=600;let G1=[],G2=[],O1=[],O2=[],OD=[],I1=[],I2=[],VS=[];
+  function solve(t,v1,v2){const {I,VOV,RSS}=st;
+    if(t==='mos'){const k=(I/2)/(VOV*VOV),vsq=-Vt-VOV;const f=vs=>{const a=Math.max(0,v1-vs-Vt),b=Math.max(0,v2-vs-Vt);return k*a*a+k*b*b-I-(isFinite(RSS)?(vs-vsq)/RSS:0);};
+      const vs=bisect(f,Math.min(v1,v2)-Vt-5,Math.max(v1,v2)-Vt,60);const a=Math.max(0,v1-vs-Vt),b=Math.max(0,v2-vs-Vt);return {i1:k*a*a,i2:k*b*b,vs};}
+    const veq=-0.7,Is=(I/2)/Math.exp(0.7/VT);const f=ve=>Is*Math.exp((v1-ve)/VT)+Is*Math.exp((v2-ve)/VT)-I-(isFinite(RSS)?(ve-veq)/RSS:0);
+    const ve=bisect(f,Math.min(v1,v2)-2,Math.max(v1,v2),60);return {i1:Is*Math.exp((v1-ve)/VT),i2:Is*Math.exp((v2-ve)/VT),vs:ve};}
+  function build(){const t=getT(),{vd,vcm,RD,VDD,I}=st;G1=[];G2=[];O1=[];O2=[];OD=[];I1=[];I2=[];VS=[];const VQ=VDD-I/2*RD;
+    for(let k=0;k<N;k++){const x=k/N,cm=vcm*Math.sin(2*Math.PI*x),d=vd*Math.sin(2*Math.PI*7*x),v1=cm+d/2,v2=cm-d/2,s=solve(t,v1,v2);
+      G1.push([x,v1]);G2.push([x,v2]);I1.push(s.i1);I2.push(s.i2);VS.push(s.vs);const o1=VDD-s.i1*RD-VQ,o2=VDD-s.i2*RD-VQ;O1.push([x,o1]);O2.push([x,o2]);OD.push([x,o2-o1]);}}
+  function paint(ph){const i=Math.floor(((ph%1))*N)%N,{I,RD,VDD}=st,i1=I1[i],i2=I2[i],it=i1+i2,Im=Math.max(I,it)*1.05;
+    C.I('a',mag(i1,Im));C.I('b',mag(i2,Im));C.I('t',mag(it,Im));C.I('ti',mag(I,Im));C.I('tr',isFinite(st.RSS)?mag(it-I,Im):0,Math.sign(it-I)||1);C.st('rss',isFinite(st.RSS)?null:'dim');
+    C.st('q1',i1>I*0.02?'on':'dim');C.st('q2',i2>I*0.02?'on':'dim');
+    C.set('o1','v_{o1} = '+fx(VDD-i1*RD,2));C.set('o2','v_{o2} = '+fx(VDD-i2*RD,2));C.set('i1',si(i1,'A'));C.set('i2',si(i2,'A'));C.set('vs','v_S = '+fx(VS[i],2)+' V');C.set('g1',fx(G1[i][1],3)+' V');C.set('g2',fx(G2[i][1],3)+' V');
+    const yi=(st.vcm+st.vd/2)*1.2+0.01;
+    draw(cv,{x0:0,x1:1,y0:-yi,y1:yi,xl:'t / T',yl:'[V]',cursor:ph%1,series:[{c:'t2',w:1.8,pts:G1},{c:'t3',w:1.8,pts:G2}]});
+    const yo=Math.max(...OD.map(p=>Math.abs(p[1])),...O1.map(p=>Math.abs(p[1])),1e-3)*1.2;
+    draw(cv2,{x0:0,x1:1,y0:-yo,y1:yo,xl:'t / T',yl:'[V]',cursor:ph%1,series:[{c:'t2',w:1.4,a:.85,pts:O1},{c:'t3',w:1.4,a:.85,pts:O2},{c:'t1',w:2.6,pts:OD}]});}
+  C.tick=(t)=>paint(t*0.12);
+  function upd(){const t=getT(),{I,VOV,RD,RSS,vd,vcm}=st;document.getElementById('l7sig-vov').disabled=t==='bjt';build();
+    const gm=t==='mos'?I/VOV:I/(2*VT),Ad=gm*RD,Acm=isFinite(RSS)?-RD/(2*RSS):0,cmrr=Acm!==0?Math.abs(Ad/Acm):Infinity;
+    // measured: hum on v_o1 = component at fundamental; approximate by amplitude of low-pass (average over signal periods)
+    const humO1=(()=>{let a=0,b=0;for(let k=0;k<N;k++){const x=k/N;a+=O1[k][1]*Math.sin(2*Math.PI*x);b+=O1[k][1]*Math.cos(2*Math.PI*x);}return Math.hypot(a,b)*2/N;})();
+    const dOD=(Math.max(...OD.map(p=>p[1]))-Math.min(...OD.map(p=>p[1])))/2,lim=t==='mos'?Math.SQRT2*VOV:4*VT;
+    readouts('r-l7sig',[['g<sub>m</sub>',si(gm,'S')],['A<sub>d</sub> = g<sub>m</sub>R<sub>D</sub>',Ad.toFixed(1)],['A<sub>CM</sub> (חד-צדדי) = −R<sub>D</sub>/2R<sub>SS</sub>',isFinite(RSS)?Acm.toFixed(4):'0 (אידיאלי)'],['CMRR = g<sub>m</sub>R<sub>SS</sub>',isFinite(cmrr)?si(cmrr,'')+' ('+db(cmrr).toFixed(0)+' dB)':'∞'],['רעש משותף במוצא חד-צדדי (נמדד)',humO1<1e-6?'≈ 0':si(humO1,'V')+' שיא'],['רעש משותף במוצא ההפרשי','≈ 0 (מתבטל)'],['אות במוצא ההפרשי (נמדד)',si(dOD,'V')+' שיא, צפוי '+si(Ad*vd,'V')],['תחום ליניארי |v<sub>id</sub>| &lt;',si(lim,'V')+(vd>lim?' — חורג!':'')]]);
+    paint(C.t*0.12);}
+  presets({'l7sig-ideal':{'l7sig-vd':40,'l7sig-vcm':1,'l7sig-i':1,'l7sig-vov':0.2,'l7sig-rd':5,'l7sig-rss':6.1,'l7sig-vdd':10},'l7sig-rss':{'l7sig-vd':40,'l7sig-vcm':1,'l7sig-i':1,'l7sig-vov':0.2,'l7sig-rd':5,'l7sig-rss':4.3,'l7sig-vdd':10},'l7sig-big':{'l7sig-vd':400,'l7sig-vcm':0.5,'l7sig-i':1,'l7sig-vov':0.2,'l7sig-rd':5,'l7sig-rss':6.1,'l7sig-vdd':10}});
+  upd();
+})();
+}
+const b7=LESSONS[7].build;LESSONS[7].build=function(root){b7.call(this,root);labSig(root);};
+})();
+/* ---- l8-osc.js ---- */
+/* ==== שיעור 8: משוב חיובי — מתנד הרפיה (astable) עם מגבר שרת ==== */
+(function(){
+function labOsc(root){
+section(root,{id:'l8-osc',tag:'משוב חיובי',title:'מתנד הרפיה: משוב חיובי + RC = גל ריבועי',short:'מתנד הרפיה',
+lead:'המוצא מוזן <b>חזרה לכניסה החיובית</b> דרך המחלק R<sub>1</sub>/R<sub>2</sub> (משוב חיובי, β = R<sub>2</sub>/(R<sub>1</sub>+R<sub>2</sub>)), ולכן המגבר תמיד ברוויה: <span class="m">v<sub>out</sub> = ±V<sub>CC</sub></span>. במקביל המוצא טוען את הקבל דרך R. ברגע שמתח הקבל חוצה את הסף <span class="m">±βV<sub>CC</sub></span>, ההשוואה מתהפכת, המוצא קופץ לרוויה ההפוכה והקבל מתחיל להיטען לכיוון השני. עקוב אחרי הזרם: הוא מחליף כיוון בכל היפוך.',
+body:'<div class="lab"><div class="controls"><div class="presets"><button type="button" data-preset="osc-a">10k · 1µF · β=0.5 (45.5Hz)</button><button type="button" data-preset="osc-b">β קטן: 0.1</button><button type="button" data-preset="osc-c">β גדול: 0.9</button></div><div class="sliders" id="l8osc-ctl"></div></div>'+
+'<div class="scopes">'+circ('cx-l8osc',lg('t1','זרם','dot')+lg('t2','v<sub>C</sub> (על הקבל)')+lg('t5','v<sub>out</sub>'),true)+scope('c-l8osc','',lg('t2','v<sub>C</sub>(t)')+lg('t5','v<sub>out</sub>(t)')+lg('t3','ספים ±βV<sub>CC</sub>','dash'),'מתנד הרפיה')+'</div></div><div class="readouts" id="r-l8osc"></div>'+
+notes('<h3>מה לראות</h3><ul><li>הקבל נטען אקספוננציאלית לכיוון <span class="m">±V<sub>CC</sub></span>, אבל "לא מספיק" להגיע: ברגע שהוא חוצה את <span class="m">βV<sub>CC</sub></span> המוצא מתהפך. לכן צורת הגל על הקבל היא "משולש מעוגל".</li><li>הגדל את β: הספים מתרחקים, הקבל צריך לטפס יותר, והתדר יורד. ב-β → 1 המתנד נעצר.</li><li>הכפל את R או את C: התקופה מוכפלת. התדר תלוי רק ב-RC וב-β, לא ב-V<sub>CC</sub>! (הספים והמטרה גדלים באותו יחס.)</li><li>שים לב שהזרם דרך R מחליף כיוון בכל היפוך, והזרם במחלק R<sub>1</sub>/R<sub>2</sub> הוא DC בכל חצי מחזור.</li><li>המחזור הראשון ארוך יותר: הקבל מתחיל מ-0V ולא מהסף.</li></ul>',
+'<h3>הנוסחאות</h3>'+F('משוב חיובי:','v<sup>+</sup> = βv<sub>out</sub> = ±βV<sub>CC</sub>')+F('טעינת הקבל:','v<sub>C</sub>(t) = V<sub>CC</sub> − (V<sub>CC</sub> + βV<sub>CC</sub>)e<sup>−t/RC</sup>')+F('חצי מחזור:','T/2 = RC·ln((1+β)/(1−β))')+F('תדר:','f = 1/(2RC·ln((1+β)/(1−β)))')+F('β = 0.5:','T = 2RC·ln3 ≈ 2.2RC')+'<p>בדוגמה: R=10kΩ, C=1µF, β=0.5 → T = 2·10<sup>−2</sup>·1.0986 ≈ 22ms → f ≈ 45.5Hz.</p>')});
+(function(){
+  const C=Circuit('cx-l8osc',460,280),cv=reg('c-l8osc');
+  const o=C.oa(250,120,{id:'oa'});
+  C.w(o.o,[400,120]);C.nd(330,120);C.term(400,120);C.T(408,112,'v_{out}','big','start');C.T(408,132,'','val','start',null,'vo');
+  C.w([330,120],[330,40]);C.R([330,40],[190,40],'R',{side:1,id:'r'});C.w([190,40],[150,40],[150,108],o.m);C.nd(150,108);
+  C.Cap([150,108],[150,190],'C',{side:1,id:'c'});C.G(150,190);
+  C.T(100,128,'v_C','hi','middle');C.T(100,146,'','val2','middle',null,'vc');
+  C.w([330,120],[330,200]);C.R([330,200],[200,200],'R_1',{side:-1,id:'r1'});C.nd(200,200);C.w([200,200],[200,132],o.p);
+  C.R([200,200],[200,255],'R_2',{side:-1,id:'r2'});C.G(200,255);
+  C.T(345,222,'','val','start',null,'vp');C.T(345,240,'v⁺ = βv_{out}','hi','start');
+  C.T(250,25,'','val','middle',null,'ir');
+  C.flow('fr',[[330,120],[330,40],[190,40],[150,40],[150,108]]);C.flow('fc',[[150,108],[150,190]]);C.flow('fd',[[330,120],[330,200],[200,200],[200,255]]);
+  C.bindPlay();
+  const st=sliders('l8osc-ctl',[
+    {key:'R',id:'l8osc-r',label:'R',min:1,max:100,step:1,value:10,map:v=>v*1000,fmt:v=>si(v,'Ω')},
+    {key:'Cc',id:'l8osc-c',label:'C',min:0.1,max:10,step:0.1,value:1,map:v=>v*1e-6,fmt:v=>si(v,'F')},
+    {key:'R1',id:'l8osc-r1',label:'R<sub>1</sub>',min:10,max:200,step:10,value:100,map:v=>v*1000,fmt:v=>si(v,'Ω')},
+    {key:'R2',id:'l8osc-r2',label:'R<sub>2</sub>',min:10,max:200,step:10,value:100,map:v=>v*1000,fmt:v=>si(v,'Ω')},
+    {key:'VCC',id:'l8osc-vcc',label:'V<sub>CC</sub>',min:3,max:15,step:0.5,value:10,fmt:v=>'±'+v.toFixed(1)+' V'}],upd);
+  let b=0.5,T=0.022,tau=0.01,VCC=10;
+  const S={t:0,vc:0,s:1,buf:[]};     // sim time, cap voltage, output state ±1, samples [t,vc,vout]
+  function reset(){S.t=0;S.vc=0;S.s=1;S.buf=[[0,0,VCC]];}
+  function stepSim(dtSim){const n=Math.max(1,Math.ceil(dtSim/(T/600)));const h=dtSim/n;
+    for(let i=0;i<n;i++){const vo=S.s*VCC;S.vc+=(vo-S.vc)/tau*h;S.t+=h;
+      if(S.s>0&&S.vc>=b*VCC){S.s=-1;}else if(S.s<0&&S.vc<=-b*VCC){S.s=1;}
+      S.buf.push([S.t,S.vc,S.s*VCC]);}
+    const t0=S.t-3.2*T;while(S.buf.length>2&&S.buf[1][0]<t0)S.buf.shift();}
+  function plot(){const x1=Math.max(3*T,S.t),x0=x1-3*T,ms=1e3;const p1=[],p2=[];
+    for(const s of S.buf){if(s[0]<x0-T/50)continue;p1.push([s[0]*ms,s[1]]);p2.push([s[0]*ms,s[2]]);}
+    const y=VCC*1.25;
+    draw(cv,{x0:x0*ms,x1:x1*ms,y0:-y,y1:y,xl:'t [ms]',yl:'[V]',cursor:S.t*ms,series:[{c:'t3',w:1.2,dash:[5,4],pts:[[x0*ms,b*VCC],[x1*ms,b*VCC]]},{c:'t3',w:1.2,dash:[5,4],pts:[[x0*ms,-b*VCC],[x1*ms,-b*VCC]]},{c:'t5',w:2.2,pts:p2},{c:'t2',w:2.6,pts:p1}]});}
+  function paint(){const vo=S.s*VCC,iR=(vo-S.vc)/st.R,Im=(1+b)*VCC/st.R,iD=vo/(st.R1+st.R2);
+    C.I('fr',mag(iR,Im),Math.sign(iR)||1);C.I('fc',mag(iR,Im),Math.sign(iR)||1);C.I('fd',0.45,Math.sign(vo)||1);
+    C.st('r1',S.s>0?'on':'hot');C.st('r2',S.s>0?'on':'hot');
+    C.set('vo','= '+fx(vo,1)+' V');C.set('vc',fx(S.vc,2)+' V');C.set('vp','v⁺ = '+fx(b*vo,2)+' V');C.set('ir','i_R = '+si(iR,'A')+(iR>0?' ← טוען':' → פורק'));
+    plot();}
+  C.tick=(t,dt)=>{const scale=T/2.4;stepSim(dt*scale);paint();};   // ~2.4 s of wall time per period
+  function upd(){const {R,Cc,R1,R2}=st;VCC=st.VCC;b=R2/(R1+R2);tau=R*Cc;T=2*tau*Math.log((1+b)/(1-b));
+    reset();stepSim(3*T);paint();
+    readouts('r-l8osc',[['β = R<sub>2</sub>/(R<sub>1</sub>+R<sub>2</sub>)',b.toFixed(3)],['ספים ±βV<sub>CC</sub>','±'+fx(b*VCC,2)+' V'],['RC',si(tau,'s')],['T = 2RC·ln((1+β)/(1−β))',si(T,'s')],['f = 1/T',si(1/T,'Hz')],['ln((1+β)/(1−β))',Math.log((1+b)/(1-b)).toFixed(3)],['v<sub>out</sub>','±'+fx(VCC,1)+' V (רוויה תמיד)'],['מצב',S.s>0?pill('טוען למעלה · v<sub>out</sub> = +V<sub>CC</sub>','ok'):pill('טוען למטה · v<sub>out</sub> = −V<sub>CC</sub>','warn'),'html']]);}
+  presets({'l8osc-a':{'l8osc-r':10,'l8osc-c':1,'l8osc-r1':100,'l8osc-r2':100,'l8osc-vcc':10},'l8osc-b':{'l8osc-r':10,'l8osc-c':1,'l8osc-r1':180,'l8osc-r2':20,'l8osc-vcc':10},'l8osc-c':{'l8osc-r':10,'l8osc-c':1,'l8osc-r1':20,'l8osc-r2':180,'l8osc-vcc':10}});
+  upd();
+})();
+}
+const b8=LESSONS[8].build;LESSONS[8].build=function(root){b8.call(this,root);labOsc(root);};
+})();
+/* ---- l8-ss.js ---- */
+/* ==== שיעור 8: מהבלוקים למעגל אמיתי — מגבר לא-הופך כמשוב טורי-מקבילי עם A סופי ==== */
+(function(){
+function labSS(root){
+section(root,{id:'l8-ss',tag:'מהבלוקים למעגל',title:'המעגל האמיתי מאחורי A ו-β: מגבר לא-הופך עם הגבר סופי',short:'A ו-β במעגל',
+lead:'אותו תרשים בלוקים, הפעם עם רכיבים: המגבר הוא מגבר שרת עם הגבר <b>סופי</b> <span class="m">A</span>, ורשת המשוב היא המחלק <span class="m">R<sub>1</sub>/R<sub>2</sub></span> שדוגם את <b>מתח</b> המוצא (מקבילי) ומחזיר <b>מתח</b> בטור לכניסה (טורי): <span class="m">v<sup>−</sup> = βv<sub>out</sub></span>, <span class="m">β = R<sub>1</sub>/(R<sub>1</sub>+R<sub>2</sub>)</span>. אות השגיאה הוא בדיוק המתח בין ההדקים, <span class="m">v<sub>e</sub> = v<sup>+</sup> − v<sup>−</sup></span>. הגדל את A ותראה את "הקצר המדומה" נולד.',
+body:'<div class="lab"><div class="controls"><div class="presets"><button type="button" data-preset="l8ss-lo">A = 10 (משוב חלש)</button><button type="button" data-preset="l8ss-mid">A = 1000</button><button type="button" data-preset="l8ss-hi">A = 100k (מגבר שרת)</button><button type="button" data-preset="l8ss-sat">אות גדול: רוויה</button></div><div class="sliders" id="l8ss-ctl"></div></div>'+
+'<div class="scopes">'+circ('cx-l8ss',lg('t1','זרם ברשת המשוב','dot'),true)+scope('c-l8ss','short',lg('t2','v<sub>in</sub> = v<sup>+</sup>')+lg('t3','v<sup>−</sup> = βv<sub>out</sub>','dash')+lg('t1','v<sub>out</sub>'),'כניסה, משוב ומוצא')+scope('c-l8ss2','short',lg('t4','אות השגיאה v<sub>e</sub> = v<sup>+</sup> − v<sup>−</sup>'),'שגיאה [mV]')+'</div></div><div class="readouts" id="r-l8ss"></div>'+
+'<div class="tbl"><table><thead><tr><th>בתרשים הבלוקים</th><th>במעגל</th><th>ערך עכשיו</th></tr></thead><tbody id="l8ss-map"></tbody></table></div>'+
+notes('<h3>מה לראות</h3><ul><li>עם A=10 המוצא רחוק מ-1/β: השגיאה v<sub>e</sub> גדולה (עשרות אחוזים מהכניסה), כי המגבר צריך "הרבה" שגיאה כדי לייצר את המוצא.</li><li>הכפל את A פי 100: v<sub>e</sub> קטן פי ~100, v<sup>−</sup> נצמד ל-v<sup>+</sup> וההגבר נצמד ל-1/β = 1+R<sub>2</sub>/R<sub>1</sub>. <b>זה כל הסוד של "כללי הזהב"</b>: הם הגבול A→∞ של המשוואה הזאת.</li><li>הזרם ברשת המשוב זורם מהמוצא דרך R<sub>2</sub> ו-R<sub>1</sub> לאדמה. לתוך ההדקים לא נכנס זרם, לכן ההתנגדות שהמקור "רואה" אינסופית: משוב טורי בכניסה מגדיל R<sub>in</sub>.</li><li>ברוויה (v<sub>out</sub> נתקע ב-±V<sub>CC</sub>) הלולאה נשברת: v<sup>−</sup> כבר לא עוקב אחרי v<sup>+</sup> והשגיאה קופצת. משוב עובד רק כשהמגבר ליניארי.</li></ul>',
+'<h3>הנוסחאות</h3>'+F('','v<sub>out</sub> = A·v<sub>e</sub> = A(v<sub>in</sub> − βv<sub>out</sub>)')+F('','A<sub>f</sub> = v<sub>out</sub>/v<sub>in</sub> = A/(1+Aβ)')+F('','β = R<sub>1</sub>/(R<sub>1</sub>+R<sub>2</sub>) → 1/β = 1 + R<sub>2</sub>/R<sub>1</sub>')+F('','v<sub>e</sub> = v<sub>in</sub>/(1+Aβ)')+F('','R<sub>if</sub> = R<sub>i</sub>(1+Aβ), R<sub>of</sub> = R<sub>o</sub>/(1+Aβ)')+F('שגיאה מ-1/β:','1 − A<sub>f</sub>β ≈ 1/(Aβ)'))});
+(function(){
+  const C=Circuit('cx-l8ss',460,260),cv=reg('c-l8ss'),cv2=reg('c-l8ss2');
+  const o=C.oa(250,120,{plusTop:true,id:'oa'});
+  C.V([60,200],[60,140],'v_{in}',{kind:'ac',side:1,off:30});C.w([60,140],[60,108],o.p);C.w([60,200],[60,215]);C.G(60,215);C.T(150,98,'v⁺','val2','middle');
+  C.w(o.o,[420,120]);C.nd(330,120);C.term(420,120);C.T(420,106,'v_{out}','big','middle');C.T(420,142,'','val','middle',null,'vo');
+  C.w([330,120],[330,200]);C.R([330,200],[200,200],'R_2',{side:-1,id:'r2'});C.nd(200,200);C.w([200,200],[200,132],o.m);
+  C.R([200,200],[200,250],'R_1',{side:-1,id:'r1'});C.G(200,250);
+  C.T(150,148,'','val2','middle',null,'vm');C.T(150,165,'v⁻ = βv_{out}','hi','middle');
+  C.T(250,60,'','val','middle',null,'ve');C.T(250,44,'v_e = v⁺ − v⁻','hi','middle');C.T(250,78,'','he','middle',null,'A');
+  C.T(300,242,'','val','start',null,'if');
+  C.flow('f',[[330,120],[330,200],[200,200],[200,250]]);
+  C.bindPlay();
+  const st=sliders('l8ss-ctl',[
+    {key:'A',id:'l8ss-a',label:'A (הגבר חוג פתוח)',min:0,max:5,step:0.05,value:3,map:v=>Math.pow(10,v),fmt:v=>si(v,'')},
+    {key:'R1',id:'l8ss-r1',label:'R<sub>1</sub>',min:1,max:100,step:1,value:10,map:v=>v*1000,fmt:v=>si(v,'Ω')},
+    {key:'R2',id:'l8ss-r2',label:'R<sub>2</sub>',min:0,max:300,step:1,value:90,map:v=>v*1000,fmt:v=>si(v,'Ω')},
+    {key:'vs',id:'l8ss-vs',label:'משרעת v<sub>in</sub>',min:0.05,max:3,step:0.05,value:0.5,fmt:v=>v.toFixed(2)+' V'},
+    {key:'VCC',id:'l8ss-vcc',label:'V<sub>CC</sub>',min:3,max:15,step:0.5,value:12,fmt:v=>'±'+v.toFixed(1)+' V'}],upd);
+  const N=400;let b=0.1,Af=1,VI=[],VO=[],VM=[],VE=[];
+  function build(){const {A,vs,VCC}=st;VI=[];VO=[];VM=[];VE=[];
+    for(let k=0;k<N;k++){const t=2*k/N,vi=vs*Math.sin(2*Math.PI*t);let vo=clamp(Af*vi,-VCC,VCC);const vm=b*vo,ve=vi-vm;VI.push([t,vi]);VO.push([t,vo]);VM.push([t,vm]);VE.push([t,ve*1e3]);}}
+  function paint(ph){const i=Math.floor(((ph%2)/2)*N)%N,{R1,R2,VCC,vs}=st,vo=VO[i][1],vi=VI[i][1],vm=VM[i][1],ve=VE[i][1]/1e3,iF=vo/(R1+R2),Im=VCC/(R1+R2);
+    C.I('f',mag(iF,Im),Math.sign(vo)||1);C.st('oa',Math.abs(vo)>=VCC-1e-9?'hot':'on');
+    C.set('vo','= '+fx(vo,2)+' V');C.set('vm',fx(vm,3)+' V');C.set('ve','= '+si(ve,'V'));C.set('if','i_f = '+si(iF,'A'));C.set('A','A = '+si(st.A,''));
+    const y=Math.max(vs,Math.min(vs*Af,VCC))*1.2,S=[];
+    if(VCC<=y)S.push({c:'t5',w:1,dash:[4,4],pts:[[0,VCC],[2,VCC]]},{c:'t5',w:1,dash:[4,4],pts:[[0,-VCC],[2,-VCC]]});
+    S.push({c:'t2',w:1.8,pts:VI},{c:'t3',w:1.6,dash:[6,4],pts:VM},{c:'t1',w:2.6,pts:VO});
+    draw(cv,{x0:0,x1:2,y0:-y,y1:y,xl:'t / T',yl:'[V]',cursor:ph%2,series:S});
+    const ym=Math.max(...VE.map(p=>Math.abs(p[1])),1e-3)*1.2;
+    draw(cv2,{x0:0,x1:2,y0:-ym,y1:ym,xl:'t / T',yl:'v_e [mV]',cursor:ph%2,series:[{c:'t4',w:2.2,pts:VE}]});}
+  C.tick=(t)=>paint(t*0.25);
+  function upd(){const {A,R1,R2,vs,VCC}=st;b=R1/(R1+R2);Af=A/(1+A*b);build();
+    const sat=vs*Af>VCC;
+    readouts('r-l8ss',[['β = R<sub>1</sub>/(R<sub>1</sub>+R<sub>2</sub>)',b.toFixed(4)],['1/β = 1 + R<sub>2</sub>/R<sub>1</sub>',(1/b).toFixed(3)],['הגבר חוג Aβ',si(A*b,'')],['כמות משוב 1+Aβ',si(1+A*b,'')],['A<sub>f</sub> = A/(1+Aβ)',Af.toFixed(4)],['שגיאה מ-1/β',((1-Af*b)*100).toFixed(3)+'%'],['v<sub>e</sub> שיא = v<sub>in</sub>/(1+Aβ)',si(vs/(1+A*b),'V')],['מצב',sat?pill('רוויה: הלולאה נשברת','bad'):pill('ליניארי','ok'),'html']]);
+    document.getElementById('l8ss-map').innerHTML=[['x (כניסה)','v<sub>in</sub> על ההדק החיובי',fx(vs,2)+' V שיא'],['y (מוצא)','v<sub>out</sub>',fx(Math.min(vs*Af,VCC),2)+' V שיא'],['A','ההגבר הפתוח של המגבר',si(A,'')],['β','R<sub>1</sub>/(R<sub>1</sub>+R<sub>2</sub>)',b.toFixed(4)],['x<sub>f</sub> = βy','v<sup>−</sup> (המתח על R<sub>1</sub>)',fx(Math.min(vs*Af,VCC)*b,3)+' V שיא'],['x<sub>e</sub> = x − x<sub>f</sub>','v<sup>+</sup> − v<sup>−</sup>',si(vs/(1+A*b),'V')+' שיא'],['A<sub>f</sub> = y/x','v<sub>out</sub>/v<sub>in</sub>',Af.toFixed(3)]].map(r=>'<tr><td>'+r[0]+'</td><td>'+r[1]+'</td><td class="n">'+r[2]+'</td></tr>').join('');
+    paint(C.t*0.25);}
+  presets({'l8ss-lo':{'l8ss-a':1,'l8ss-r1':10,'l8ss-r2':90,'l8ss-vs':0.5,'l8ss-vcc':12},'l8ss-mid':{'l8ss-a':3,'l8ss-r1':10,'l8ss-r2':90,'l8ss-vs':0.5,'l8ss-vcc':12},'l8ss-hi':{'l8ss-a':5,'l8ss-r1':10,'l8ss-r2':90,'l8ss-vs':0.5,'l8ss-vcc':12},'l8ss-sat':{'l8ss-a':5,'l8ss-r1':10,'l8ss-r2':90,'l8ss-vs':2,'l8ss-vcc':12}});
+  upd();
+})();
+}
+const b8=LESSONS[8].build;LESSONS[8].build=function(root){b8.call(this,root);labSS(root);};
+})();
+/* ---- l8-real.js ---- */
+/* ==== שיעור 8: ארבע הטופולוגיות כמעגלים אמיתיים — דגימה, ערבוב, העמסה וחישוב A_f בזמן אמת ==== */
+(function(){
+function labReal(root){
+section(root,{id:'l8-real',tag:'טופולוגיות במעגלים אמיתיים',title:'ארבע הטופולוגיות על מעגלים אמיתיים: איפה דוגמים, לאן מחזירים, ומה יוצא',short:'טופולוגיות חיות',
+lead:'בתרשים הבלוקים קל. הקושי במבחן הוא לזהות את הטופולוגיה <b>בשרטוט</b>. הכלל: ב<b>כניסה</b>, אם רשת המשוב מתחברת לאותו צומת שאליו מחובר המקור (ומזריקה לשם זרם) זה <b>מקבילי</b>; אם היא מתחברת להדק אחר של הטרנזיסטור/המגבר (פולט, כניסה שנייה) ומוסיפה מתח בתוך הלולאה זה <b>טורי</b>. ב<b>יציאה</b>, אם היא נוגעת בצומת מתח המוצא זה <b>מקבילי</b> (דגימת מתח); אם היא יושבת בדרך של זרם המוצא (נגד פולט/מקור) זה <b>טורי</b> (דגימת זרם). בחר מעגל, עקוב אחרי הנקודות, וראה את חישוב A, β, ההעמסה ו-A<sub>f</sub> לפי שיטת הקורס.',
+body:'<div class="lab"><div class="controls"><div class="seg" id="l8real-sel"><button type="button" data-v="ss" aria-pressed="true">טורי-מקבילי</button><button type="button" data-v="pp" aria-pressed="false">מקבילי-מקבילי</button><button type="button" data-v="sr" aria-pressed="false">טורי-טורי</button><button type="button" data-v="ps" aria-pressed="false">מקבילי-טורי</button></div><div class="sliders" id="l8real-ctl"></div></div>'+
+'<div class="scopes"><div id="l8real-hosts"></div>'+scope('c-l8real','short',lg('t2','כניסה x(t)')+lg('t1','מוצא y(t)')+lg('t3','אות המשוב x<sub>f</sub>(t)','dash'),'כניסה, משוב ומוצא')+'</div></div><div class="readouts" id="r-l8real"></div>'+
+'<div class="tbl"><table><thead><tr><th>שלב</th><th>מה עושים</th><th>כאן</th></tr></thead><tbody id="l8real-steps"></tbody></table></div>'+
+notes('<h3>מה לראות</h3><ul><li><b>טורי-מקבילי</b> (לא-הופך): רשת R<sub>1</sub>/R<sub>2</sub> נוגעת בצומת המוצא (דוגמת מתח) ומחזירה מתח להדק השני של המגבר (ערבוב טורי). R<sub>if</sub> עולה, R<sub>of</sub> יורדת.</li><li><b>מקבילי-מקבילי</b> (הופך/טרנס-התנגדות): R<sub>f</sub> מחברת את צומת המוצא ישירות לצומת הכניסה: מזריקה <b>זרם</b> לאדמה הווירטואלית. שתי ההתנגדויות יורדות.</li><li><b>טורי-טורי</b> (CE עם R<sub>E</sub>): R<sub>E</sub> נמצא בדרך של זרם המוצא (דוגם זרם) ומייצר מתח v<sub>f</sub> = i<sub>e</sub>R<sub>E</sub> שמתחסר מ-v<sub>be</sub> (ערבוב טורי). שתי ההתנגדויות עולות.</li><li><b>מקבילי-טורי</b> (מגבר זרם בשתי דרגות): R<sub>f</sub> לוקחת חלק מזרם הפולט של Q2 (דגימת זרם, טורי) ומזריקה אותו לבסיס Q1 (ערבוב זרם, מקבילי). R<sub>if</sub> יורדת, R<sub>of</sub> עולה.</li><li>בכל המעגלים: שים לב שעם A גדול התוצאה מתכנסת ל-1/β, וההעמסה של רשת המשוב (R<sub>11</sub>, R<sub>22</sub>) משנה את A אבל לא את β.</li></ul>',
+'<h3>שיטת הקורס (5 שלבים)</h3>'+F('1.','זיהוי הטופולוגיה ומציאת β = x<sub>f</sub>/y')+F('2.','העמסה: R<sub>11</sub> (הצד השני קצר/פתוח) ו-R<sub>22</sub>, מוסיפים למגבר')+F('3.','A של המגבר המועמס (בלי הלולאה)')+F('4.','A<sub>f</sub> = A/(1+Aβ)')+F('5.','R<sub>if</sub>, R<sub>of</sub>: טורי ×(1+Aβ), מקבילי ÷(1+Aβ)'))});
+(function(){
+  const host=document.getElementById('l8real-hosts'),types=['ss','pp','sr','ps'],CC={},cv=reg('c-l8real');
+  const caps={ss:'טורי-מקבילי: מגבר לא-הופך עם A סופי ו-R<sub>o</sub>',pp:'מקבילי-מקבילי: מגבר טרנס-התנגדות (הופך)',sr:'טורי-טורי: CE עם R<sub>E</sub> לא מעוקף',ps:'מקבילי-טורי: מגבר זרם בשתי דרגות עם R<sub>f</sub> מהפולט לבסיס'};
+  types.forEach(k=>host.insertAdjacentHTML('beforeend',circ('cx-l8real-'+k,lg('t1','זרם','dot')+lg('t3','ענף המשוב')+'<span> · '+caps[k]+'</span>',true)));
+  let c,o;
+  /* ---- ss: non-inverting with Ro ---- */
+  c=Circuit('cx-l8real-ss',460,250);CC.ss=c;o=c.oa(220,120,{plusTop:true,id:'oa'});
+  c.V([60,200],[60,140],'v_s',{kind:'ac',side:1,off:26});c.w([60,140],[60,108],o.p);c.w([60,200],[60,215]);c.G(60,215);
+  c.w(o.o,[280,120]);c.R([280,120],[340,120],'R_o',{side:-1,id:'ro'});c.w([340,120],[420,120]);c.nd(340,120);c.term(420,120);c.T(420,106,'v_o','big','middle');
+  c.w([340,120],[340,195]);c.R([340,195],[200,195],'R_2',{side:-1,id:'r2'});c.nd(200,195);c.w([200,195],[200,132],o.m);c.R([200,195],[200,240],'R_1',{side:-1,id:'r1'});c.G(200,240);
+  c.T(330,60,'דוגם מתח (מקבילי)','he','middle');c.T(130,165,'מערבב מתח (טורי)','he','middle');c.T(130,183,'','val2','middle',null,'xf');c.T(420,140,'','val','middle',null,'y');
+  c.flow('f',[[340,120],[340,195],[200,195],[200,240]]);c.flow('o',[[280,120],[340,120]]);
+  /* ---- pp: transresistance ---- */
+  c=Circuit('cx-l8real-pp',460,250);CC.pp=c;o=c.oa(250,130);
+  c.V([50,210],[50,150],'v_s',{kind:'ac',side:1,off:26});c.w([50,150],[50,118],[80,118]);c.R([80,118],[150,118],'R_s',{side:-1});c.w([150,118],o.m);c.nd(175,118);c.w([50,210],[50,225]);c.G(50,225);
+  c.w([175,118],[175,50]);c.R([175,50],[335,50],'R_f',{side:-1,id:'rf'});c.w([335,50],[335,130]);c.nd(335,130);c.w(o.o,[420,130]);c.term(420,130);c.T(420,116,'v_o','big','middle');c.nd(380,130);c.R([380,130],[380,210],'R_L',{side:-1});c.G(380,210);c.w(o.p,[208,200]);c.G(208,200);
+  c.T(175,138,'0V','val2','middle');c.T(120,165,'מערבב זרם (מקבילי)','he','middle');c.T(120,183,'','val2','middle',null,'xf');c.T(330,80,'דוגם מתח (מקבילי)','he','middle');c.T(420,150,'','val','middle',null,'y');
+  c.flow('in',[[50,150],[50,118],[175,118]]);c.flow('f',[[175,118],[175,50],[335,50],[335,130]]);c.flow('l',[[335,130],[380,130],[380,210]]);
+  /* ---- sr: CE with RE ---- */
+  c=Circuit('cx-l8real-sr',460,250);CC.sr=c;
+  c.rail(260,18,'V_{CC}');c.w([260,18],[260,30]);c.R([260,30],[260,88],'R_C',{side:-1});c.w([260,88],[260,100]);c.nd(260,94);c.w([260,94],[400,94]);c.term(400,94);c.T(400,80,'v_o','big','middle');c.T(400,114,'','val','middle',null,'y');
+  const q=c.npn(250,130,{id:'q'});c.w([260,160],[260,172]);c.nd(260,172);c.R([260,172],[260,222],'R_E',{side:-1,id:'re'});c.G(260,222);
+  c.V([60,205],[60,150],'v_s',{kind:'ac',side:1,off:26});c.w([60,150],[60,130],[90,130]);c.R([90,130],[160,130],'R_s',{side:-1});c.w([160,130],q.b);c.w([60,205],[60,222]);c.G(60,222);
+  c.T(330,195,'דוגם זרם (טורי)','he','middle');c.T(330,213,'','val','middle',null,'xf');c.T(150,180,'מערבב מתח בפולט (טורי)','he','middle');c.T(120,98,'','val2','middle',null,'x');
+  c.flow('b',[[60,150],[60,130],[230,130],[245,145]]);c.flow('c',[[260,18],[260,100]]);c.flow('e',[[260,160],[260,222]]);
+  /* ---- ps: two-stage current amplifier ---- */
+  c=Circuit('cx-l8real-ps',460,265);CC.ps=c;
+  c.V([60,200],[60,140],'i_s',{kind:'i',side:1,off:26});c.w([60,140],[130,140]);c.w([60,200],[60,215]);c.G(60,215);c.nd(100,140);c.R([100,140],[100,200],'R_s',{side:-1});c.w([100,200],[100,215]);c.G(100,215);c.nd(130,140);
+  const q1=c.npn(200,140,{id:'q1'}),q2=c.npn(330,140,{id:'q2'});c.w([130,140],q1.b);
+  c.rail(210,18,'V_{CC}');c.w([210,18],[210,30]);c.R([210,30],[210,90],'R_{C1}',{side:1});c.w([210,90],[210,110]);c.nd(210,100);c.w([210,100],[270,100],[270,140],q2.b);
+  c.w([210,170],[210,200]);c.G(210,200);
+  c.rail(340,18,'V_{CC}');c.w([340,18],[340,30]);c.R([340,30],[340,90],'R_{C2}',{side:-1});c.w([340,90],[340,110]);c.nd(340,100);c.w([340,100],[410,100]);c.term(410,100);c.T(410,86,'i_o','big','middle');c.T(410,120,'','val','middle',null,'y');
+  c.w([340,170],[340,180]);c.nd(340,180);c.R([340,180],[340,232],'R_{E2}',{side:-1,id:'re2'});c.G(340,232);
+  c.w([340,180],[380,180],[380,250],[130,250],[130,140]);c.R([300,250],[180,250],'R_f',{side:1,id:'rf'});
+  c.T(95,118,'מערבב זרם (מקבילי)','he','middle');c.T(330,206,'דוגם זרם (טורי)','he','end');c.T(240,232,'','val','middle',null,'xf');
+  c.flow('is',[[60,200],[60,140],[130,140]]);c.flow('b1',[[130,140],[180,140],[195,155]]);c.flow('c1',[[210,18],[210,110]]);c.flow('e1',[[210,170],[210,200]]);c.flow('b2',[[210,100],[270,100],[270,140],[325,155]]);c.flow('c2',[[340,18],[340,110]]);c.flow('e2',[[340,170],[340,232]]);c.flow('f',[[340,180],[380,180],[380,250],[130,250],[130,140]]);
+  types.forEach(k=>CC[k].bindPlay());
+  const getT=seg('l8real-sel',()=>{show();upd();});
+  const st=sliders('l8real-ctl',[
+    {key:'A',id:'l8real-a',label:'A של המגבר (חוג פתוח)',min:0,max:5,step:0.1,value:3,map:v=>Math.pow(10,v),fmt:v=>si(v,'')},
+    {key:'Ri',id:'l8real-ri',label:'R<sub>i</sub> של המגבר',min:3,max:7,step:0.1,value:5,map:v=>Math.pow(10,v),fmt:v=>si(v,'Ω')},
+    {key:'Ro',id:'l8real-ro',label:'R<sub>o</sub> של המגבר',min:0,max:2000,step:10,value:100,fmt:v=>si(v,'Ω')},
+    {key:'R1',id:'l8real-r1',label:'R<sub>1</sub>',min:1,max:100,step:1,value:1,map:v=>v*1000,fmt:v=>si(v,'Ω')},
+    {key:'R2',id:'l8real-r2',label:'R<sub>2</sub>',min:1,max:300,step:1,value:9,map:v=>v*1000,fmt:v=>si(v,'Ω')},
+    {key:'Rs',id:'l8real-rs',label:'R<sub>s</sub>',min:0.1,max:50,step:0.1,value:10,map:v=>v*1000,fmt:v=>si(v,'Ω')},
+    {key:'Rf',id:'l8real-rf',label:'R<sub>f</sub>',min:1,max:300,step:1,value:100,map:v=>v*1000,fmt:v=>si(v,'Ω')},
+    {key:'RL',id:'l8real-rl',label:'R<sub>L</sub>',min:1,max:100,step:1,value:10,map:v=>v*1000,fmt:v=>si(v,'Ω')},
+    {key:'RC',id:'l8real-rc',label:'R<sub>C</sub> (R<sub>C1</sub>, R<sub>C2</sub>)',min:0.5,max:20,step:0.5,value:5,map:v=>v*1000,fmt:v=>si(v,'Ω')},
+    {key:'RE',id:'l8real-re',label:'R<sub>E</sub> (R<sub>E2</sub>)',min:0.05,max:5,step:0.05,value:0.5,map:v=>v*1000,fmt:v=>si(v,'Ω')},
+    {key:'beta',id:'l8real-beta',label:'β של הטרנזיסטור',min:20,max:300,step:5,value:100,fmt:v=>String(v)},
+    {key:'IC',id:'l8real-ic',label:'I<sub>C</sub> (נקודת עבודה)',min:0.1,max:5,step:0.1,value:1,map:v=>v/1000,fmt:v=>si(v,'A')},
+    {key:'xs',id:'l8real-xs',label:'משרעת הכניסה',min:1,max:100,step:1,value:10,fmt:v=>v+' (mV או µA)'}],upd);
+  const vis={ss:['A','Ri','Ro','R1','R2','xs'],pp:['A','Rs','Rf','RL','xs'],sr:['Rs','RC','RE','beta','IC','xs'],ps:['Rs','Rf','RC','RE','beta','IC','xs']};
+  const ids={A:'l8real-a',Ri:'l8real-ri',Ro:'l8real-ro',R1:'l8real-r1',R2:'l8real-r2',Rs:'l8real-rs',Rf:'l8real-rf',RL:'l8real-rl',RC:'l8real-rc',RE:'l8real-re',beta:'l8real-beta',IC:'l8real-ic',xs:'l8real-xs'};
+  function show(){const t=getT();types.forEach(k=>document.getElementById('cx-l8real-'+k).closest('figure').hidden=k!==t);Object.keys(ids).forEach(k=>document.getElementById(ids[k]).closest('.sl').hidden=!vis[t].includes(k));}
+  let M={};
+  function model(){const t=getT(),{A,Ri,Ro,R1,R2,Rs,Rf,RL,RC,RE,beta,IC}=st,gm=IC/VT,rpi=beta/gm;
+    if(t==='ss'){const b=R1/(R1+R2),R11=par(R1,R2),R22=R1+R2,Rin=Ri+R11,Rout=par(Ro,R22),Al=A*(Ri/(Ri+R11))*(R22/(Ro+R22)),F=1+Al*b;
+      return {b,bu:'V/V',R11,R22,Rin,Rout,A:Al,Au:'V/V',F,Af:Al/F,Rif:Rin*F,Rof:Rout/F,inS:true,outS:false,ideal:1/b,xu:'mV',yu:'V',gain:'v_o/v_s',
+        steps:['טורי-מקבילי: β = v<sub>f</sub>/v<sub>o</sub> = R<sub>1</sub>/(R<sub>1</sub>+R<sub>2</sub>) = '+b.toFixed(4),'R<sub>11</sub> = R<sub>1</sub>‖R<sub>2</sub> = '+si(R11,'Ω')+' בטור לכניסה, R<sub>22</sub> = R<sub>1</sub>+R<sub>2</sub> = '+si(R22,'Ω')+' במקביל למוצא','A = A<sub>0</sub>·R<sub>i</sub>/(R<sub>i</sub>+R<sub>11</sub>)·R<sub>22</sub>/(R<sub>o</sub>+R<sub>22</sub>) = '+si(Al,''),'A<sub>f</sub> = A/(1+Aβ) = '+Al.toFixed(1)+'/'+F.toFixed(2)+' = '+(Al/F).toFixed(3)+' (אידיאלי 1/β = '+(1/b).toFixed(2)+')','R<sub>if</sub> = (R<sub>i</sub>+R<sub>11</sub>)(1+Aβ) = '+si(Rin*F,'Ω')+' ↑ · R<sub>of</sub> = (R<sub>o</sub>‖R<sub>22</sub>)/(1+Aβ) = '+si(Rout/F,'Ω')+' ↓']};}
+    if(t==='pp'){const b=-1/Rf,R11=Rf,R22=Rf,Rin=par(Rs,Rf),Rout=0,Al=-A*Rin,F=1+Al*b;
+      return {b,bu:'A/V',R11,R22,Rin,Rout,A:Al,Au:'Ω',F,Af:Al/F,Rif:Rin/F,Rof:0,inS:false,outS:false,ideal:1/b,xu:'µA',yu:'V',gain:'v_o/i_s',
+        steps:['מקבילי-מקבילי: β = i<sub>f</sub>/v<sub>o</sub> = −1/R<sub>f</sub> = '+si(b,'A/V'),'R<sub>11</sub> = R<sub>f</sub> (המוצא קצר) במקביל לכניסה, R<sub>22</sub> = R<sub>f</sub> (הכניסה קצר) במקביל למוצא','A = v<sub>o</sub>/i<sub>i</sub> = −A<sub>0</sub>·(R<sub>s</sub>‖R<sub>f</sub>) = '+si(Al,'Ω')+' (R<sub>o</sub>=0 לכן R<sub>22</sub> לא משפיע)','A<sub>f</sub> = A/(1+Aβ) = '+si(Al/F,'Ω')+' (אידיאלי 1/β = −R<sub>f</sub> = '+si(-Rf,'Ω')+') → v<sub>o</sub>/v<sub>s</sub> = A<sub>f</sub>/R<sub>s</sub> = '+(Al/F/Rs).toFixed(2),'R<sub>if</sub> = (R<sub>s</sub>‖R<sub>f</sub>)/(1+Aβ) = '+si(Rin/F,'Ω')+' ↓ (אדמה וירטואלית) · R<sub>of</sub> = 0/(1+Aβ) = 0']};}
+    if(t==='sr'){const b=RE,Rin=Rs+rpi+RE,Al=beta/Rin,F=1+Al*b;
+      return {b,bu:'Ω',R11:RE,R22:RE,Rin,Rout:Infinity,A:Al,Au:'A/V',F,Af:Al/F,Rif:Rin*F,Rof:Infinity,inS:true,outS:true,ideal:1/b,xu:'mV',yu:'V',gain:'v_o/v_s',gm,rpi,
+        steps:['טורי-טורי: β = v<sub>f</sub>/i<sub>o</sub> = R<sub>E</sub> = '+si(RE,'Ω'),'R<sub>11</sub> = R<sub>E</sub> בטור לכניסה, R<sub>22</sub> = R<sub>E</sub> בטור למוצא (r<sub>o</sub>→∞ לכן לא משפיע)','A = i<sub>o</sub>/v<sub>s</sub> = β/(R<sub>s</sub>+r<sub>π</sub>+R<sub>E</sub>) = '+beta+'/'+si(Rin,'Ω')+' = '+si(Al,'A/V')+' (r<sub>π</sub> = '+si(rpi,'Ω')+')','A<sub>f</sub> = A/(1+Aβ) = '+si(Al/F,'A/V')+' (אידיאלי 1/R<sub>E</sub> = '+si(1/RE,'A/V')+') → v<sub>o</sub>/v<sub>s</sub> = −A<sub>f</sub>R<sub>C</sub> = '+(-Al/F*RC).toFixed(2),'R<sub>if</sub> = (R<sub>s</sub>+r<sub>π</sub>+R<sub>E</sub>)(1+Aβ) = R<sub>s</sub>+r<sub>π</sub>+(β+1)R<sub>E</sub> = '+si(Rin*F,'Ω')+' ↑ · R<sub>of</sub> → ∞ ↑']};}
+    const R11=Rf+RE,R22=par(RE,Rf),Rin=par(par(Rs,R11),rpi),Rin2=rpi+(beta+1)*R22,Rc1=par(RC,Rin2),Al=-(Rin/rpi)*beta*Rc1/Rin2*(beta+1),b=-RE/(RE+Rf),F=1+Al*b;
+    return {b,bu:'A/A',R11,R22,Rin,Rout:Infinity,A:Al,Au:'A/A',F,Af:Al/F,Rif:Rin/F,Rof:Infinity,inS:false,outS:true,ideal:1/b,xu:'µA',yu:'mA',gain:'i_o/i_s',gm,rpi,Rin2,
+      steps:['מקבילי-טורי: β = i<sub>f</sub>/i<sub>o</sub> = −R<sub>E2</sub>/(R<sub>E2</sub>+R<sub>f</sub>) = '+b.toFixed(4),'R<sub>11</sub> = R<sub>f</sub>+R<sub>E2</sub> = '+si(R11,'Ω')+' במקביל לכניסה, R<sub>22</sub> = R<sub>E2</sub>‖R<sub>f</sub> = '+si(R22,'Ω')+' בטור בפולט Q2','A = i<sub>o</sub>/i<sub>s</sub>: R<sub>in</sub> = R<sub>s</sub>‖R<sub>11</sub>‖r<sub>π1</sub> = '+si(Rin,'Ω')+', R<sub>in2</sub> = r<sub>π2</sub>+(β+1)R<sub>22</sub> = '+si(Rin2,'Ω')+', A = (R<sub>in</sub>/r<sub>π1</sub>)·β·(−R<sub>C1</sub>‖R<sub>in2</sub>)/R<sub>in2</sub>·(β+1) = '+si(Al,''),'A<sub>f</sub> = A/(1+Aβ) = '+(Al/F).toFixed(2)+' (אידיאלי 1/β = −(R<sub>E2</sub>+R<sub>f</sub>)/R<sub>E2</sub> = '+(1/b).toFixed(2)+')','R<sub>if</sub> = R<sub>in</sub>/(1+Aβ) = '+si(Rin/F,'Ω')+' ↓ · R<sub>of</sub> → ∞ (טורי ביציאה) ↑']};}
+  const N=400;let X=[],Y=[],XF=[];
+  function build(){const t=getT(),{xs}=st;X=[];Y=[];XF=[];const xu=t==='ss'||t==='sr'?xs/1000:xs/1e6;
+    for(let k=0;k<N;k++){const tt=2*k/N,x=xu*Math.sin(2*Math.PI*tt);let y,xf;
+      if(t==='ss'){y=M.Af*x;xf=M.b*y;}else if(t==='pp'){y=M.Af*x;xf=M.b*y;}else if(t==='sr'){y=-M.Af*x*st.RC;xf=M.b*M.Af*x;}else{y=M.Af*x;xf=M.b*y;}
+      X.push([tt,x]);Y.push([tt,y]);XF.push([tt,xf]);}}
+  function paint(ph){const t=getT(),c=CC[t],i=Math.floor(((ph%2)/2)*N)%N,x=X[i][1],y=Y[i][1],xf=XF[i][1],{Rs,Rf,RL,R1,R2,RC,RE,beta}=st;
+    const sg=v=>Math.sign(v)||1;
+    if(t==='ss'){const iF=y/(R1+R2),Im=Math.abs(M.Af*X[0]?Math.max(...Y.map(p=>Math.abs(p[1]))):1)/(R1+R2)+1e-12;c.I('f',clamp(Math.abs(iF)/Im,0,1)*0.9,sg(y));c.I('o',clamp(Math.abs(iF)/Im,0,1)*0.9,sg(y));c.set('xf','v_f = '+si(xf,'V'));c.set('y','= '+si(y,'V'));}
+    else if(t==='pp'){const iin=x,il=y/RL,Im=Math.max(...X.map(p=>Math.abs(p[1])))+1e-12,ImL=Math.max(...Y.map(p=>Math.abs(p[1])))/RL+1e-12;c.I('in',clamp(Math.abs(iin)/Im,0,1)*0.9,sg(iin));c.I('f',clamp(Math.abs(iin)/Im,0,1)*0.9,sg(iin));c.I('l',clamp(Math.abs(il)/ImL,0,1)*0.9,sg(y));c.set('xf','i_f = '+si(-xf,'A'));c.set('y','= '+si(y,'V'));}
+    else if(t==='sr'){const io=M.Af*x,ib=io/beta,Im=Math.max(...X.map(p=>Math.abs(p[1])))*M.Af+1e-12;c.I('b',clamp(Math.abs(ib)/Im*beta/3,0,1)*0.9,sg(x));c.I('c',clamp(Math.abs(io)/Im,0,1)*0.9,sg(x));c.I('e',clamp(Math.abs(io)/Im,0,1)*0.9,sg(x));c.set('xf','v_f = i_eR_E = '+si(xf,'V'));c.set('x','v_s = '+si(x,'V'));c.set('y','= '+si(y,'V'));}
+    else{const io=y,ib1=x*M.Rin/M.rpi,ic1=beta*ib1,ib2=io/(beta+1),iF=-xf,Im=Math.max(...Y.map(p=>Math.abs(p[1])))+1e-12,f=v=>clamp(Math.abs(v)/Im*3,0,1)*0.9;
+      c.I('is',f(x*30),sg(x));c.I('b1',f(ib1*30),sg(ib1));c.I('c1',f(ic1),sg(ic1));c.I('e1',f(ic1),sg(ic1));c.I('b2',f(ib2*30),sg(ib2));c.I('c2',f(io),sg(io));c.I('e2',f(io),sg(io));c.I('f',f(iF*3),sg(iF));c.set('xf','i_f = '+si(iF,'A'));c.set('y','= '+si(y,'A'));}
+    const sx=t==='ss'||t==='sr'?1e3:1e6,sy=t==='ps'?1e3:1;
+    const ymx=Math.max(...Y.map(p=>Math.abs(p[1])))*sy,xmx=Math.max(...X.map(p=>Math.abs(p[1])))*sx,k=ymx>0?ymx/xmx:1;
+    draw(cv,{x0:0,x1:2,y0:-ymx*1.2,y1:ymx*1.2,xl:'t / T',yl:'y ['+M.yu+']  (x ו-x_f מנורמלים)',cursor:ph%2,series:[{c:'t2',w:1.6,pts:X.map(p=>[p[0],p[1]*sx*k])},{c:'t3',w:1.4,dash:[5,4],pts:XF.map(p=>[p[0],p[1]*(t==='ss'||t==='sr'?1e3:1e6)*k])},{c:'t1',w:2.6,pts:Y.map(p=>[p[0],p[1]*sy])}]});}
+  types.forEach(k=>{CC[k].tick=(t)=>{if(getT()===k&&X.length)paint(t*0.25);};});
+  function upd(){show();M=model();build();const t=getT();
+    const rows=[['β',si(M.b,M.bu)],['A (מועמס, בלי הלולאה)',si(M.A,M.Au)],['הגבר חוג Aβ',si(M.A*M.b,'')],['1+Aβ',M.F.toFixed(3)],['A<sub>f</sub>',si(M.Af,M.Au)],['1/β (אידיאלי)',si(M.ideal,M.Au)],['שגיאה מ-1/β',((1-M.Af*M.b)*100).toFixed(2)+'%'],['R<sub>if</sub>'+(M.inS?' (טורי ↑)':' (מקבילי ↓)'),si(M.Rif,'Ω')],['R<sub>of</sub>'+(M.outS?' (טורי ↑)':' (מקבילי ↓)'),isFinite(M.Rof)?si(M.Rof,'Ω'):'∞']];
+    if(t==='sr')rows.push(['v<sub>o</sub>/v<sub>s</sub> = −A<sub>f</sub>R<sub>C</sub>',(-M.Af*st.RC).toFixed(2)],['נוסחת שיעור 5: −βR<sub>C</sub>/(R<sub>s</sub>+r<sub>π</sub>+(β+1)R<sub>E</sub>)',(-st.beta*st.RC/(st.Rs+M.rpi+(st.beta+1)*st.RE)).toFixed(2)]);
+    if(t==='pp')rows.push(['v<sub>o</sub>/v<sub>s</sub> = A<sub>f</sub>/R<sub>s</sub>',(M.Af/st.Rs).toFixed(3)],['אידיאלי −R<sub>f</sub>/R<sub>s</sub>',(-st.Rf/st.Rs).toFixed(3)]);
+    readouts('r-l8real',rows);
+    document.getElementById('l8real-steps').innerHTML=M.steps.map((s,i)=>'<tr><td>'+(i+1)+'</td><td>'+['זיהוי ו-β','העמסה','A מועמס','A<sub>f</sub>','R<sub>if</sub>, R<sub>of</sub>'][i]+'</td><td class="n" style="text-align:right;direction:rtl">'+s+'</td></tr>').join('');
+    paint(CC[t].t*0.25);}
+  show();upd();
+})();
+}
+const b8=LESSONS[8].build;LESSONS[8].build=function(root){b8.call(this,root);labReal(root);};
+})();
+/* ---- l8-step.js ---- */
+/* ==== שיעור 8: משוב מאיץ מגבר איטי — תגובה למדרגה בזמן, τ_f = τ/(1+Aβ) ==== */
+(function(){
+function labStep(root){
+section(root,{id:'l8-step',tag:'רוחב סרט בזמן',title:'משוב מאיץ מגבר איטי: תגובת המדרגה בזמן אמת',short:'תגובה למדרגה',
+lead:'מגבר עם קוטב יחיד מגיב למדרגה כמו RC: <span class="m">y(t) = A<sub>0</sub>x(1 − e<sup>−t/τ</sup>)</span>. סוגרים עליו לולאה עם β ומזינים גל ריבועי. הלולאה "רואה" שהמוצא עדיין רחוק מהיעד, אות השגיאה גדול, והמגבר דוחף חזק יותר: התוצאה מתייצבת מהר פי <span class="m">1+A<sub>0</sub>β</span>. זה בדיוק מה שראית בשיעור כרוחב סרט (<span class="m">f<sub>Hf</sub> = f<sub>H</sub>(1+A<sub>0</sub>β)</span>), הפעם בציר הזמן. להשוואה הוגנת, המגבר הפתוח מקבל כניסה מוחלשת כך ששניהם מגיעים לאותו ערך סופי.',
+body:'<div class="lab"><div class="controls"><div class="presets"><button type="button" data-preset="l8step-a">1+Aβ = 11</button><button type="button" data-preset="l8step-b">1+Aβ = 101</button><button type="button" data-preset="l8step-c">בלי משוב (β=0.001)</button></div><div class="sliders" id="l8step-ctl"></div></div>'+
+'<div class="scopes">'+circ('cx-l8step',lg('t1','אות','dot')+lg('t4','אות השגיאה'),true)+scope('c-l8step','',lg('t2','x(t) (מנורמל)')+lg('t5','מגבר פתוח, אותו ערך סופי','dash')+lg('t1','חוג סגור y(t)')+lg('t4','אות השגיאה e(t) (מנורמל)'),'תגובה למדרגה')+'</div></div><div class="readouts" id="r-l8step"></div>'+
+notes('<h3>מה לראות</h3><ul><li>ברגע המדרגה המוצא עוד 0, לכן <span class="m">e = x</span> במלואו והמגבר "רץ" במהירות המקסימלית שלו. ככל שהמוצא מתקרב ל-x/β השגיאה קטנה והדחיפה נחלשת: זו אקספוננטה עם קבוע זמן <span class="m">τ/(1+A<sub>0</sub>β)</span>.</li><li>הגדל את A<sub>0</sub>β: הקו הצהוב נהיה כמעט מדרגה, בעוד המקווקו (בלי משוב) עדיין זוחל. אותו GBW, חלוקה שונה בין הגבר למהירות.</li><li>אם המחזור קצר מ-τ, המגבר הפתוח לא מספיק להגיע ליעד (הגל הריבועי הופך למשולש). החוג הסגור עוקב בקלות.</li><li>המחיר: ההגבר ירד פי אותו 1+A<sub>0</sub>β. במגברי שרת (A<sub>0</sub>~10<sup>5</sup>, f<sub>H</sub>~10Hz) זה בדיוק מה שהופך אותם לשימושיים ב-MHz.</li></ul>',
+'<h3>הנוסחאות</h3>'+F('חוג פתוח:','τ = 1/(2πf<sub>H</sub>), y → A<sub>0</sub>x')+F('חוג סגור:','dy/dt = (A<sub>0</sub>(x − βy) − y)/τ')+F('','τ<sub>f</sub> = τ/(1+A<sub>0</sub>β), y → A<sub>0</sub>x/(1+A<sub>0</sub>β)')+F('','f<sub>Hf</sub> = f<sub>H</sub>(1+A<sub>0</sub>β), A<sub>0f</sub>f<sub>Hf</sub> = A<sub>0</sub>f<sub>H</sub>'))});
+(function(){
+  const C=Circuit('cx-l8step',440,200),cv=reg('c-l8step');
+  C.term(20,70);C.T(20,56,'x','big','middle');C.w([20,70],[89,70]);C.arrow(89,70,1,0);C.sum(100,70);C.T(88,58,'+','hi','middle');C.T(112,98,'−','hi','middle');
+  C.w([111,70],[170,70]);C.arrow(170,70,1,0);C.blk(215,70,90,44,'A_0, τ',{id:'a'});C.w([260,70],[420,70]);C.arrow(420,70,1,0);C.T(425,74,'y','big','start');C.nd(340,70);
+  C.w([340,70],[340,150],[260,150]);C.arrow(260,150,-1,0);C.blk(215,150,90,40,'β');C.w([170,150],[100,150],[100,81]);C.arrow(100,81,0,-1);
+  C.T(140,60,'','val2','middle',null,'e');C.T(390,60,'','val','middle',null,'y');C.T(135,140,'','val','middle',null,'f');
+  C.flow('x',[[20,70],[89,70]],{signal:true});C.flow('e',[[111,70],[170,70]],{signal:true});C.flow('y',[[260,70],[420,70]],{signal:true});C.flow('f',[[340,70],[340,150],[260,150]],{signal:true});C.flow('f2',[[170,150],[100,150],[100,81]],{signal:true});
+  C.bindPlay();
+  const st=sliders('l8step-ctl',[
+    {key:'A0',id:'l8step-a0',label:'A<sub>0</sub>',min:1,max:4,step:0.1,value:3,map:v=>Math.pow(10,v),fmt:v=>si(v,'')},
+    {key:'b',id:'l8step-b',label:'β',min:-3,max:0,step:0.05,value:-2,map:v=>Math.pow(10,v),fmt:v=>v.toPrecision(2)},
+    {key:'tau',id:'l8step-tau',label:'τ של המגבר הפתוח',min:-4,max:-1,step:0.1,value:-2,map:v=>Math.pow(10,v),fmt:v=>si(v,'s')},
+    {key:'r',id:'l8step-r',label:'מחזור הגל הריבועי / τ',min:0.5,max:40,step:0.5,value:6,fmt:v=>v.toFixed(1)+' × τ'}],upd);
+  const N=600;let X=[],YO=[],YC=[],E=[],F=1,T=1,tauf=1;
+  function build(){const {A0,b,tau,r}=st;F=1+A0*b;tauf=tau/F;T=r*tau;X=[];YO=[];YC=[];E=[];let yo=0,yc=0;const dt=T/N,eo=Math.exp(-dt/tau),ec=Math.exp(-dt/tauf);
+    for(let k=0;k<4*N;k++){const ph=(k%N)/N,x=ph<0.5?1:0;const yss_o=A0*x/F,yss_c=A0*x/F;yo=yss_o+(yo-yss_o)*eo;yc=yss_c+(yc-yss_c)*ec;
+      if(k>=2*N){const t=(k-2*N)/N;X.push([t,x]);YO.push([t,yo]);YC.push([t,yc]);E.push([t,x-st.b*yc]);}}}
+  function paint(ph){const i=Math.floor(((ph%2)/2)*2*N)%(2*N),x=X[i][1],yc=YC[i][1],e=E[i][1],{b,A0}=st,yf=A0/F;
+    C.I('x',0.4+0.5*x);C.I('e',clamp(Math.abs(e)*0.9+0.05,0,1));C.I('y',clamp(yc/yf*0.9+0.05,0,1));C.I('f',clamp(b*yc/(b*yf)*0.7+0.05,0,1));C.I('f2',clamp(b*yc/(b*yf)*0.7+0.05,0,1));
+    C.st('a',Math.abs(e)>0.5?'hot':'on');C.set('e','e = '+e.toFixed(3));C.set('y','y = '+yc.toFixed(2));C.set('f','βy = '+(b*yc).toFixed(3));
+    const ymax=yf*1.15;
+    draw(cv,{x0:0,x1:2,y0:-0.05*ymax,y1:ymax,xl:'t / T',yl:'y',cursor:ph%2,series:[{c:'t2',w:1.4,pts:X.map(p=>[p[0],p[1]*yf])},{c:'t4',w:1.3,pts:E.map(p=>[p[0],p[1]*yf])},{c:'t5',w:1.8,dash:[6,4],pts:YO},{c:'t1',w:2.6,pts:YC}]});}
+  C.tick=(t)=>paint(t*0.25);
+  function upd(){const {A0,b,tau}=st;build();const fH=1/(2*Math.PI*tau),fHf=fH*F;
+    readouts('r-l8step',[['1+A<sub>0</sub>β',F.toFixed(2)],['A<sub>f</sub> = A<sub>0</sub>/(1+A<sub>0</sub>β)',(A0/F).toFixed(3)],['τ (פתוח)',si(tau,'s')],['τ<sub>f</sub> = τ/(1+A<sub>0</sub>β)',si(tauf,'s')],['f<sub>H</sub> = 1/2πτ',si(fH,'Hz')],['f<sub>Hf</sub> = f<sub>H</sub>(1+A<sub>0</sub>β)',si(fHf,'Hz')],['GBW פתוח / סגור',si(A0*fH,'Hz')+' / '+si(A0/F*fHf,'Hz')],['זמן עלייה 10–90% (2.2τ)',si(2.2*tau,'s')+' → '+si(2.2*tauf,'s')]]);
+    paint(C.t*0.25);}
+  presets({'l8step-a':{'l8step-a0':3,'l8step-b':-2,'l8step-tau':-2,'l8step-r':6},'l8step-b':{'l8step-a0':4,'l8step-b':-2,'l8step-tau':-2,'l8step-r':6},'l8step-c':{'l8step-a0':3,'l8step-b':-3,'l8step-tau':-2,'l8step-r':6}});
+  upd();
+})();
+}
+const b8=LESSONS[8].build;LESSONS[8].build=function(root){b8.call(this,root);labStep(root);};
+})();
+/* ---- l9-schmitt.js ---- */
+/* ==== שיעור 9: משווה שמיט (היסטרזיס) מול משווה רגיל, עם רעש ==== */
+(function(){
+function labSch(root){
+section(root,{id:'l9-sch',tag:'משווה עם היסטרזיס',title:'משווה שמיט: משוב חיובי שמנקה רעש',short:'שמיט',
+lead:'מגבר שרת <b>בלי משוב שלילי</b> הוא משווה: המוצא קופץ ל-<span class="m">+V<sub>CC</sub></span> או <span class="m">−V<sub>CC</sub></span> לפי הסימן של <span class="m">v<sup>+</sup> − v<sup>−</sup></span>. כאן הכניסה נכנסת להדק המהפך, וחלק <span class="m">β = R<sub>2</sub>/(R<sub>1</sub>+R<sub>2</sub>)</span> מהמוצא חוזר להדק החיובי: <b>משוב חיובי</b>. הסף שאיתו משווים תלוי במצב המוצא, ולכן יש שני ספים: <span class="m">±βV<sub>CC</sub></span>. הוסף רעש לכניסה ותראה למה זה חשוב.',
+body:'<div class="lab"><div class="controls"><div class="presets"><button type="button" data-preset="l9sch-cmp">משווה רגיל (R<sub>2</sub>=0) + רעש</button><button type="button" data-preset="l9sch-hys">שמיט β=0.2 + אותו רעש</button><button type="button" data-preset="l9sch-clean">בלי רעש</button></div><div class="sliders" id="l9sch-ctl"></div></div>'+
+'<div class="scopes">'+circ('cx-l9sch',lg('t1','זרם','dot')+lg('t4','v<sub>out</sub> = +V<sub>CC</sub>')+lg('warn','v<sub>out</sub> = −V<sub>CC</sub>'),true)+scope('c-l9sch','short',lg('t2','v<sub>in</sub>(t) כולל רעש')+lg('t1','v<sub>out</sub>(t)')+lg('t3','ספים ±βV<sub>CC</sub>','dash'),'זמן')+scope('c-l9sch2','short',lg('t1','v<sub>in</sub> עולה')+lg('t3','v<sub>in</sub> יורד')+lg('t2','נקודה נוכחית','dot'),'אופיין מעבר (היסטרזיס)')+'</div></div><div class="readouts" id="r-l9sch"></div>'+
+notes('<h3>מה לראות</h3><ul><li>עם <span class="m">R<sub>2</sub>=0</span> (β=0) זה משווה רגיל: סף יחיד ב-0V. כשיש רעש, ליד המעבר הכניסה חוצה את 0 שוב ושוב, והמוצא "מרטט" (chatter). ספור את ההחלפות במחזור בשורת המדדים.</li><li>הגדל את β: החלון <span class="m">2βV<sub>CC</sub></span> נפתח. ברגע שהחלון רחב מהרעש, יש בדיוק שתי החלפות במחזור. זה כל הרעיון של שמיט.</li><li>באופיין המעבר רואים לולאה: בדרך למעלה המוצא מתהפך ב-<span class="m">+βV<sub>CC</sub></span>, ובדרך למטה ב-<span class="m">−βV<sub>CC</sub></span>. הכיוון קובע את הסף: זו היסטרזיס.</li><li>הזרם היחיד במעגל זורם במחלק R<sub>1</sub>/R<sub>2</sub> ובעומס. לתוך ההדקים לא נכנס זרם, גם כשהמגבר ברוויה.</li><li>אותו מעגל בדיוק, בתוספת קבל בכניסה במקום מקור, הוא <a href="#/l/8/lab/l8-osc">מתנד ההרפיה משיעור 8</a>.</li></ul>',
+'<h3>הנוסחאות</h3>'+F('משווה:','v<sub>out</sub> = +V<sub>CC</sub> אם v<sup>+</sup> &gt; v<sup>−</sup>, אחרת −V<sub>CC</sub>')+F('משוב חיובי:','v<sup>+</sup> = βv<sub>out</sub>, β = R<sub>2</sub>/(R<sub>1</sub>+R<sub>2</sub>)')+F('סף עליון:','V<sub>TH</sub> = +βV<sub>CC</sub> (כשהמוצא גבוה)')+F('סף תחתון:','V<sub>TL</sub> = −βV<sub>CC</sub> (כשהמוצא נמוך)')+F('רוחב ההיסטרזיס:','V<sub>TH</sub> − V<sub>TL</sub> = 2βV<sub>CC</sub>')+F('תנאי לחסינות מרעש:','2βV<sub>CC</sub> &gt; משרעת הרעש (שיא לשיא)'))});
+(function(){
+  const C=Circuit('cx-l9sch',460,270),cv=reg('c-l9sch'),cv2=reg('c-l9sch2');
+  const o=C.oa(250,120,{id:'oa'});
+  C.V([60,200],[60,140],'v_{in}',{kind:'ac',side:1,off:30});C.w([60,140],[60,108],o.m);C.w([60,200],[60,215]);C.G(60,215);C.T(150,98,'I⁻ = 0','hi','middle');
+  C.w(o.o,[425,120]);C.nd(330,120);C.nd(380,120);C.term(425,120);C.T(425,106,'v_{out}','big','middle');C.T(425,142,'','val','middle',null,'vo');
+  C.R([380,120],[380,205],'R_L',{side:-1,id:'rl'});C.G(380,205);
+  C.w([330,120],[330,200]);C.R([330,200],[200,200],'R_1',{side:-1,id:'r1'});C.nd(200,200);C.w([200,200],[200,132],o.p);
+  C.R([200,200],[200,250],'R_2',{side:-1,id:'r2'});C.G(200,250);
+  C.T(120,155,'','val2','middle',null,'vi');C.T(120,172,'v_{in}','hi','middle');
+  C.T(300,241,'','val','start',null,'vp');C.T(300,258,'v⁺ = βv_{out}','hi','start');
+  C.flow('fd',[[330,120],[330,200],[200,200],[200,250]]);C.flow('fl',[[330,120],[380,120],[380,205]]);
+  C.bindPlay();
+  const st=sliders('l9sch-ctl',[
+    {key:'A',id:'l9sch-a',label:'משרעת הכניסה',min:0.5,max:10,step:0.1,value:4,fmt:v=>v.toFixed(1)+' V'},
+    {key:'nz',id:'l9sch-nz',label:'רעש בכניסה (שיא לשיא)',min:0,max:3,step:0.1,value:1,fmt:v=>v.toFixed(1)+' V'},
+    {key:'R1',id:'l9sch-r1',label:'R<sub>1</sub>',min:10,max:200,step:10,value:80,map:v=>v*1000,fmt:v=>si(v,'Ω')},
+    {key:'R2',id:'l9sch-r2',label:'R<sub>2</sub> (0 = משווה רגיל)',min:0,max:100,step:1,value:20,map:v=>v*1000,fmt:v=>v===0?'0 (בלי היסטרזיס)':si(v,'Ω')},
+    {key:'RL',id:'l9sch-rl',label:'R<sub>L</sub>',min:1,max:100,step:1,value:10,map:v=>v*1000,fmt:v=>si(v,'Ω')},
+    {key:'VCC',id:'l9sch-vcc',label:'V<sub>CC</sub>',min:3,max:15,step:0.5,value:10,fmt:v=>'±'+v.toFixed(1)+' V'}],upd);
+  const N=1200;let VIN=[],VOUT=[],b=0,swaps=0;
+  const noise=(ph,a)=>a*0.5*(0.55*Math.sin(2*Math.PI*29*ph)+0.3*Math.sin(2*Math.PI*47*ph+1.3)+0.15*Math.sin(2*Math.PI*83*ph+0.4));
+  function build(){const {A,nz,VCC}=st;VIN=[];VOUT=[];swaps=0;let s=1;
+    for(let k=0;k<N;k++){const ph=2*k/N,v=A*Math.sin(2*Math.PI*ph)+noise(ph,nz);
+      if(s>0&&v>b*VCC)s=-1;else if(s<0&&v<-b*VCC)s=1;
+      if(k>0&&VOUT[k-1]!==s*VCC)swaps++;VIN.push(v);VOUT.push(s*VCC);}
+    swaps=swaps/2;}
+  function paint(ph){const {VCC,R1,R2,RL}=st,i=Math.floor(((ph%2)/2)*N)%N,vo=VOUT[i],vi=VIN[i],Id=vo/(R1+R2),Il=vo/RL,Im=Math.max(VCC/RL,VCC/(R1+R2));
+    C.I('fd',mag(Id,Im),Math.sign(vo)||1);C.I('fl',mag(Il,Im),Math.sign(vo)||1);
+    C.st('oa',vo>0?'on':'hot');C.st('r1',vo>0?'on':'hot');C.st('r2',R2>0?(vo>0?'on':'hot'):'dim');
+    C.set('vo','= '+fx(vo,1)+' V');C.set('vi',fx(vi,2)+' V');C.set('vp','v⁺ = '+fx(b*vo,2)+' V');
+    const P1=[],P2=[];for(let k=0;k<N;k++){const x=2*k/N;P1.push([x,VIN[k]]);P2.push([x,VOUT[k]]);}
+    const y=Math.max(VCC,st.A+st.nz)*1.15;
+    draw(cv,{x0:0,x1:2,y0:-y,y1:y,xl:'t / T',yl:'[V]',cursor:ph%2,series:[{c:'t3',w:1.2,dash:[5,4],pts:[[0,b*VCC],[2,b*VCC]]},{c:'t3',w:1.2,dash:[5,4],pts:[[0,-b*VCC],[2,-b*VCC]]},{c:'t2',w:1.5,pts:P1},{c:'t1',w:2.4,pts:P2}]});
+    const L=Math.max(VCC,st.A+st.nz)*1.1,th=b*VCC;
+    draw(cv2,{x0:-L,x1:L,y0:-VCC*1.25,y1:VCC*1.25,xl:'v_in [V]',yl:'v_out [V]',series:[{c:'t1',w:2.4,pts:[[-L,VCC],[th,VCC],[th,-VCC],[L,-VCC]]},{c:'t3',w:2.4,dash:b>0?[]:[4,4],pts:[[L,-VCC],[-th,-VCC],[-th,VCC],[-L,VCC]]}],points:[{x:vi,y:vo,c:'t2',r:5}]});}
+  C.tick=(t)=>paint(t*0.22);
+  function upd(){const {R1,R2,VCC,nz}=st;b=R2/(R1+R2);build();
+    const w=2*b*VCC,ok=nz===0||w>nz;
+    readouts('r-l9sch',[['β = R<sub>2</sub>/(R<sub>1</sub>+R<sub>2</sub>)',b.toFixed(3)],['ספים ±βV<sub>CC</sub>',b>0?'±'+fx(b*VCC,2)+' V':'סף יחיד: 0 V'],['רוחב ההיסטרזיס 2βV<sub>CC</sub>',fx(w,2)+' V'],['רעש שיא-לשיא',fx(nz,1)+' V'],['החלפות במוצא לכל מחזור',(swaps).toFixed(0)+(Math.abs(swaps-2)<0.1?' (נקי)':' (רעד!)')],['מצב',ok?pill('החלון רחב מהרעש · מוצא נקי','ok'):pill('הרעש חוצה את שני הספים · המוצא מרטט','bad'),'html'],['זרם במחלק (|v<sub>out</sub>|/(R<sub>1</sub>+R<sub>2</sub>))',si(VCC/(R1+R2),'A')],['זרם לעומס',si(VCC/st.RL,'A')]]);
+    paint(C.t*0.22);}
+  presets({'l9sch-cmp':{'l9sch-a':4,'l9sch-nz':1,'l9sch-r1':80,'l9sch-r2':0,'l9sch-vcc':10},'l9sch-hys':{'l9sch-a':4,'l9sch-nz':1,'l9sch-r1':80,'l9sch-r2':20,'l9sch-vcc':10},'l9sch-clean':{'l9sch-a':4,'l9sch-nz':0,'l9sch-r1':80,'l9sch-r2':20,'l9sch-vcc':10}});
+  upd();
+})();
+}
+const b9=LESSONS[9].build;LESSONS[9].build=function(root){b9.call(this,root);labSch(root);};
+})();
+/* ---- l9-pwr.js ---- */
+/* ==== שיעור 9: מאיפה מגיע זרם המוצא? הדקי ההזנה של מגבר השרת ==== */
+(function(){
+function labPwr(root){
+section(root,{id:'l9-pwr',tag:'זרם המוצא',title:'מאיפה מגיע זרם המוצא? מהדקי ההזנה, לא מהכניסה',short:'זרם המוצא',
+lead:'בשרטוטים הרגילים מסתירים את הדקי ההזנה <span class="m">±V<sub>CC</sub></span>, וזה גורם לבלבול: אם לא נכנס זרם להדקי הכניסה, מי מספק את הזרם ל-<span class="m">R<sub>L</sub></span> ול-<span class="m">R<sub>f</sub></span>? התשובה: <b>הספקים</b>. כשהמוצא חיובי הזרם יורד מ-+V<sub>CC</sub> דרך המגבר החוצה; כשהוא שלילי הזרם נכנס למוצא ויורד ל-−V<sub>CC</sub>. לכן אף פעם לא כותבים KCL בצומת המוצא: יש שם ענף (המגבר) שאת הזרם בו לא יודעים מראש.',
+body:'<div class="lab"><div class="controls"><div class="presets"><button type="button" data-preset="l9pwr-a">הופך, הגבר −3</button><button type="button" data-preset="l9pwr-b">עומס כבד: R<sub>L</sub>=500Ω</button><button type="button" data-preset="l9pwr-c">רוויה</button></div><div class="sliders" id="l9pwr-ctl"></div></div>'+
+'<div class="scopes">'+circ('cx-l9pwr',lg('t1','זרם','dot')+lg('t4','+V<sub>CC</sub> מספק')+lg('warn','−V<sub>CC</sub> בולע'),true)+scope('c-l9pwr','short',lg('t2','v<sub>in</sub>(t)')+lg('t1','v<sub>out</sub>(t)'),'מתחים')+scope('c-l9pwr2','short',lg('t4','i<sub>+</sub> מ-+V<sub>CC</sub>')+lg('warn','i<sub>−</sub> אל −V<sub>CC</sub>')+lg('t2','i<sub>in</sub> = v<sub>in</sub>/R<sub>1</sub>','dash'),'זרמים [mA]')+'</div></div><div class="readouts" id="r-l9pwr"></div>'+
+notes('<h3>מה לראות</h3><ul><li>הזרם דרך R<sub>1</sub> ו-R<sub>f</sub> הוא אותו זרם (<span class="m">v<sub>in</sub>/R<sub>1</sub></span>): הוא נכנס לאדמה הווירטואלית ויוצא דרך R<sub>f</sub>. הוא <b>לא</b> נכנס למגבר.</li><li>בצומת המוצא נפגשים שלושה זרמים: של R<sub>f</sub>, של R<sub>L</sub>, ושל המגבר עצמו. המגבר "משלים" בדיוק את מה שחסר, ולכן <span class="m">i<sub>out</sub> = v<sub>out</sub>/R<sub>L</sub> + v<sub>out</sub>/R<sub>f</sub></span>.</li><li>הקטן את R<sub>L</sub>: הזרם מהספקים גדל, אבל v<sub>out</sub> לא משתנה (R<sub>out</sub>=0 במגבר אידיאלי). זה מה שהופך מגבר שרת ל"מקור מתח" מבחינת העומס.</li><li>ברוויה המוצא נתקע ב-±V<sub>CC</sub>: הספק כבר לא יכול "להרים" יותר. שים לב שגם אז לא נכנס זרם להדקי הכניסה, אבל האדמה הווירטואלית נשברת: v<sup>−</sup> ≠ 0.</li></ul>',
+'<h3>הנוסחאות</h3>'+F('','i<sub>in</sub> = v<sub>in</sub>/R<sub>1</sub> = i<sub>f</sub> (אין זרם להדק)')+F('','v<sub>out</sub> = −(R<sub>f</sub>/R<sub>1</sub>)v<sub>in</sub>')+F('זרם המגבר:','i<sub>out</sub> = v<sub>out</sub>/R<sub>L</sub> + v<sub>out</sub>/R<sub>f</sub>')+F('','v<sub>out</sub> &gt; 0 → הזרם מגיע מ-+V<sub>CC</sub>; v<sub>out</sub> &lt; 0 → הזרם יורד ל-−V<sub>CC</sub>')+F('הספק בספקים:','P ≈ V<sub>CC</sub>·|i<sub>out</sub>|'))});
+(function(){
+  const C=Circuit('cx-l9pwr',480,290),cv=reg('c-l9pwr'),cv2=reg('c-l9pwr2');
+  const o=C.oa(250,150,{id:'oa'});
+  C.V([40,230],[40,170],'v_{in}',{kind:'ac',side:1,off:30});C.w([40,170],[40,138],[70,138]);C.R([70,138],[150,138],'R_1',{side:-1,id:'r1'});C.w([150,138],o.m);C.nd(175,138);C.w([40,230],[40,245]);C.G(40,245);
+  C.w([175,138],[175,60]);C.R([175,60],[335,60],'R_f',{side:1,id:'rf'});C.w([335,60],[335,150]);C.nd(335,150);
+  C.w(o.o,[440,150]);C.term(440,150);C.T(440,136,'v_{out}','big','middle');C.T(440,170,'','val','middle',null,'vo');
+  C.nd(400,150);C.R([400,150],[400,235],'R_L',{side:-1,id:'rl'});C.G(400,235);
+  C.w(o.p,[208,215]);C.G(208,215);
+  C.w([250,134],[250,100]);C.rail(250,100,'+V_{CC}');C.w([250,166],[250,205]);C.rail(250,205,'−V_{CC}',true);
+  C.T(175,158,'0V','val2','middle');C.T(110,120,'','val2','middle',null,'iin');C.T(255,45,'','val','middle',null,'if');C.T(418,224,'','val','start',null,'il');
+  C.T(300,100,'','val','start',null,'ip');C.T(300,222,'','val','start',null,'im');C.T(478,270,'','he','end',null,'src');
+  C.flow('in',[[40,170],[40,138],[175,138]]);C.flow('f',[[175,138],[175,60],[335,60],[335,150]]);C.flow('l',[[335,150],[400,150],[400,235]]);
+  C.flow('sp',[[250,100],[250,150],[290,150],[335,150]]);C.flow('sn',[[335,150],[290,150],[250,150],[250,205]]);
+  C.bindPlay();
+  const st=sliders('l9pwr-ctl',[
+    {key:'A',id:'l9pwr-a',label:'משרעת v<sub>in</sub>',min:0.1,max:6,step:0.1,value:2,fmt:v=>v.toFixed(1)+' V'},
+    {key:'R1',id:'l9pwr-r1',label:'R<sub>1</sub>',min:1,max:100,step:1,value:10,map:v=>v*1000,fmt:v=>si(v,'Ω')},
+    {key:'Rf',id:'l9pwr-rf',label:'R<sub>f</sub>',min:1,max:300,step:1,value:30,map:v=>v*1000,fmt:v=>si(v,'Ω')},
+    {key:'RL',id:'l9pwr-rl',label:'R<sub>L</sub>',min:0.2,max:50,step:0.2,value:2,map:v=>v*1000,fmt:v=>si(v,'Ω')},
+    {key:'VCC',id:'l9pwr-vcc',label:'V<sub>CC</sub>',min:3,max:15,step:0.5,value:12,fmt:v=>'±'+v.toFixed(1)+' V'}],upd);
+  const N=400;let VI=[],VO=[],IP=[],IM=[],IIN=[];
+  function build(){const {A,R1,Rf,RL,VCC}=st;VI=[];VO=[];IP=[];IM=[];IIN=[];
+    for(let k=0;k<N;k++){const t=2*k/N,vi=A*Math.sin(2*Math.PI*t),vo=clamp(-Rf/R1*vi,-VCC,VCC),sat=Math.abs(vo)>=VCC-1e-12;
+      const vm=sat?vi*Rf/(R1+Rf)+vo*R1/(R1+Rf):0;// virtual ground breaks in saturation: node voltage from divider
+      const iin=(vi-vm)/R1,io=vo/RL+(vo-vm)/Rf;VI.push([t,vi]);VO.push([t,vo]);IIN.push([t,iin*1e3]);IP.push([t,Math.max(0,io)*1e3]);IM.push([t,Math.max(0,-io)*1e3]);}}
+  function paint(ph){const i=Math.floor(((ph%2)/2)*N)%N,{R1,Rf,RL,VCC}=st,vi=VI[i][1],vo=VO[i][1],iin=IIN[i][1]/1e3,ip=IP[i][1]/1e3,im=IM[i][1]/1e3,io=ip-im,il=vo/RL,Im=VCC*(1/RL+1/Rf);
+    C.I('in',mag(iin,Im),Math.sign(iin)||1);C.I('f',mag(iin,Im),Math.sign(iin)||1);C.I('l',mag(il,Im),Math.sign(il)||1);
+    C.I('sp',mag(ip,Im),1);C.I('sn',mag(im,Im),1);
+    C.st('oa',Math.abs(vo)>=VCC-1e-9?'hot':(io>0?'on':null));
+    C.set('vo','= '+fx(vo,2)+' V');C.set('iin','i_{in} = '+si(iin,'A'));C.set('if','i_f = '+si(iin,'A'));C.set('il','i_L = '+si(il,'A'));
+    C.set('ip',ip>1e-9?'i_+ = '+si(ip,'A'):'i_+ = 0');C.set('im',im>1e-9?'i_− = '+si(im,'A'):'i_− = 0');
+    C.set('src',io>1e-9?'+V_CC מספק '+si(io,'A'):io<-1e-9?'−V_CC בולע '+si(-io,'A'):'');
+    const y=Math.max(st.A,Math.min(st.A*Rf/R1,VCC))*1.2,S=[];if(VCC<=y)S.push({c:'t5',w:1,dash:[4,4],pts:[[0,VCC],[2,VCC]]},{c:'t5',w:1,dash:[4,4],pts:[[0,-VCC],[2,-VCC]]});
+    S.push({c:'t2',w:1.8,pts:VI},{c:'t1',w:2.6,pts:VO});
+    draw(cv,{x0:0,x1:2,y0:-y,y1:y,xl:'t / T',yl:'[V]',cursor:ph%2,series:S});
+    const ym=Math.max(...IP.map(p=>p[1]),...IM.map(p=>p[1]),...IIN.map(p=>Math.abs(p[1])),1e-3)*1.15;
+    draw(cv2,{x0:0,x1:2,y0:0,y1:ym,xl:'t / T',yl:'[mA]',cursor:ph%2,series:[{c:'t2',w:1.4,dash:[5,4],pts:IIN.map(p=>[p[0],Math.abs(p[1])])},{c:'t4',w:2.4,pts:IP},{c:'warn',w:2.4,pts:IM}]});}
+  C.tick=(t)=>paint(t*0.25);
+  function upd(){const {A,R1,Rf,RL,VCC}=st;build();const G=-Rf/R1,vop=Math.min(A*Rf/R1,VCC),iop=vop*(1/RL+1/Rf),iin=A/R1;
+    readouts('r-l9pwr',[['הגבר −R<sub>f</sub>/R<sub>1</sub>',G.toFixed(2)],['i<sub>in</sub> = i<sub>f</sub> שיא',si(iin,'A')],['i<sub>L</sub> שיא = v<sub>out</sub>/R<sub>L</sub>',si(vop/RL,'A')],['i<sub>out</sub> של המגבר (שיא)',si(iop,'A')],['יחס i<sub>out</sub>/i<sub>in</sub>',(iop/iin).toFixed(1)+'× — הגבר זרם מהספקים'],['הספק שיא מהספק V<sub>CC</sub>·i<sub>out</sub>',si(VCC*iop,'W')],['מצב',A*Rf/R1>VCC?pill('רוויה: v_out נתקע ב-±V_CC'.replace('v_out','v<sub>out</sub>').replace('V_CC','V<sub>CC</sub>'),'bad'):pill('ליניארי','ok'),'html']]);
+    paint(C.t*0.25);}
+  presets({'l9pwr-a':{'l9pwr-a':2,'l9pwr-r1':10,'l9pwr-rf':30,'l9pwr-rl':2,'l9pwr-vcc':12},'l9pwr-b':{'l9pwr-a':2,'l9pwr-r1':10,'l9pwr-rf':30,'l9pwr-rl':0.6,'l9pwr-vcc':12},'l9pwr-c':{'l9pwr-a':5,'l9pwr-r1':10,'l9pwr-rf':30,'l9pwr-rl':2,'l9pwr-vcc':12}});
+  upd();
+})();
+}
+const b9=LESSONS[9].build;LESSONS[9].build=function(root){b9.call(this,root);labPwr(root);};
+})();
+/* ---- l9-lpf.js ---- */
+/* ==== שיעור 9: האינטגרטור המעשי = מסנן מעביר-נמוכים אקטיבי — לאן הולך הזרם בתדר נמוך וגבוה ==== */
+(function(){
+function labLpf(root){
+section(root,{id:'l9-lpf',tag:'אינטגרטור מעשי',title:'אינטגרטור מעשי: בתדר נמוך הזרם עובר ב-R<sub>f</sub>, בתדר גבוה בקבל',short:'אינטגרטור מעשי',
+lead:'זה המגבר ההופך עם קבל <b>במקביל</b> ל-<span class="m">R<sub>f</sub></span>: הנוסחה מהקורס <span class="m">A<sub>v</sub> = −R<sub>f</sub>/(R(1+jωR<sub>f</sub>C))</span>. זרם הכניסה <span class="m">v<sub>in</sub>/R</span> נכנס לאדמה הווירטואלית וחייב לצאת דרך ענף המשוב; השאלה היא <b>באיזה ענף</b>. בתדר נמוך הקבל "פתוח" והזרם עובר ב-R<sub>f</sub>: מגבר רגיל בהגבר −R<sub>f</sub>/R. בתדר גבוה הקבל "קצר" ובולע את הזרם: המוצא קטן, מוזז ב-90°, ופרופורציוני לאינטגרל של הכניסה. תדר הפינה: <span class="m">f<sub>c</sub> = 1/(2πR<sub>f</sub>C)</span>.',
+body:'<div class="lab"><div class="controls"><div class="seg" id="l9lpf-src"><button type="button" data-v="sin" aria-pressed="true">סינוס</button><button type="button" data-v="sq" aria-pressed="false">גל ריבועי</button></div><div class="presets"><button type="button" data-preset="l9lpf-lo">f ≪ f<sub>c</sub>: מגבר</button><button type="button" data-preset="l9lpf-c">f = f<sub>c</sub>: −3dB</button><button type="button" data-preset="l9lpf-hi">f ≫ f<sub>c</sub>: אינטגרטור</button></div><div class="sliders" id="l9lpf-ctl"></div></div>'+
+'<div class="scopes">'+circ('cx-l9lpf',lg('t1','זרם','dot')+lg('t3','ענף הקבל'),true)+scope('c-l9lpf','short',lg('t2','v<sub>in</sub>(t)')+lg('t1','v<sub>out</sub>(t)'),'זמן')+scope('c-l9lpf2','short',lg('t1','|A<sub>v</sub>(f)| [dB]')+lg('t3','f נוכחי','dot')+lg('t5','f<sub>c</sub>','dash'),'תגובת תדר')+'</div></div><div class="readouts" id="r-l9lpf"></div>'+
+notes('<h3>מה לראות</h3><ul><li>ב-f ≪ f<sub>c</sub> הנקודות בענף הקבל כמעט לא זזות: כל הזרם ב-R<sub>f</sub>, ההגבר −R<sub>f</sub>/R והמוצא הפוך בדיוק (180°).</li><li>ב-f = f<sub>c</sub> שני הענפים נושאים אותו זרם (|i<sub>C</sub>| = |i<sub>Rf</sub>|), ההגבר יורד ב-3dB (פי 1/√2) והפאזה 180°−45°.</li><li>ב-f ≫ f<sub>c</sub> הקבל לוקח הכול: <span class="m">v<sub>out</sub> ≈ −(1/RC)∫v<sub>in</sub>dt</span>. סינוס יוצא קוסינוס (הזזה של 90° נוספים) והמשרעת יורדת פי 10 לכל פי 10 בתדר (−20dB/dec). גל ריבועי יוצא משולש.</li><li>בלי R<sub>f</sub> (אינטגרטור אידיאלי) כל היסט DC קטן בכניסה היה נצבר עד לרוויה. R<sub>f</sub> מגביל את הגבר ה-DC ל-−R<sub>f</sub>/R, ולכן הוא "מעשי".</li></ul>',
+'<h3>הנוסחאות</h3>'+F('','A<sub>v</sub> = −Z<sub>f</sub>/R = −R<sub>f</sub>/(R(1+jωR<sub>f</sub>C))')+F('','f<sub>c</sub> = 1/(2πR<sub>f</sub>C)')+F('|A<sub>v</sub>|:','(R<sub>f</sub>/R)/√(1+(f/f<sub>c</sub>)²)')+F('f ≫ f<sub>c</sub>:','v<sub>out</sub> ≈ −(1/RC)∫v<sub>in</sub>dt')+F('KCL:','v<sub>in</sub>/R + v<sub>out</sub>/R<sub>f</sub> + C·dv<sub>out</sub>/dt = 0')+F('יחס הזרמים:','|i<sub>C</sub>|/|i<sub>Rf</sub>| = f/f<sub>c</sub>'))});
+(function(){
+  const C=Circuit('cx-l9lpf',460,255),cv=reg('c-l9lpf'),cv2=reg('c-l9lpf2');
+  const o=C.oa(250,140);
+  C.V([50,215],[50,160],'v_{in}',{kind:'ac',side:1,off:26});C.w([50,160],[50,128],[80,128]);C.R([80,128],[150,128],'R',{side:-1});C.w([150,128],o.m);C.nd(175,128);C.w([50,215],[50,230]);C.G(50,230);
+  C.w([175,128],[175,40]);C.nd(175,80);C.R([175,80],[335,80],'R_f',{side:1,id:'rf'});C.Cap([175,40],[335,40],'C',{side:-1,id:'c'});C.w([335,40],[335,140]);C.nd(335,80);C.nd(335,140);
+  C.w(o.o,[420,140]);C.term(420,140);C.T(420,126,'v_{out}','big','middle');C.T(420,160,'','val','middle',null,'vo');C.nd(380,140);C.R([380,140],[380,215],'R_L',{side:-1});C.G(380,215);C.w(o.p,[208,215]);C.G(208,215);
+  C.T(175,148,'0V','val2','middle');C.T(110,110,'','val2','middle',null,'iin');C.T(255,100,'','val','middle',null,'irf');C.T(352,30,'','val','start',null,'ic');
+  C.flow('in',[[50,160],[50,128],[175,128]]);C.flow('rf',[[175,128],[175,80],[335,80],[335,140]]);C.flow('c',[[175,80],[175,40],[335,40],[335,80]]);C.flow('l',[[335,140],[380,140],[380,215]]);
+  C.bindPlay();
+  const getS=seg('l9lpf-src',()=>upd());
+  const st=sliders('l9lpf-ctl',[
+    {key:'A',id:'l9lpf-a',label:'משרעת v<sub>in</sub>',min:0.1,max:2,step:0.1,value:0.5,fmt:v=>v.toFixed(1)+' V'},
+    {key:'f',id:'l9lpf-f',label:'תדר f',min:1,max:5,step:0.05,value:2,map:v=>Math.pow(10,v),fmt:v=>si(v,'Hz')},
+    {key:'R',id:'l9lpf-r',label:'R',min:1,max:100,step:1,value:10,map:v=>v*1000,fmt:v=>si(v,'Ω')},
+    {key:'Rf',id:'l9lpf-rf',label:'R<sub>f</sub>',min:1,max:1000,step:1,value:100,map:v=>v*1000,fmt:v=>si(v,'Ω')},
+    {key:'Cc',id:'l9lpf-c',label:'C',min:0.1,max:100,step:0.1,value:1.6,map:v=>v*1e-9,fmt:v=>si(v,'F')},
+    {key:'RL',id:'l9lpf-rl',label:'R<sub>L</sub>',min:1,max:100,step:1,value:10,map:v=>v*1000,fmt:v=>si(v,'Ω')}],upd);
+  const N=400;let VI=[],VO=[],IC=[],IRF=[],fc=1,tau=1;
+  function build(){const {A,f,R,Rf,Cc}=st,s=getS(),T=1/f,dt=T/N;VI=[];VO=[];IC=[];IRF=[];let v=0;const e=Math.exp(-dt/tau);
+    for(let k=0;k<N*8;k++){const ph=(k%N)/N,x=s==='sin'?A*Math.sin(2*Math.PI*ph):(ph<0.5?A:-A);const vss=-(Rf/R)*x;const vn=vss+(v-vss)*e;const ic=Cc*(vn-v)/dt;v=vn;
+      if(k>=6*N){VI.push([(k-6*N)/N,x]);VO.push([(k-6*N)/N,v]);IC.push(ic);IRF.push(v/Rf);}}}
+  function paint(ph){const i=Math.floor(((ph%2)/2)*N*2)%(2*N),{R,Rf,RL,A}=st,vi=VI[i][1],vo=VO[i][1],iin=vi/R,irf=IRF[i],ic=IC[i],il=vo/RL,Im=Math.max(A/R,1e-12);
+    C.I('in',clamp(Math.abs(iin)/Im,0,1)*0.9,Math.sign(iin)||1);C.I('rf',clamp(Math.abs(irf)/Im,0,1)*0.9,Math.sign(-irf)||1);C.I('c',clamp(Math.abs(ic)/Im,0,1)*0.9,Math.sign(-ic)||1);C.I('l',clamp(Math.abs(il)/(Math.max(...VO.map(p=>Math.abs(p[1])))/RL+1e-12),0,1)*0.8,Math.sign(vo)||1);
+    C.st('c',Math.abs(ic)>Math.abs(irf)?'on':'dim');C.st('rf',Math.abs(ic)>Math.abs(irf)?'dim':'on');
+    C.set('vo','= '+fx(vo,2)+' V');C.set('iin','i_{in} = '+si(iin,'A'));C.set('irf','i_{Rf} = '+si(-irf,'A'));C.set('ic','i_C = '+si(-ic,'A'));
+    const ym=Math.max(A,...VO.map(p=>Math.abs(p[1])))*1.15;
+    draw(cv,{x0:0,x1:2,y0:-ym,y1:ym,xl:'t / T',yl:'[V]',cursor:ph%2,series:[{c:'t2',w:1.8,pts:VI},{c:'t1',w:2.6,pts:VO}]});
+    const P=[];for(let k=0;k<=200;k++){const l=1+4*k/200,f=Math.pow(10,l);P.push([l,db((Rf/R)/Math.hypot(1,f/fc))]);}
+    const g0=db(Rf/R),gf=db((Rf/R)/Math.hypot(1,st.f/fc));
+    draw(cv2,{x0:1,x1:5,y0:Math.min(g0-45,-10),y1:g0+8,xl:'log₁₀ f [Hz]',yl:'|A_v| [dB]',series:[{c:'t5',w:1.2,dash:[5,4],pts:[[Math.log10(fc),g0-60],[Math.log10(fc),g0+10]]},{c:'axis',w:1,dash:[3,4],pts:[[1,g0],[5,g0]]},{c:'t1',w:2.4,pts:P}],points:[{x:Math.log10(st.f),y:gf,c:'t3',r:5,label:gf.toFixed(1)+' dB'}]});}
+  C.tick=(t)=>paint(t*0.25);
+  function upd(){const {R,Rf,Cc,f,A}=st;fc=1/(2*Math.PI*Rf*Cc);tau=Rf*Cc;build();
+    const mag0=Rf/R,magf=mag0/Math.hypot(1,f/fc),phase=180-Math.atan(f/fc)*180/Math.PI,vop=Math.max(...VO.map(p=>Math.abs(p[1])));
+    readouts('r-l9lpf',[['הגבר DC −R<sub>f</sub>/R',(-mag0).toFixed(1)+' ('+db(mag0).toFixed(1)+' dB)'],['f<sub>c</sub> = 1/(2πR<sub>f</sub>C)',si(fc,'Hz')],['f / f<sub>c</sub>',(f/fc).toPrecision(3)],['|A<sub>v</sub>(f)|',magf.toFixed(2)+' ('+db(magf).toFixed(1)+' dB)'],['פאזה',phase.toFixed(0)+'°'],['|i<sub>C</sub>|/|i<sub>Rf</sub>| = f/f<sub>c</sub>',(f/fc).toPrecision(3)],['v<sub>out</sub> שיא (נמדד)',fx(vop,3)+' V'],['תחום',f<fc/3?pill('מגבר: −R_f/R'.replace('R_f','R<sub>f</sub>'),'ok'):f>3*fc?pill('אינטגרטור: −(1/RC)∫v_in'.replace('v_in','v<sub>in</sub>'),'warn'):pill('אזור הפינה','mute'),'html']]);
+    paint(C.t*0.25);}
+  presets({'l9lpf-lo':{'l9lpf-f':2,'l9lpf-r':10,'l9lpf-rf':100,'l9lpf-c':1.6},'l9lpf-c':{'l9lpf-f':3,'l9lpf-r':10,'l9lpf-rf':100,'l9lpf-c':1.6},'l9lpf-hi':{'l9lpf-f':4.3,'l9lpf-r':10,'l9lpf-rf':100,'l9lpf-c':1.6}});
+  upd();
+})();
+}
+const b9=LESSONS[9].build;LESSONS[9].build=function(root){b9.call(this,root);labLpf(root);};
+})();
+/* ---- l9-prec.js ---- */
+/* ==== שיעור 9: מיישר מדויק חי — הדיודה בתוך הלולאה, ומגבר השרת "בולע" את 0.7V ==== */
+(function(){
+function labPrec(root){
+section(root,{id:'l9-prec',tag:'מיישר מדויק חי',title:'מיישר מדויק בפעולה: הדיודה בתוך הלולאה, ו-0.7V נעלם',short:'מיישר מדויק חי',
+lead:'מיישר עם דיודה רגילה מאבד 0.7V ולא עובד על אותות קטנים. כאן הדיודות יושבות <b>בתוך לולאת המשוב</b>: מגבר השרת מזיז את המוצא שלו <span class="m">v<sub>oa</sub></span> ב-0.7V נוספים כדי שהאדמה הווירטואלית תישאר 0 והמוצא יהיה בדיוק <span class="m">−(R<sub>2</sub>/R<sub>1</sub>)v<sub>in</sub></span>. עקוב אחרי הזרם: בחצי מחזור אחד הוא עובר דרך D<sub>2</sub> ו-R<sub>2</sub> אל המוצא, ובשני דרך D<sub>1</sub> ישר למגבר, והמוצא נשאר 0.',
+body:'<div class="lab"><div class="controls"><div class="presets"><button type="button" data-preset="l9prec-a">אות קטן 100mV (דיודה רגילה לא הייתה עובדת)</button><button type="button" data-preset="l9prec-b">הגבר 2</button><button type="button" data-preset="l9prec-c">אות גדול: רוויה</button></div><div class="sliders" id="l9prec-ctl"></div></div>'+
+'<div class="scopes">'+circ('cx-l9prec',lg('t1','זרם','dot')+lg('t4','דיודה מוליכה'),true)+scope('c-l9prec','short',lg('t2','v<sub>in</sub>(t)')+lg('t1','v<sub>out</sub>(t)')+lg('t3','v<sub>oa</sub>(t) מוצא המגבר','dash')+lg('t5','דיודה רגילה: v<sub>in</sub>−0.7','dash'),'זמן')+scope('c-l9prec2','short',lg('t1','v<sub>out</sub>(v<sub>in</sub>)')+lg('t3','נקודה נוכחית','dot'),'אופיין מעבר')+'</div></div><div class="readouts" id="r-l9prec"></div>'+
+notes('<h3>מה לראות</h3><ul><li>כש-<span class="m">v<sub>in</sub> &lt; 0</span>: המגבר רוצה מוצא חיובי, D<sub>2</sub> מוליכה, הזרם <span class="m">−v<sub>in</sub>/R<sub>1</sub></span> מגיע דרך R<sub>2</sub> ו-D<sub>2</sub> ממוצא המגבר. v<sub>out</sub> = −(R<sub>2</sub>/R<sub>1</sub>)v<sub>in</sub> <b>בלי</b> 0.7V, כי המגבר מרים את v<sub>oa</sub> ב-0.7V מעל v<sub>out</sub> (הקו המקווקו).</li><li>כש-<span class="m">v<sub>in</sub> &gt; 0</span>: D<sub>2</sub> נחסמת, D<sub>1</sub> מוליכה ומחזיקה את v<sub>oa</sub> ב-−0.7V; דרך R<sub>2</sub> לא זורם זרם ולכן v<sub>out</sub> = 0 בדיוק. בלי D<sub>1</sub> המגבר היה נתקע ברוויה שלילית ומגיב לאט.</li><li>הקטן את האות ל-100mV: מיישר דיודה רגילה (הקו האפור) לא היה מוציא כלום. המדויק עובד עד mV בודדים.</li><li>הקו במעגל ההופך: v<sub>out</sub> חיובי לכניסה שלילית. גל שלם מדויק מוסיף מגבר מסכם (נוסחת הקורס v<sub>o</sub> = (R<sub>2</sub>/2R<sub>1</sub>)|v<sub>in</sub>|).</li></ul>',
+'<h3>הנוסחאות</h3>'+F('v<sub>in</sub> &lt; 0:','v<sub>out</sub> = −(R<sub>2</sub>/R<sub>1</sub>)v<sub>in</sub>, v<sub>oa</sub> = v<sub>out</sub> + V<sub>D0</sub>')+F('v<sub>in</sub> &gt; 0:','v<sub>out</sub> = 0, v<sub>oa</sub> = −V<sub>D0</sub>')+F('','הזרם: i = v<sub>in</sub>/R<sub>1</sub> תמיד, השאלה רק דרך איזו דיודה')+F('דיודה רגילה:','v<sub>out</sub> = v<sub>in</sub> − 0.7 (ורק אם v<sub>in</sub> &gt; 0.7)'))});
+(function(){
+  const C=Circuit('cx-l9prec',470,300),cv=reg('c-l9prec'),cv2=reg('c-l9prec2'),VD=0.7;
+  const o=C.oa(240,140);
+  C.V([50,215],[50,160],'v_{in}',{kind:'ac',side:1,off:26});C.w([50,160],[50,128],[80,128]);C.R([80,128],[150,128],'R_1',{side:-1});C.w([150,128],o.m);C.nd(175,128);C.w([50,215],[50,230]);C.G(50,230);
+  C.w(o.o,[300,140]);C.nd(300,140);C.T(330,150,'','val2','start',null,'voa');
+  // D1: anode at node, cathode at op-amp output (upper path)
+  C.w([175,128],[175,90],[210,90]);C.D([210,90],[270,90],'D_1',{side:-1,id:'d1'});C.w([270,90],[300,90],[300,140]);
+  // D2: anode at op-amp output, cathode to R2 -> node (lower path)
+  C.w([300,140],[300,205],[280,205]);C.D([280,205],[220,205],'D_2',{side:1,id:'d2'});C.w([220,205],[200,205]);C.nd(200,205);C.R([200,205],[200,128],'R_2',{side:1,id:'r2'});
+  C.w([200,205],[200,235],[440,235]);C.term(440,235);C.T(440,221,'v_{out}','big','middle');C.T(440,256,'','val','middle',null,'vo');
+  C.nd(380,235);C.R([380,235],[380,280],'R_L',{side:-1});C.G(380,280);
+  C.w(o.p,[198,215]);C.G(198,215);
+  C.T(175,146,'0V','val2','middle');C.T(110,110,'','val2','middle',null,'iin');C.T(455,110,'','he','end',null,'mode');
+  C.flow('in',[[50,160],[50,128],[175,128]]);C.flow('d1',[[175,128],[175,90],[300,90],[300,140]]);C.flow('d2',[[300,140],[300,205],[200,205],[200,128]]);C.flow('l',[[200,205],[200,235],[380,235],[380,280]]);
+  C.bindPlay();
+  const st=sliders('l9prec-ctl',[
+    {key:'A',id:'l9prec-a',label:'משרעת v<sub>in</sub>',min:0.05,max:12,step:0.05,value:2,fmt:v=>v.toFixed(2)+' V'},
+    {key:'R1',id:'l9prec-r1',label:'R<sub>1</sub>',min:1,max:100,step:1,value:10,map:v=>v*1000,fmt:v=>si(v,'Ω')},
+    {key:'R2',id:'l9prec-r2',label:'R<sub>2</sub>',min:1,max:100,step:1,value:10,map:v=>v*1000,fmt:v=>si(v,'Ω')},
+    {key:'RL',id:'l9prec-rl',label:'R<sub>L</sub>',min:1,max:100,step:1,value:10,map:v=>v*1000,fmt:v=>si(v,'Ω')},
+    {key:'VCC',id:'l9prec-vcc',label:'V<sub>CC</sub>',min:3,max:15,step:0.5,value:12,fmt:v=>'±'+v.toFixed(1)+' V'}],upd);
+  const N=400;let VI=[],VO=[],VOA=[],VP=[];
+  const solve=(vi)=>{const {R1,R2,VCC}=st;if(vi<0){let vo=-R2/R1*vi,voa=vo+VD;if(voa>VCC){voa=VCC;vo=VCC-VD;}return {vo,voa,d:2};}return {vo:0,voa:Math.max(-VCC,-VD),d:vi>0?1:0};};
+  function build(){const {A}=st;VI=[];VO=[];VOA=[];VP=[];for(let k=0;k<N;k++){const t=2*k/N,vi=A*Math.sin(2*Math.PI*t),s=solve(vi);VI.push([t,vi]);VO.push([t,s.vo]);VOA.push([t,s.voa]);VP.push([t,Math.max(0,vi-VD)]);}}
+  function paint(ph){const i=Math.floor(((ph%2)/2)*N)%N,{R1,R2,RL,A}=st,vi=VI[i][1],s=solve(vi),iin=vi/R1,il=s.vo/RL,Im=A/R1+1e-12;
+    C.I('in',clamp(Math.abs(iin)/Im,0,1)*0.9,Math.sign(iin)||1);C.I('d1',s.d===1?clamp(Math.abs(iin)/Im,0,1)*0.9:0,1);C.I('d2',s.d===2?clamp(Math.abs(iin)/Im,0,1)*0.9:0,1);C.I('l',clamp(Math.abs(il)/(A*R2/R1/RL+1e-12),0,1)*0.8,1);
+    C.st('d1',s.d===1?'on':'dim');C.st('d2',s.d===2?'on':'dim');C.st('r2',s.d===2?'on':'dim');
+    C.set('vo','= '+fx(s.vo,2)+' V');C.set('voa','v_{oa} = '+fx(s.voa,2)+' V');C.set('iin','i = '+si(iin,'A'));C.set('mode',s.d===2?'D₂ מוליכה: v_out = −(R₂/R₁)v_in':s.d===1?'D₁ מוליכה: v_out = 0':'');
+    const y=Math.max(A,A*R2/R1+VD,1)*1.15;
+    draw(cv,{x0:0,x1:2,y0:-y,y1:y,xl:'t / T',yl:'[V]',cursor:ph%2,series:[{c:'t5',w:1.2,dash:[3,4],pts:VP},{c:'t2',w:1.6,pts:VI},{c:'t3',w:1.4,dash:[6,4],pts:VOA},{c:'t1',w:2.6,pts:VO}]});
+    const L=Math.max(A,1)*1.1,vtc=[];for(let k=0;k<=200;k++){const x=-L+2*L*k/200;vtc.push([x,solve(x).vo]);}
+    draw(cv2,{x0:-L,x1:L,y0:-0.2*L,y1:Math.max(L*R2/R1,1)*1.1,xl:'v_in [V]',yl:'v_out [V]',series:[{c:'t5',w:1.2,dash:[3,4],pts:[[-L,0],[VD,0],[L,L-VD]]},{c:'t1',w:2.6,pts:vtc}],points:[{x:vi,y:s.vo,c:'t3',r:5}]});}
+  C.tick=(t)=>paint(t*0.25);
+  function upd(){const {A,R1,R2,VCC}=st;build();
+    readouts('r-l9prec',[['הגבר בחצי המחזור השלילי −R<sub>2</sub>/R<sub>1</sub>',(-R2/R1).toFixed(2)],['v<sub>out</sub> שיא',fx(Math.min(A*R2/R1,VCC-VD),2)+' V'],['v<sub>oa</sub> מקסימלי (שיא + 0.7V)',fx(Math.min(A*R2/R1+VD,VCC),2)+' V'],['v<sub>oa</sub> בחצי החיובי','−0.70 V (D₁ מחזיקה)'],['מיישר דיודה רגילה היה נותן',A>VD?fx(A-VD,2)+' V שיא':pill('0 V: האות קטן מ-0.7V','bad'),A>VD?undefined:'html'],['מצב',A*R2/R1+VD>VCC?pill('רוויה: v_oa הגיע ל-V_CC'.replace('v_oa','v<sub>oa</sub>').replace('V_CC','V<sub>CC</sub>'),'bad'):pill('ליניארי','ok'),'html']]);
+    paint(C.t*0.25);}
+  presets({'l9prec-a':{'l9prec-a':0.1,'l9prec-r1':10,'l9prec-r2':10,'l9prec-vcc':12},'l9prec-b':{'l9prec-a':2,'l9prec-r1':10,'l9prec-r2':20,'l9prec-vcc':12},'l9prec-c':{'l9prec-a':8,'l9prec-r1':10,'l9prec-r2':20,'l9prec-vcc':12}});
+  upd();
+})();
+}
+const b9=LESSONS[9].build;LESSONS[9].build=function(root){b9.call(this,root);labPrec(root);};
+})();
+/* ==== LIVE-ADDITIONS END ==== */
 
 /* ---------- lesson page with 5 tabs ---------- */
 function buildLesson(d,n){
