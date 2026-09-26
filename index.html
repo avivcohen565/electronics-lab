@@ -6787,6 +6787,114 @@ notes('<h3>מה לראות</h3><ul><li>עם A=10 המוצא רחוק מ-1/β: ה
 }
 const b8=LESSONS[8].build;LESSONS[8].build=function(root){b8.call(this,root);labSS(root);};
 })();
+/* ---- l8-real.js ---- */
+/* ==== שיעור 8: ארבע הטופולוגיות כמעגלים אמיתיים — דגימה, ערבוב, העמסה וחישוב A_f בזמן אמת ==== */
+(function(){
+function labReal(root){
+section(root,{id:'l8-real',tag:'טופולוגיות במעגלים אמיתיים',title:'ארבע הטופולוגיות על מעגלים אמיתיים: איפה דוגמים, לאן מחזירים, ומה יוצא',short:'טופולוגיות חיות',
+lead:'בתרשים הבלוקים קל. הקושי במבחן הוא לזהות את הטופולוגיה <b>בשרטוט</b>. הכלל: ב<b>כניסה</b>, אם רשת המשוב מתחברת לאותו צומת שאליו מחובר המקור (ומזריקה לשם זרם) זה <b>מקבילי</b>; אם היא מתחברת להדק אחר של הטרנזיסטור/המגבר (פולט, כניסה שנייה) ומוסיפה מתח בתוך הלולאה זה <b>טורי</b>. ב<b>יציאה</b>, אם היא נוגעת בצומת מתח המוצא זה <b>מקבילי</b> (דגימת מתח); אם היא יושבת בדרך של זרם המוצא (נגד פולט/מקור) זה <b>טורי</b> (דגימת זרם). בחר מעגל, עקוב אחרי הנקודות, וראה את חישוב A, β, ההעמסה ו-A<sub>f</sub> לפי שיטת הקורס.',
+body:'<div class="lab"><div class="controls"><div class="seg" id="l8real-sel"><button type="button" data-v="ss" aria-pressed="true">טורי-מקבילי</button><button type="button" data-v="pp" aria-pressed="false">מקבילי-מקבילי</button><button type="button" data-v="sr" aria-pressed="false">טורי-טורי</button><button type="button" data-v="ps" aria-pressed="false">מקבילי-טורי</button></div><div class="sliders" id="l8real-ctl"></div></div>'+
+'<div class="scopes"><div id="l8real-hosts"></div>'+scope('c-l8real','short',lg('t2','כניסה x(t)')+lg('t1','מוצא y(t)')+lg('t3','אות המשוב x<sub>f</sub>(t)','dash'),'כניסה, משוב ומוצא')+'</div></div><div class="readouts" id="r-l8real"></div>'+
+'<div class="tbl"><table><thead><tr><th>שלב</th><th>מה עושים</th><th>כאן</th></tr></thead><tbody id="l8real-steps"></tbody></table></div>'+
+notes('<h3>מה לראות</h3><ul><li><b>טורי-מקבילי</b> (לא-הופך): רשת R<sub>1</sub>/R<sub>2</sub> נוגעת בצומת המוצא (דוגמת מתח) ומחזירה מתח להדק השני של המגבר (ערבוב טורי). R<sub>if</sub> עולה, R<sub>of</sub> יורדת.</li><li><b>מקבילי-מקבילי</b> (הופך/טרנס-התנגדות): R<sub>f</sub> מחברת את צומת המוצא ישירות לצומת הכניסה: מזריקה <b>זרם</b> לאדמה הווירטואלית. שתי ההתנגדויות יורדות.</li><li><b>טורי-טורי</b> (CE עם R<sub>E</sub>): R<sub>E</sub> נמצא בדרך של זרם המוצא (דוגם זרם) ומייצר מתח v<sub>f</sub> = i<sub>e</sub>R<sub>E</sub> שמתחסר מ-v<sub>be</sub> (ערבוב טורי). שתי ההתנגדויות עולות.</li><li><b>מקבילי-טורי</b> (מגבר זרם בשתי דרגות): R<sub>f</sub> לוקחת חלק מזרם הפולט של Q2 (דגימת זרם, טורי) ומזריקה אותו לבסיס Q1 (ערבוב זרם, מקבילי). R<sub>if</sub> יורדת, R<sub>of</sub> עולה.</li><li>בכל המעגלים: שים לב שעם A גדול התוצאה מתכנסת ל-1/β, וההעמסה של רשת המשוב (R<sub>11</sub>, R<sub>22</sub>) משנה את A אבל לא את β.</li></ul>',
+'<h3>שיטת הקורס (5 שלבים)</h3>'+F('1.','זיהוי הטופולוגיה ומציאת β = x<sub>f</sub>/y')+F('2.','העמסה: R<sub>11</sub> (הצד השני קצר/פתוח) ו-R<sub>22</sub>, מוסיפים למגבר')+F('3.','A של המגבר המועמס (בלי הלולאה)')+F('4.','A<sub>f</sub> = A/(1+Aβ)')+F('5.','R<sub>if</sub>, R<sub>of</sub>: טורי ×(1+Aβ), מקבילי ÷(1+Aβ)'))});
+(function(){
+  const host=document.getElementById('l8real-hosts'),types=['ss','pp','sr','ps'],CC={},cv=reg('c-l8real');
+  const caps={ss:'טורי-מקבילי: מגבר לא-הופך עם A סופי ו-R<sub>o</sub>',pp:'מקבילי-מקבילי: מגבר טרנס-התנגדות (הופך)',sr:'טורי-טורי: CE עם R<sub>E</sub> לא מעוקף',ps:'מקבילי-טורי: מגבר זרם בשתי דרגות עם R<sub>f</sub> מהפולט לבסיס'};
+  types.forEach(k=>host.insertAdjacentHTML('beforeend',circ('cx-l8real-'+k,lg('t1','זרם','dot')+lg('t3','ענף המשוב')+'<span> · '+caps[k]+'</span>',true)));
+  let c,o;
+  /* ---- ss: non-inverting with Ro ---- */
+  c=Circuit('cx-l8real-ss',460,250);CC.ss=c;o=c.oa(220,120,{plusTop:true,id:'oa'});
+  c.V([60,200],[60,140],'v_s',{kind:'ac',side:1,off:26});c.w([60,140],[60,108],o.p);c.w([60,200],[60,215]);c.G(60,215);
+  c.w(o.o,[280,120]);c.R([280,120],[340,120],'R_o',{side:-1,id:'ro'});c.w([340,120],[420,120]);c.nd(340,120);c.term(420,120);c.T(420,106,'v_o','big','middle');
+  c.w([340,120],[340,195]);c.R([340,195],[200,195],'R_2',{side:-1,id:'r2'});c.nd(200,195);c.w([200,195],[200,132],o.m);c.R([200,195],[200,240],'R_1',{side:-1,id:'r1'});c.G(200,240);
+  c.T(330,60,'דוגם מתח (מקבילי)','he','middle');c.T(130,165,'מערבב מתח (טורי)','he','middle');c.T(130,183,'','val2','middle',null,'xf');c.T(420,140,'','val','middle',null,'y');
+  c.flow('f',[[340,120],[340,195],[200,195],[200,240]]);c.flow('o',[[280,120],[340,120]]);
+  /* ---- pp: transresistance ---- */
+  c=Circuit('cx-l8real-pp',460,250);CC.pp=c;o=c.oa(250,130);
+  c.V([50,210],[50,150],'v_s',{kind:'ac',side:1,off:26});c.w([50,150],[50,118],[80,118]);c.R([80,118],[150,118],'R_s',{side:-1});c.w([150,118],o.m);c.nd(175,118);c.w([50,210],[50,225]);c.G(50,225);
+  c.w([175,118],[175,50]);c.R([175,50],[335,50],'R_f',{side:-1,id:'rf'});c.w([335,50],[335,130]);c.nd(335,130);c.w(o.o,[420,130]);c.term(420,130);c.T(420,116,'v_o','big','middle');c.nd(380,130);c.R([380,130],[380,210],'R_L',{side:-1});c.G(380,210);c.w(o.p,[208,200]);c.G(208,200);
+  c.T(175,138,'0V','val2','middle');c.T(120,165,'מערבב זרם (מקבילי)','he','middle');c.T(120,183,'','val2','middle',null,'xf');c.T(330,80,'דוגם מתח (מקבילי)','he','middle');c.T(420,150,'','val','middle',null,'y');
+  c.flow('in',[[50,150],[50,118],[175,118]]);c.flow('f',[[175,118],[175,50],[335,50],[335,130]]);c.flow('l',[[335,130],[380,130],[380,210]]);
+  /* ---- sr: CE with RE ---- */
+  c=Circuit('cx-l8real-sr',460,250);CC.sr=c;
+  c.rail(260,18,'V_{CC}');c.w([260,18],[260,30]);c.R([260,30],[260,88],'R_C',{side:-1});c.w([260,88],[260,100]);c.nd(260,94);c.w([260,94],[400,94]);c.term(400,94);c.T(400,80,'v_o','big','middle');c.T(400,114,'','val','middle',null,'y');
+  const q=c.npn(250,130,{id:'q'});c.w([260,160],[260,172]);c.nd(260,172);c.R([260,172],[260,222],'R_E',{side:-1,id:'re'});c.G(260,222);
+  c.V([60,205],[60,150],'v_s',{kind:'ac',side:1,off:26});c.w([60,150],[60,130],[90,130]);c.R([90,130],[160,130],'R_s',{side:-1});c.w([160,130],q.b);c.w([60,205],[60,222]);c.G(60,222);
+  c.T(330,195,'דוגם זרם (טורי)','he','middle');c.T(330,213,'','val','middle',null,'xf');c.T(150,180,'מערבב מתח בפולט (טורי)','he','middle');c.T(120,98,'','val2','middle',null,'x');
+  c.flow('b',[[60,150],[60,130],[230,130],[245,145]]);c.flow('c',[[260,18],[260,100]]);c.flow('e',[[260,160],[260,222]]);
+  /* ---- ps: two-stage current amplifier ---- */
+  c=Circuit('cx-l8real-ps',460,265);CC.ps=c;
+  c.V([60,200],[60,140],'i_s',{kind:'i',side:1,off:26});c.w([60,140],[130,140]);c.w([60,200],[60,215]);c.G(60,215);c.nd(100,140);c.R([100,140],[100,200],'R_s',{side:-1});c.w([100,200],[100,215]);c.G(100,215);c.nd(130,140);
+  const q1=c.npn(200,140,{id:'q1'}),q2=c.npn(330,140,{id:'q2'});c.w([130,140],q1.b);
+  c.rail(210,18,'V_{CC}');c.w([210,18],[210,30]);c.R([210,30],[210,90],'R_{C1}',{side:1});c.w([210,90],[210,110]);c.nd(210,100);c.w([210,100],[270,100],[270,140],q2.b);
+  c.w([210,170],[210,200]);c.G(210,200);
+  c.rail(340,18,'V_{CC}');c.w([340,18],[340,30]);c.R([340,30],[340,90],'R_{C2}',{side:-1});c.w([340,90],[340,110]);c.nd(340,100);c.w([340,100],[410,100]);c.term(410,100);c.T(410,86,'i_o','big','middle');c.T(410,120,'','val','middle',null,'y');
+  c.w([340,170],[340,180]);c.nd(340,180);c.R([340,180],[340,232],'R_{E2}',{side:-1,id:'re2'});c.G(340,232);
+  c.w([340,180],[380,180],[380,250],[130,250],[130,140]);c.R([300,250],[180,250],'R_f',{side:1,id:'rf'});
+  c.T(95,118,'מערבב זרם (מקבילי)','he','middle');c.T(330,206,'דוגם זרם (טורי)','he','end');c.T(240,232,'','val','middle',null,'xf');
+  c.flow('is',[[60,200],[60,140],[130,140]]);c.flow('b1',[[130,140],[180,140],[195,155]]);c.flow('c1',[[210,18],[210,110]]);c.flow('e1',[[210,170],[210,200]]);c.flow('b2',[[210,100],[270,100],[270,140],[325,155]]);c.flow('c2',[[340,18],[340,110]]);c.flow('e2',[[340,170],[340,232]]);c.flow('f',[[340,180],[380,180],[380,250],[130,250],[130,140]]);
+  types.forEach(k=>CC[k].bindPlay());
+  const getT=seg('l8real-sel',()=>{show();upd();});
+  const st=sliders('l8real-ctl',[
+    {key:'A',id:'l8real-a',label:'A של המגבר (חוג פתוח)',min:0,max:5,step:0.1,value:3,map:v=>Math.pow(10,v),fmt:v=>si(v,'')},
+    {key:'Ri',id:'l8real-ri',label:'R<sub>i</sub> של המגבר',min:3,max:7,step:0.1,value:5,map:v=>Math.pow(10,v),fmt:v=>si(v,'Ω')},
+    {key:'Ro',id:'l8real-ro',label:'R<sub>o</sub> של המגבר',min:0,max:2000,step:10,value:100,fmt:v=>si(v,'Ω')},
+    {key:'R1',id:'l8real-r1',label:'R<sub>1</sub>',min:1,max:100,step:1,value:1,map:v=>v*1000,fmt:v=>si(v,'Ω')},
+    {key:'R2',id:'l8real-r2',label:'R<sub>2</sub>',min:1,max:300,step:1,value:9,map:v=>v*1000,fmt:v=>si(v,'Ω')},
+    {key:'Rs',id:'l8real-rs',label:'R<sub>s</sub>',min:0.1,max:50,step:0.1,value:10,map:v=>v*1000,fmt:v=>si(v,'Ω')},
+    {key:'Rf',id:'l8real-rf',label:'R<sub>f</sub>',min:1,max:300,step:1,value:100,map:v=>v*1000,fmt:v=>si(v,'Ω')},
+    {key:'RL',id:'l8real-rl',label:'R<sub>L</sub>',min:1,max:100,step:1,value:10,map:v=>v*1000,fmt:v=>si(v,'Ω')},
+    {key:'RC',id:'l8real-rc',label:'R<sub>C</sub> (R<sub>C1</sub>, R<sub>C2</sub>)',min:0.5,max:20,step:0.5,value:5,map:v=>v*1000,fmt:v=>si(v,'Ω')},
+    {key:'RE',id:'l8real-re',label:'R<sub>E</sub> (R<sub>E2</sub>)',min:0.05,max:5,step:0.05,value:0.5,map:v=>v*1000,fmt:v=>si(v,'Ω')},
+    {key:'beta',id:'l8real-beta',label:'β של הטרנזיסטור',min:20,max:300,step:5,value:100,fmt:v=>String(v)},
+    {key:'IC',id:'l8real-ic',label:'I<sub>C</sub> (נקודת עבודה)',min:0.1,max:5,step:0.1,value:1,map:v=>v/1000,fmt:v=>si(v,'A')},
+    {key:'xs',id:'l8real-xs',label:'משרעת הכניסה',min:1,max:100,step:1,value:10,fmt:v=>v+' (mV או µA)'}],upd);
+  const vis={ss:['A','Ri','Ro','R1','R2','xs'],pp:['A','Rs','Rf','RL','xs'],sr:['Rs','RC','RE','beta','IC','xs'],ps:['Rs','Rf','RC','RE','beta','IC','xs']};
+  const ids={A:'l8real-a',Ri:'l8real-ri',Ro:'l8real-ro',R1:'l8real-r1',R2:'l8real-r2',Rs:'l8real-rs',Rf:'l8real-rf',RL:'l8real-rl',RC:'l8real-rc',RE:'l8real-re',beta:'l8real-beta',IC:'l8real-ic',xs:'l8real-xs'};
+  function show(){const t=getT();types.forEach(k=>document.getElementById('cx-l8real-'+k).closest('figure').hidden=k!==t);Object.keys(ids).forEach(k=>document.getElementById(ids[k]).closest('.sl').hidden=!vis[t].includes(k));}
+  let M={};
+  function model(){const t=getT(),{A,Ri,Ro,R1,R2,Rs,Rf,RL,RC,RE,beta,IC}=st,gm=IC/VT,rpi=beta/gm;
+    if(t==='ss'){const b=R1/(R1+R2),R11=par(R1,R2),R22=R1+R2,Rin=Ri+R11,Rout=par(Ro,R22),Al=A*(Ri/(Ri+R11))*(R22/(Ro+R22)),F=1+Al*b;
+      return {b,bu:'V/V',R11,R22,Rin,Rout,A:Al,Au:'V/V',F,Af:Al/F,Rif:Rin*F,Rof:Rout/F,inS:true,outS:false,ideal:1/b,xu:'mV',yu:'V',gain:'v_o/v_s',
+        steps:['טורי-מקבילי: β = v<sub>f</sub>/v<sub>o</sub> = R<sub>1</sub>/(R<sub>1</sub>+R<sub>2</sub>) = '+b.toFixed(4),'R<sub>11</sub> = R<sub>1</sub>‖R<sub>2</sub> = '+si(R11,'Ω')+' בטור לכניסה, R<sub>22</sub> = R<sub>1</sub>+R<sub>2</sub> = '+si(R22,'Ω')+' במקביל למוצא','A = A<sub>0</sub>·R<sub>i</sub>/(R<sub>i</sub>+R<sub>11</sub>)·R<sub>22</sub>/(R<sub>o</sub>+R<sub>22</sub>) = '+si(Al,''),'A<sub>f</sub> = A/(1+Aβ) = '+Al.toFixed(1)+'/'+F.toFixed(2)+' = '+(Al/F).toFixed(3)+' (אידיאלי 1/β = '+(1/b).toFixed(2)+')','R<sub>if</sub> = (R<sub>i</sub>+R<sub>11</sub>)(1+Aβ) = '+si(Rin*F,'Ω')+' ↑ · R<sub>of</sub> = (R<sub>o</sub>‖R<sub>22</sub>)/(1+Aβ) = '+si(Rout/F,'Ω')+' ↓']};}
+    if(t==='pp'){const b=-1/Rf,R11=Rf,R22=Rf,Rin=par(Rs,Rf),Rout=0,Al=-A*Rin,F=1+Al*b;
+      return {b,bu:'A/V',R11,R22,Rin,Rout,A:Al,Au:'Ω',F,Af:Al/F,Rif:Rin/F,Rof:0,inS:false,outS:false,ideal:1/b,xu:'µA',yu:'V',gain:'v_o/i_s',
+        steps:['מקבילי-מקבילי: β = i<sub>f</sub>/v<sub>o</sub> = −1/R<sub>f</sub> = '+si(b,'A/V'),'R<sub>11</sub> = R<sub>f</sub> (המוצא קצר) במקביל לכניסה, R<sub>22</sub> = R<sub>f</sub> (הכניסה קצר) במקביל למוצא','A = v<sub>o</sub>/i<sub>i</sub> = −A<sub>0</sub>·(R<sub>s</sub>‖R<sub>f</sub>) = '+si(Al,'Ω')+' (R<sub>o</sub>=0 לכן R<sub>22</sub> לא משפיע)','A<sub>f</sub> = A/(1+Aβ) = '+si(Al/F,'Ω')+' (אידיאלי 1/β = −R<sub>f</sub> = '+si(-Rf,'Ω')+') → v<sub>o</sub>/v<sub>s</sub> = A<sub>f</sub>/R<sub>s</sub> = '+(Al/F/Rs).toFixed(2),'R<sub>if</sub> = (R<sub>s</sub>‖R<sub>f</sub>)/(1+Aβ) = '+si(Rin/F,'Ω')+' ↓ (אדמה וירטואלית) · R<sub>of</sub> = 0/(1+Aβ) = 0']};}
+    if(t==='sr'){const b=RE,Rin=Rs+rpi+RE,Al=beta/Rin,F=1+Al*b;
+      return {b,bu:'Ω',R11:RE,R22:RE,Rin,Rout:Infinity,A:Al,Au:'A/V',F,Af:Al/F,Rif:Rin*F,Rof:Infinity,inS:true,outS:true,ideal:1/b,xu:'mV',yu:'V',gain:'v_o/v_s',gm,rpi,
+        steps:['טורי-טורי: β = v<sub>f</sub>/i<sub>o</sub> = R<sub>E</sub> = '+si(RE,'Ω'),'R<sub>11</sub> = R<sub>E</sub> בטור לכניסה, R<sub>22</sub> = R<sub>E</sub> בטור למוצא (r<sub>o</sub>→∞ לכן לא משפיע)','A = i<sub>o</sub>/v<sub>s</sub> = β/(R<sub>s</sub>+r<sub>π</sub>+R<sub>E</sub>) = '+beta+'/'+si(Rin,'Ω')+' = '+si(Al,'A/V')+' (r<sub>π</sub> = '+si(rpi,'Ω')+')','A<sub>f</sub> = A/(1+Aβ) = '+si(Al/F,'A/V')+' (אידיאלי 1/R<sub>E</sub> = '+si(1/RE,'A/V')+') → v<sub>o</sub>/v<sub>s</sub> = −A<sub>f</sub>R<sub>C</sub> = '+(-Al/F*RC).toFixed(2),'R<sub>if</sub> = (R<sub>s</sub>+r<sub>π</sub>+R<sub>E</sub>)(1+Aβ) = R<sub>s</sub>+r<sub>π</sub>+(β+1)R<sub>E</sub> = '+si(Rin*F,'Ω')+' ↑ · R<sub>of</sub> → ∞ ↑']};}
+    const R11=Rf+RE,R22=par(RE,Rf),Rin=par(par(Rs,R11),rpi),Rin2=rpi+(beta+1)*R22,Rc1=par(RC,Rin2),Al=-(Rin/rpi)*beta*Rc1/Rin2*(beta+1),b=-RE/(RE+Rf),F=1+Al*b;
+    return {b,bu:'A/A',R11,R22,Rin,Rout:Infinity,A:Al,Au:'A/A',F,Af:Al/F,Rif:Rin/F,Rof:Infinity,inS:false,outS:true,ideal:1/b,xu:'µA',yu:'mA',gain:'i_o/i_s',gm,rpi,Rin2,
+      steps:['מקבילי-טורי: β = i<sub>f</sub>/i<sub>o</sub> = −R<sub>E2</sub>/(R<sub>E2</sub>+R<sub>f</sub>) = '+b.toFixed(4),'R<sub>11</sub> = R<sub>f</sub>+R<sub>E2</sub> = '+si(R11,'Ω')+' במקביל לכניסה, R<sub>22</sub> = R<sub>E2</sub>‖R<sub>f</sub> = '+si(R22,'Ω')+' בטור בפולט Q2','A = i<sub>o</sub>/i<sub>s</sub>: R<sub>in</sub> = R<sub>s</sub>‖R<sub>11</sub>‖r<sub>π1</sub> = '+si(Rin,'Ω')+', R<sub>in2</sub> = r<sub>π2</sub>+(β+1)R<sub>22</sub> = '+si(Rin2,'Ω')+', A = (R<sub>in</sub>/r<sub>π1</sub>)·β·(−R<sub>C1</sub>‖R<sub>in2</sub>)/R<sub>in2</sub>·(β+1) = '+si(Al,''),'A<sub>f</sub> = A/(1+Aβ) = '+(Al/F).toFixed(2)+' (אידיאלי 1/β = −(R<sub>E2</sub>+R<sub>f</sub>)/R<sub>E2</sub> = '+(1/b).toFixed(2)+')','R<sub>if</sub> = R<sub>in</sub>/(1+Aβ) = '+si(Rin/F,'Ω')+' ↓ · R<sub>of</sub> → ∞ (טורי ביציאה) ↑']};}
+  const N=400;let X=[],Y=[],XF=[];
+  function build(){const t=getT(),{xs}=st;X=[];Y=[];XF=[];const xu=t==='ss'||t==='sr'?xs/1000:xs/1e6;
+    for(let k=0;k<N;k++){const tt=2*k/N,x=xu*Math.sin(2*Math.PI*tt);let y,xf;
+      if(t==='ss'){y=M.Af*x;xf=M.b*y;}else if(t==='pp'){y=M.Af*x;xf=M.b*y;}else if(t==='sr'){y=-M.Af*x*st.RC;xf=M.b*M.Af*x;}else{y=M.Af*x;xf=M.b*y;}
+      X.push([tt,x]);Y.push([tt,y]);XF.push([tt,xf]);}}
+  function paint(ph){const t=getT(),c=CC[t],i=Math.floor(((ph%2)/2)*N)%N,x=X[i][1],y=Y[i][1],xf=XF[i][1],{Rs,Rf,RL,R1,R2,RC,RE,beta}=st;
+    const sg=v=>Math.sign(v)||1;
+    if(t==='ss'){const iF=y/(R1+R2),Im=Math.abs(M.Af*X[0]?Math.max(...Y.map(p=>Math.abs(p[1]))):1)/(R1+R2)+1e-12;c.I('f',clamp(Math.abs(iF)/Im,0,1)*0.9,sg(y));c.I('o',clamp(Math.abs(iF)/Im,0,1)*0.9,sg(y));c.set('xf','v_f = '+si(xf,'V'));c.set('y','= '+si(y,'V'));}
+    else if(t==='pp'){const iin=x,il=y/RL,Im=Math.max(...X.map(p=>Math.abs(p[1])))+1e-12,ImL=Math.max(...Y.map(p=>Math.abs(p[1])))/RL+1e-12;c.I('in',clamp(Math.abs(iin)/Im,0,1)*0.9,sg(iin));c.I('f',clamp(Math.abs(iin)/Im,0,1)*0.9,sg(iin));c.I('l',clamp(Math.abs(il)/ImL,0,1)*0.9,sg(y));c.set('xf','i_f = '+si(-xf,'A'));c.set('y','= '+si(y,'V'));}
+    else if(t==='sr'){const io=M.Af*x,ib=io/beta,Im=Math.max(...X.map(p=>Math.abs(p[1])))*M.Af+1e-12;c.I('b',clamp(Math.abs(ib)/Im*beta/3,0,1)*0.9,sg(x));c.I('c',clamp(Math.abs(io)/Im,0,1)*0.9,sg(x));c.I('e',clamp(Math.abs(io)/Im,0,1)*0.9,sg(x));c.set('xf','v_f = i_eR_E = '+si(xf,'V'));c.set('x','v_s = '+si(x,'V'));c.set('y','= '+si(y,'V'));}
+    else{const io=y,ib1=x*M.Rin/M.rpi,ic1=beta*ib1,ib2=io/(beta+1),iF=-xf,Im=Math.max(...Y.map(p=>Math.abs(p[1])))+1e-12,f=v=>clamp(Math.abs(v)/Im*3,0,1)*0.9;
+      c.I('is',f(x*30),sg(x));c.I('b1',f(ib1*30),sg(ib1));c.I('c1',f(ic1),sg(ic1));c.I('e1',f(ic1),sg(ic1));c.I('b2',f(ib2*30),sg(ib2));c.I('c2',f(io),sg(io));c.I('e2',f(io),sg(io));c.I('f',f(iF*3),sg(iF));c.set('xf','i_f = '+si(iF,'A'));c.set('y','= '+si(y,'A'));}
+    const sx=t==='ss'||t==='sr'?1e3:1e6,sy=t==='ps'?1e3:1;
+    const ymx=Math.max(...Y.map(p=>Math.abs(p[1])))*sy,xmx=Math.max(...X.map(p=>Math.abs(p[1])))*sx,k=ymx>0?ymx/xmx:1;
+    draw(cv,{x0:0,x1:2,y0:-ymx*1.2,y1:ymx*1.2,xl:'t / T',yl:'y ['+M.yu+']  (x ו-x_f מנורמלים)',cursor:ph%2,series:[{c:'t2',w:1.6,pts:X.map(p=>[p[0],p[1]*sx*k])},{c:'t3',w:1.4,dash:[5,4],pts:XF.map(p=>[p[0],p[1]*(t==='ss'||t==='sr'?1e3:1e6)*k])},{c:'t1',w:2.6,pts:Y.map(p=>[p[0],p[1]*sy])}]});}
+  types.forEach(k=>{CC[k].tick=(t)=>{if(getT()===k&&X.length)paint(t*0.25);};});
+  function upd(){show();M=model();build();const t=getT();
+    const rows=[['β',si(M.b,M.bu)],['A (מועמס, בלי הלולאה)',si(M.A,M.Au)],['הגבר חוג Aβ',si(M.A*M.b,'')],['1+Aβ',M.F.toFixed(3)],['A<sub>f</sub>',si(M.Af,M.Au)],['1/β (אידיאלי)',si(M.ideal,M.Au)],['שגיאה מ-1/β',((1-M.Af*M.b)*100).toFixed(2)+'%'],['R<sub>if</sub>'+(M.inS?' (טורי ↑)':' (מקבילי ↓)'),si(M.Rif,'Ω')],['R<sub>of</sub>'+(M.outS?' (טורי ↑)':' (מקבילי ↓)'),isFinite(M.Rof)?si(M.Rof,'Ω'):'∞']];
+    if(t==='sr')rows.push(['v<sub>o</sub>/v<sub>s</sub> = −A<sub>f</sub>R<sub>C</sub>',(-M.Af*st.RC).toFixed(2)],['נוסחת שיעור 5: −βR<sub>C</sub>/(R<sub>s</sub>+r<sub>π</sub>+(β+1)R<sub>E</sub>)',(-st.beta*st.RC/(st.Rs+M.rpi+(st.beta+1)*st.RE)).toFixed(2)]);
+    if(t==='pp')rows.push(['v<sub>o</sub>/v<sub>s</sub> = A<sub>f</sub>/R<sub>s</sub>',(M.Af/st.Rs).toFixed(3)],['אידיאלי −R<sub>f</sub>/R<sub>s</sub>',(-st.Rf/st.Rs).toFixed(3)]);
+    readouts('r-l8real',rows);
+    document.getElementById('l8real-steps').innerHTML=M.steps.map((s,i)=>'<tr><td>'+(i+1)+'</td><td>'+['זיהוי ו-β','העמסה','A מועמס','A<sub>f</sub>','R<sub>if</sub>, R<sub>of</sub>'][i]+'</td><td class="n" style="text-align:right;direction:rtl">'+s+'</td></tr>').join('');
+    paint(CC[t].t*0.25);}
+  show();upd();
+})();
+}
+const b8=LESSONS[8].build;LESSONS[8].build=function(root){b8.call(this,root);labReal(root);};
+})();
 /* ---- l9-schmitt.js ---- */
 /* ==== שיעור 9: משווה שמיט (היסטרזיס) מול משווה רגיל, עם רעש ==== */
 (function(){
