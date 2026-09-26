@@ -6895,6 +6895,48 @@ notes('<h3>מה לראות</h3><ul><li><b>טורי-מקבילי</b> (לא-הופ
 }
 const b8=LESSONS[8].build;LESSONS[8].build=function(root){b8.call(this,root);labReal(root);};
 })();
+/* ---- l8-step.js ---- */
+/* ==== שיעור 8: משוב מאיץ מגבר איטי — תגובה למדרגה בזמן, τ_f = τ/(1+Aβ) ==== */
+(function(){
+function labStep(root){
+section(root,{id:'l8-step',tag:'רוחב סרט בזמן',title:'משוב מאיץ מגבר איטי: תגובת המדרגה בזמן אמת',short:'תגובה למדרגה',
+lead:'מגבר עם קוטב יחיד מגיב למדרגה כמו RC: <span class="m">y(t) = A<sub>0</sub>x(1 − e<sup>−t/τ</sup>)</span>. סוגרים עליו לולאה עם β ומזינים גל ריבועי. הלולאה "רואה" שהמוצא עדיין רחוק מהיעד, אות השגיאה גדול, והמגבר דוחף חזק יותר: התוצאה מתייצבת מהר פי <span class="m">1+A<sub>0</sub>β</span>. זה בדיוק מה שראית בשיעור כרוחב סרט (<span class="m">f<sub>Hf</sub> = f<sub>H</sub>(1+A<sub>0</sub>β)</span>), הפעם בציר הזמן. להשוואה הוגנת, המגבר הפתוח מקבל כניסה מוחלשת כך ששניהם מגיעים לאותו ערך סופי.',
+body:'<div class="lab"><div class="controls"><div class="presets"><button type="button" data-preset="l8step-a">1+Aβ = 11</button><button type="button" data-preset="l8step-b">1+Aβ = 101</button><button type="button" data-preset="l8step-c">בלי משוב (β=0.001)</button></div><div class="sliders" id="l8step-ctl"></div></div>'+
+'<div class="scopes">'+circ('cx-l8step',lg('t1','אות','dot')+lg('t4','אות השגיאה'),true)+scope('c-l8step','',lg('t2','x(t) (מנורמל)')+lg('t5','מגבר פתוח, אותו ערך סופי','dash')+lg('t1','חוג סגור y(t)')+lg('t4','אות השגיאה e(t) (מנורמל)'),'תגובה למדרגה')+'</div></div><div class="readouts" id="r-l8step"></div>'+
+notes('<h3>מה לראות</h3><ul><li>ברגע המדרגה המוצא עוד 0, לכן <span class="m">e = x</span> במלואו והמגבר "רץ" במהירות המקסימלית שלו. ככל שהמוצא מתקרב ל-x/β השגיאה קטנה והדחיפה נחלשת: זו אקספוננטה עם קבוע זמן <span class="m">τ/(1+A<sub>0</sub>β)</span>.</li><li>הגדל את A<sub>0</sub>β: הקו הצהוב נהיה כמעט מדרגה, בעוד המקווקו (בלי משוב) עדיין זוחל. אותו GBW, חלוקה שונה בין הגבר למהירות.</li><li>אם המחזור קצר מ-τ, המגבר הפתוח לא מספיק להגיע ליעד (הגל הריבועי הופך למשולש). החוג הסגור עוקב בקלות.</li><li>המחיר: ההגבר ירד פי אותו 1+A<sub>0</sub>β. במגברי שרת (A<sub>0</sub>~10<sup>5</sup>, f<sub>H</sub>~10Hz) זה בדיוק מה שהופך אותם לשימושיים ב-MHz.</li></ul>',
+'<h3>הנוסחאות</h3>'+F('חוג פתוח:','τ = 1/(2πf<sub>H</sub>), y → A<sub>0</sub>x')+F('חוג סגור:','dy/dt = (A<sub>0</sub>(x − βy) − y)/τ')+F('','τ<sub>f</sub> = τ/(1+A<sub>0</sub>β), y → A<sub>0</sub>x/(1+A<sub>0</sub>β)')+F('','f<sub>Hf</sub> = f<sub>H</sub>(1+A<sub>0</sub>β), A<sub>0f</sub>f<sub>Hf</sub> = A<sub>0</sub>f<sub>H</sub>'))});
+(function(){
+  const C=Circuit('cx-l8step',440,200),cv=reg('c-l8step');
+  C.term(20,70);C.T(20,56,'x','big','middle');C.w([20,70],[89,70]);C.arrow(89,70,1,0);C.sum(100,70);C.T(88,58,'+','hi','middle');C.T(112,98,'−','hi','middle');
+  C.w([111,70],[170,70]);C.arrow(170,70,1,0);C.blk(215,70,90,44,'A_0, τ',{id:'a'});C.w([260,70],[420,70]);C.arrow(420,70,1,0);C.T(425,74,'y','big','start');C.nd(340,70);
+  C.w([340,70],[340,150],[260,150]);C.arrow(260,150,-1,0);C.blk(215,150,90,40,'β');C.w([170,150],[100,150],[100,81]);C.arrow(100,81,0,-1);
+  C.T(140,60,'','val2','middle',null,'e');C.T(390,60,'','val','middle',null,'y');C.T(135,140,'','val','middle',null,'f');
+  C.flow('x',[[20,70],[89,70]],{signal:true});C.flow('e',[[111,70],[170,70]],{signal:true});C.flow('y',[[260,70],[420,70]],{signal:true});C.flow('f',[[340,70],[340,150],[260,150]],{signal:true});C.flow('f2',[[170,150],[100,150],[100,81]],{signal:true});
+  C.bindPlay();
+  const st=sliders('l8step-ctl',[
+    {key:'A0',id:'l8step-a0',label:'A<sub>0</sub>',min:1,max:4,step:0.1,value:3,map:v=>Math.pow(10,v),fmt:v=>si(v,'')},
+    {key:'b',id:'l8step-b',label:'β',min:-3,max:0,step:0.05,value:-2,map:v=>Math.pow(10,v),fmt:v=>v.toPrecision(2)},
+    {key:'tau',id:'l8step-tau',label:'τ של המגבר הפתוח',min:-4,max:-1,step:0.1,value:-2,map:v=>Math.pow(10,v),fmt:v=>si(v,'s')},
+    {key:'r',id:'l8step-r',label:'מחזור הגל הריבועי / τ',min:0.5,max:40,step:0.5,value:6,fmt:v=>v.toFixed(1)+' × τ'}],upd);
+  const N=600;let X=[],YO=[],YC=[],E=[],F=1,T=1,tauf=1;
+  function build(){const {A0,b,tau,r}=st;F=1+A0*b;tauf=tau/F;T=r*tau;X=[];YO=[];YC=[];E=[];let yo=0,yc=0;const dt=T/N,eo=Math.exp(-dt/tau),ec=Math.exp(-dt/tauf);
+    for(let k=0;k<4*N;k++){const ph=(k%N)/N,x=ph<0.5?1:0;const yss_o=A0*x/F,yss_c=A0*x/F;yo=yss_o+(yo-yss_o)*eo;yc=yss_c+(yc-yss_c)*ec;
+      if(k>=2*N){const t=(k-2*N)/N;X.push([t,x]);YO.push([t,yo]);YC.push([t,yc]);E.push([t,x-st.b*yc]);}}}
+  function paint(ph){const i=Math.floor(((ph%2)/2)*2*N)%(2*N),x=X[i][1],yc=YC[i][1],e=E[i][1],{b,A0}=st,yf=A0/F;
+    C.I('x',0.4+0.5*x);C.I('e',clamp(Math.abs(e)*0.9+0.05,0,1));C.I('y',clamp(yc/yf*0.9+0.05,0,1));C.I('f',clamp(b*yc/(b*yf)*0.7+0.05,0,1));C.I('f2',clamp(b*yc/(b*yf)*0.7+0.05,0,1));
+    C.st('a',Math.abs(e)>0.5?'hot':'on');C.set('e','e = '+e.toFixed(3));C.set('y','y = '+yc.toFixed(2));C.set('f','βy = '+(b*yc).toFixed(3));
+    const ymax=yf*1.15;
+    draw(cv,{x0:0,x1:2,y0:-0.05*ymax,y1:ymax,xl:'t / T',yl:'y',cursor:ph%2,series:[{c:'t2',w:1.4,pts:X.map(p=>[p[0],p[1]*yf])},{c:'t4',w:1.3,pts:E.map(p=>[p[0],p[1]*yf])},{c:'t5',w:1.8,dash:[6,4],pts:YO},{c:'t1',w:2.6,pts:YC}]});}
+  C.tick=(t)=>paint(t*0.25);
+  function upd(){const {A0,b,tau}=st;build();const fH=1/(2*Math.PI*tau),fHf=fH*F;
+    readouts('r-l8step',[['1+A<sub>0</sub>β',F.toFixed(2)],['A<sub>f</sub> = A<sub>0</sub>/(1+A<sub>0</sub>β)',(A0/F).toFixed(3)],['τ (פתוח)',si(tau,'s')],['τ<sub>f</sub> = τ/(1+A<sub>0</sub>β)',si(tauf,'s')],['f<sub>H</sub> = 1/2πτ',si(fH,'Hz')],['f<sub>Hf</sub> = f<sub>H</sub>(1+A<sub>0</sub>β)',si(fHf,'Hz')],['GBW פתוח / סגור',si(A0*fH,'Hz')+' / '+si(A0/F*fHf,'Hz')],['זמן עלייה 10–90% (2.2τ)',si(2.2*tau,'s')+' → '+si(2.2*tauf,'s')]]);
+    paint(C.t*0.25);}
+  presets({'l8step-a':{'l8step-a0':3,'l8step-b':-2,'l8step-tau':-2,'l8step-r':6},'l8step-b':{'l8step-a0':4,'l8step-b':-2,'l8step-tau':-2,'l8step-r':6},'l8step-c':{'l8step-a0':3,'l8step-b':-3,'l8step-tau':-2,'l8step-r':6}});
+  upd();
+})();
+}
+const b8=LESSONS[8].build;LESSONS[8].build=function(root){b8.call(this,root);labStep(root);};
+})();
 /* ---- l9-schmitt.js ---- */
 /* ==== שיעור 9: משווה שמיט (היסטרזיס) מול משווה רגיל, עם רעש ==== */
 (function(){
