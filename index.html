@@ -6876,6 +6876,52 @@ C5.quiz.push(
   x:[H`זה רק \(r_e\): נכון רק למקור אידיאלי (\(R_{sig}=0\)).`,null,H`זה \(R_B\parallel R_{sig}\) בלי החלוקה ב-\(\beta+1\).`,H`זה \(r_\pi\); בפולט עובדים עם \(r_e\), לא עם \(r_\pi\).`]}
 );
 })();
+/* ---- c7-content.js ---- */
+/* ==== שיעור 7 (מגבר דיפרנציאלי): תוכן לימודי נוסף — נדנדת הזרם, CMRR במספרים, תחום CM כשני אילוצים, טעויות ==== */
+(function(){
+const H=String.raw,T=CONTENT[7].theory;
+const after=(prefix,sec)=>{const i=T.findIndex(s=>s.t.startsWith(prefix));T.splice(i<0?T.length:i+1,0,sec);};
+after('הקדמה',{t:'האינטואיציה: נדנדת זרם על סכום קבוע',h:H`
+<p>כל מה שקורה בזוג ההפרשי נובע מעובדה אחת: מקור הזרם בזנב <b>מכריח</b> \(i_1+i_2=I\). לכן הזוג הוא נדנדה: מה שעולה בצד אחד יורד בצד השני, בדיוק באותה כמות.</p>
+<ul>
+<li><b>אות הפרשי</b> (\(v_{G1}\) עולה, \(v_{G2}\) יורד): Q₁ "מושך" יותר מהזרם המשותף, Q₂ פחות. הנדנדה מתנדנדת: \(i_1=I/2+\Delta\), \(i_2=I/2-\Delta\). המוצאים זזים בכיוונים הפוכים, וההפרש ביניהם הוא פעמיים הסטייה.</li>
+<li><b>אות משותף</b> (שני השערים עולים יחד): שני הטרנזיסטורים "רוצים" יותר זרם, אבל הסכום נעול. מתח המקור המשותף \(v_S\) פשוט עולה יחד איתם, \(v_{GS}\) לא משתנה, והזרמים לא זזים. <b>כלום לא קורה במוצא</b>: זו דחיית האות המשותף.</li>
+</ul>
+<p><b>במספרים</b> (MOS, \(I=1\,\text{mA}\), \(V_{OV}=0.2\,\text{V}\), \(R_D=5\,\text{k}\Omega\)): כל טרנזיסטור ב-\(I/2=0.5\,\text{mA}\), \(g_m=\dfrac{2\cdot0.5\,\text{m}}{0.2}=5\,\text{mA/V}\). אות הפרשי \(v_{id}=20\,\text{mV}\) מזיז \(\Delta=g_mv_{id}/2=50\,\mu\text{A}\) מצד לצד: \(v_{o1}\) יורד ב-\(0.25\,\text{V}\), \(v_{o2}\) עולה ב-\(0.25\,\text{V}\), ההפרש \(0.5\,\text{V}\): \(A_d=g_mR_D=25\).</p>
+`+co('why','💡','למה ההגבר החד-צדדי הוא חצי',H`<p>כל טרנזיסטור מקבל רק חצי מ-\(v_{id}\) (הצד השני מקבל את החצי השלילי), ולכן כל מוצא לבדו זז \(g_m R_D\,v_{id}/2\). ההפרש בין שני המוצאים מחזיר את הפקטור 2. מכאן \(A_{d,se}=\pm\tfrac12 g_mR_D\) ו-\(A_d=g_mR_D\).</p>`)+golab(7,'l7-pair','הנדנדה: הזרם עובר מצד לצד')+golab(7,'l7-sig','אות הפרשי על רעש משותף, בזמן אמת')});
+after('MOS: הגבר משותף',{t:'CMRR במספרים: מה 60dB עושה לזמזום של 1V',h:H`
+<p>CMRR עונה על שאלה מעשית: אם על שני הכניסות יושב אותו רעש (זמזום רשת של \(1\,\text{V}\), למשל), ומעליו האות האמיתי (\(10\,\text{mV}\)), מה יוצא במוצא?</p>
+<div class="tbl"><table><thead><tr><th></th><th>בכניסה</th><th>הגבר</th><th>במוצא (חד-צדדי)</th></tr></thead><tbody>
+<tr><td>אות הפרשי</td><td>10 mV</td><td>\(A_{d,se}=12.5\)</td><td>125 mV</td></tr>
+<tr><td>רעש משותף, \(R_{SS}=100\,\text{k}\Omega\)</td><td>1 V</td><td>\(A_{CM}=-\dfrac{R_D}{2R_{SS}}=-0.025\)</td><td>25 mV</td></tr>
+</tbody></table></div>
+<p>\(\text{CMRR}=\left|\dfrac{A_d}{A_{CM}}\right|=g_mR_{SS}=5\,\text{m}\cdot100\,\text{k}=500\) (54 dB). הרעש בכניסה היה פי 100 מהאות, ובמוצא הוא פי 5 קטן ממנו. עם קסקודה בזנב (\(R_{SS}=10\,\text{M}\Omega\)) מגיעים ל-94 dB והרעש נעלם לגמרי. ובמוצא <b>הפרשי</b> הרעש מתבטל גם ככה, כי הוא זהה בשני הצדדים; מה שנשאר שם הוא רק אי-ההתאמה (\(\Delta R_D\), \(\Delta g_m\)).</p>
+`+co('key','🔑','שלוש שורות לזכור',H`<p>\(A_{CM,se}=-\dfrac{R_D}{2R_{SS}}\) (הזנב הוא מחלק מתח: \(v_S\) עוקב אחרי \(v_{CM}\), הזרם שדולף דרך \(R_{SS}\) מתחלק בין שני הענפים). \(\text{CMRR}=g_mR_{SS}\): כדי לדחות רעש צריך מקור זרם עם התנגדות מוצא גבוהה, וזה כל הקשר לשיעור 6. \(20\log_{10}\): 100 → 40 dB, 1000 → 60 dB.</p>`)+golab(7,'l7-cm','CMRR בפעולה')+golab(6,'l6-out','למה R_out של מקור הזרם חשוב')});
+after('MOS: פעולה במצב Common-Mode',{t:'תחום הכניסה המשותפת כשני אילוצים נפרדים',h:H`
+<p>הנוסחה \(V_{SS}+V_{CS,\min}+V_{GS}\le V_{CM}\le V_{DD}-\tfrac12IR_D+V_t\) נראית מפחידה, אבל היא שני משפטים פשוטים:</p>
+<ol>
+<li><b>למטה: מקור הזרם צריך מקום לנשום.</b> \(v_S=V_{CM}-V_{GS}\). לטרנזיסטור הזנב דרוש לפחות \(V_{CS,\min}\) (\(=V_{OV}\) שלו) מעל \(-V_{SS}\). לכן \(V_{CM}\ge -V_{SS}+V_{CS,\min}+V_{GS}\).</li>
+<li><b>למעלה: Q₁, Q₂ צריכים להישאר ברוויה.</b> הניקוז יושב ב-\(V_{DD}-\tfrac12IR_D\). רוויה דורשת \(v_D\ge v_G-V_t\), כלומר \(V_{CM}\le V_{DD}-\tfrac12IR_D+V_t\).</li>
+</ol>
+<p><b>דוגמה</b>: \(V_{DD}=V_{SS}=5\,\text{V}\), \(I=1\,\text{mA}\), \(R_D=5\,\text{k}\Omega\), \(V_t=1\,\text{V}\), \(V_{OV}=0.2\,\text{V}\) (ולכן \(V_{GS}=1.2\,\text{V}\)), \(V_{CS,\min}=0.3\,\text{V}\): למטה \(-5+0.3+1.2=-3.5\,\text{V}\); למעלה \(5-2.5+1=3.5\,\text{V}\). כל \(V_{CM}\) בין \(-3.5\) ל-\(+3.5\,\text{V}\) תקין. הגדל את \(R_D\) ל-\(9\,\text{k}\Omega\) והגבול העליון יורד ל-\(1.5\,\text{V}\): הגבר גבוה "אוכל" תחום כניסה.</p>
+`+co('warn','⚠️','הטעות הקלאסית',H`<p>לשים \(I\) במקום \(I/2\) בחישוב מתח הניקוז (או בחישוב \(g_m\)). כל ענף נושא חצי מהזרם: \(v_D=V_{DD}-\tfrac{I}{2}R_D\), \(g_m=\dfrac{2(I/2)}{V_{OV}}=\dfrac{I}{V_{OV}}\).</p>`)+golab(7,'l7-rng','תחום ה-CM עם סליידרים')});
+T.push({t:'טעויות נפוצות במגבר הפרש',h:H`
+<div class="tbl"><table><thead><tr><th>הטעות</th><th>התיקון</th></tr></thead><tbody>
+<tr><td>\(g_m\) עם \(I\) במקום \(I/2\)</td><td>\(g_m\) הוא של טרנזיסטור אחד: MOS \(g_m=I/V_{OV}\) (כי \(I_D=I/2\)); BJT \(g_m=\alpha I/(2V_T)\approx I/(2V_T)\).</td></tr>
+<tr><td>מבלבלים הגבר הפרשי עם חד-צדדי</td><td>\(A_d=g_mR_D\) בין שני המוצאים; מוצא אחד נותן חצי, עם סימן לפי הצד.</td></tr>
+<tr><td>\(R_{id}\) בלי הפקטור 2</td><td>בין שני הבסיסים יש שני \(r_\pi\) בטור: \(R_{id}=2r_\pi\) (או \(2[r_\pi+(\beta+1)R_E]\)).</td></tr>
+<tr><td>לוקחים \(A_{CM}\) עם \(R_{SS}\) של הנגד במקום התנגדות המוצא של המקור</td><td>\(R_{SS}\) הוא ההתנגדות שהזנב מציג לאות: \(r_o\) של טרנזיסטור המקור, לא הנגד שקובע את \(I_{REF}\).</td></tr>
+<tr><td>אות "קטן" של 300 mV</td><td>MOS יוצא מהליניארי ב-\(|v_{id}|=\sqrt2V_{OV}\); BJT כבר ב-\(\sim4V_T=100\,\text{mV}\) כל הזרם בצד אחד.</td></tr>
+<tr><td>סימן \(v_{o2}-v_{o1}\)</td><td>\(v_{id}=v_{G1}-v_{G2}\) חיובי מגדיל את \(i_1\) ומוריד את \(v_{o1}\): לכן \(v_{o2}-v_{o1}=+g_mR_Dv_{id}\), ו-\(v_{o1}-v_{o2}\) שלילי.</td></tr>
+</tbody></table></div>`});
+CONTENT[7].algo.gotchas.push({t:'חצי מהזרם, חצי מהאות',d:H`כל טרנזיסטור נושא \(I/2\) ורואה \(v_{id}/2\). שני ה"חצאים" האלה הם מקור רוב הטעויות: \(g_m\) מחושב מ-\(I/2\), והמוצא החד-צדדי הוא חצי מההפרשי.`},{t:'R_SS הוא r_o של המקור',d:H`ב-CMRR \(=g_mR_{SS}\) נכנסת התנגדות המוצא של מקור הזרם (\(r_o\), קסקודה: \(g_mr_o\cdot r_o\)), לא נגד ההטיה.`});
+CONTENT[7].algo.shortcuts.push([H`\(A_{CM,se}=-\dfrac{R_D}{2R_{SS}},\quad \text{CMRR}=g_mR_{SS}\)`,'רעש משותף במוצא חד-צדדי'],[H`\(|v_{id}|_{\max}=\sqrt2V_{OV}\ (\text{MOS}),\ \approx4V_T\ (\text{BJT})\)`,'קצה התחום הליניארי']);
+CONTENT[7].quiz.push(
+{q:'זוג MOS עם \\(I=1\\,\\text{mA}\\), \\(V_{OV}=0.2\\,\\text{V}\\), \\(R_D=5\\,\\text{k}\\Omega\\). מה \\(A_d\\) (הפרשי) ומה ההגבר החד-צדדי?',o:['25 ו-12.5','50 ו-25','12.5 ו-6.25','25 ו-25'],a:0,e:'\\(g_m=I/V_{OV}=5\\,\\text{mA/V}\\) (מ-\\(I_D=I/2\\)), \\(A_d=g_mR_D=25\\), חד-צדדי חצי: 12.5.',x:[null,'50 יוצא אם לוקחים I במקום I/2 ב-g_m.','12.5 הוא ההגבר החד-צדדי, לא ההפרשי.','החד-צדדי הוא חצי מההפרשי.']},
+{q:'רעש משותף של 1 V ואות הפרשי של 10 mV בכניסה; \\(A_d=25\\), CMRR = 60 dB. מה יחס אות/רעש במוצא ההפרשי?',o:['1:100 (הרעש גדול)','1:1','10:1 (האות גדול)','∞ (הרעש מתבטל לגמרי)'],a:2,e:'60 dB = 1000. \\(A_{CM}=25/1000=0.025\\). אות: \\(25\\cdot10\\,\\text{mV}=250\\,\\text{mV}\\); רעש: \\(0.025\\cdot1\\,\\text{V}=25\\,\\text{mV}\\). יחס 10:1.',x:['זה היחס בכניסה; המגבר משפר אותו פי CMRR.','זה היה נכון ל-CMRR של 40 dB.',null,'ביטול מלא דורש התאמה מושלמת; CMRR סופי משאיר שארית.']},
+{q:'מה מגביל את תחום הכניסה המשותפת מלמטה?',o:['Q₁ ו-Q₂ נכנסים לטריודה','מקור הזרם בזנב יוצא מרוויה','R_D נשרף','V_t משתנה'],a:1,e:'כש-\\(V_{CM}\\) יורד, \\(v_S=V_{CM}-V_{GS}\\) יורד ולטרנזיסטור הזנב לא נשאר \\(V_{CS,\\min}\\).',x:['טריודה של הזוג היא הגבול העליון.',null,'אין קשר להספק.','V_t קבוע (בהזנחת אפקט מצע).']},
+{q:'מדוע דחיית האות המשותף במוצא הפרשי טובה יותר מאשר במוצא חד-צדדי?',o:['כי \\(g_m\\) כפול','כי הרעש זהה בשני המוצאים ומתבטל בהפרש; נשארת רק אי-ההתאמה','כי R_SS אינסופי','כי אין R_D בצד השני'],a:1,e:'הזמזום מופיע באותה מידה ב-\\(v_{o1}\\) וב-\\(v_{o2}\\) (\\(A_{CM,se}\\) זהה), ולכן ההפרש מבטל אותו; רק \\(\\Delta R_D\\), \\(\\Delta g_m\\) מדליפים.',x:['g_m לא משתנה בין המוצאים.',null,'R_SS סופי בשני המקרים.','שני הצדדים סימטריים.']});
+})();
 /* ---- c8-content.js ---- */
 /* ==== שיעור 8 (משוב): תוכן לימודי נוסף — אינטואיציה, זיהוי טופולוגיה, העמסה, דוגמה מלאה, משוב חיובי, טעויות ==== */
 (function(){
@@ -7910,6 +7956,79 @@ notes('<h3>מה לראות</h3><ul><li>בלי קבל, ה-VTC הוא הכול: ש
 })();
 }
 const b3=LESSONS[3].build;LESSONS[3].build=function(root){b3.call(this,root);labSw3(root);};
+})();
+/* ---- l4-csl.js ---- */
+/* ==== שיעור 4: מגבר CS שלם וחי — ממתח במחלק, R_S מעוקף, קבלי צימוד ואות DC+AC ==== */
+(function(){
+function labCsl(root){
+section(root,{id:'l4-csl',tag:'מעגל חי',title:'מגבר CS שלם: מציאת Q, ואז האות רוכב עליה',short:'CS חי',
+lead:'המעגל המלא מהמבחנים: מחלק <span class="m">R<sub>G1</sub>/R<sub>G2</sub></span> קובע את <span class="m">V<sub>G</sub></span> (בלי זרם שער!), <span class="m">R<sub>S</sub></span> מייצב את נקודת העבודה ומעוקף בקבל לאות, ו-<span class="m">C<sub>in</sub></span>, <span class="m">C<sub>out</sub></span> מפרידים DC מ-AC. הנקודות בענפי ה-DC זורמות בכיוון קבוע ו"נושמות" עם האות; בענפי הקבלים הן מתנדנדות הלוך ושוב. שים לב שבשער אין זרם בכלל, ולכן <span class="m">R<sub>in</sub> = R<sub>G1</sub>‖R<sub>G2</sub></span> בלבד.',
+body:'<div class="lab"><div class="controls"><div class="presets"><button type="button" data-preset="l4csl-ex">מעגל טיפוסי (15V)</button><button type="button" data-preset="l4csl-big">אות גדול: עיוות וקטימה</button><button type="button" data-preset="l4csl-tri">R<sub>D</sub> גדול: Q בטריודה</button><button type="button" data-preset="l4csl-load">R<sub>sig</sub> גדול: כמעט בלי הפסד (R<sub>in</sub> ענקית)</button></div><div class="sliders" id="l4csl-ctl"></div></div>'+
+'<div class="scopes">'+circ('cx-l4csl',lg('t1','זרם DC+AC','dot')+lg('t4','רוויה')+lg('warn','טריודה'),true)+scope('c-l4csl','short',lg('t2','v<sub>sig</sub>(t)')+lg('t3','v<sub>gs</sub>(t) אחרי R<sub>sig</sub>‖R<sub>in</sub>'),'כניסה [mV]')+scope('c-l4csl2','short',lg('t1','v<sub>out</sub>(t)')+lg('t3','G<sub>v</sub>·v<sub>sig</sub> (ליניארי)','dash')+lg('t5','גבולות קטימה','dash'),'מוצא [V]')+'</div></div><div class="readouts" id="r-l4csl"></div>'+
+notes('<h3>מה לראות</h3><ul><li><b>DC</b>: קבלים נתק, אין זרם שער. <span class="m">V<sub>G</sub></span> מהמחלק, ואז המשוואה הריבועית <span class="m">I<sub>D</sub> = k(V<sub>G</sub> − I<sub>D</sub>R<sub>S</sub> − V<sub>t</sub>)²</span>. בוחרים את השורש עם <span class="m">V<sub>GS</sub> &gt; V<sub>t</sub></span> ובודקים רוויה.</li><li><b>AC</b>: קבלים קצר, <span class="m">R<sub>S</sub></span> נעלם (מעוקף), <span class="m">A<sub>v</sub> = −g<sub>m</sub>(R<sub>D</sub>‖R<sub>L</sub>)</span>. בניגוד ל-BJT, <span class="m">R<sub>in</sub></span> היא רק המחלק: מגה-אוהמים, ולכן <span class="m">R<sub>sig</sub></span> כמעט לא מוריד את האות.</li><li>הגדל את האות: החצי החיובי של i<sub>D</sub> גדל יותר מהשלילי (ריבועי), ואז קטימה: למעלה בקטעון, למטה בטריודה (<span class="m">v<sub>DS</sub> &lt; v<sub>GS</sub> − V<sub>t</sub></span>).</li><li>g<sub>m</sub> = 2I<sub>D</sub>/V<sub>OV</sub>: ב-MOSFET ההגבר לזרם נתון קטן מאשר ב-BJT (g<sub>m</sub> = I<sub>C</sub>/V<sub>T</sub>), כי V<sub>OV</sub>/2 ≫ V<sub>T</sub>.</li></ul>',
+'<h3>הנוסחאות</h3>'+F('DC:','V<sub>G</sub> = V<sub>DD</sub>·R<sub>G2</sub>/(R<sub>G1</sub>+R<sub>G2</sub>), V<sub>GS</sub> = V<sub>G</sub> − I<sub>D</sub>R<sub>S</sub>')+F('','I<sub>D</sub> = k(V<sub>GS</sub> − V<sub>t</sub>)², V<sub>DS</sub> = V<sub>DD</sub> − I<sub>D</sub>(R<sub>D</sub>+R<sub>S</sub>) ≥ V<sub>OV</sub>')+F('AC:','g<sub>m</sub> = 2kV<sub>OV</sub> = 2I<sub>D</sub>/V<sub>OV</sub>')+F('','R<sub>in</sub> = R<sub>G1</sub>‖R<sub>G2</sub>, A<sub>v</sub> = −g<sub>m</sub>(R<sub>D</sub>‖R<sub>L</sub>)')+F('','G<sub>v</sub> = A<sub>v</sub>·R<sub>in</sub>/(R<sub>in</sub>+R<sub>sig</sub>)'))});
+(function(){
+  const C=Circuit('cx-l4csl',520,300),cv=reg('c-l4csl'),cv2=reg('c-l4csl2');
+  C.rail(200,18,'V_{DD}');C.w([200,18],[200,30]);C.R([200,30],[200,120],'R_{G1}',{side:-1,id:'rg1'});C.w([200,120],[200,180]);C.nd(200,150);
+  C.R([200,180],[200,250],'R_{G2}',{side:-1,id:'rg2'});C.w([200,250],[200,265]);C.G(200,265);
+  C.V([40,230],[40,170],'v_{sig}',{kind:'ac',side:1,off:30});C.w([40,170],[40,150],[60,150]);C.R([60,150],[112,150],'R_{sig}',{side:-1});C.w([112,150],[122,150]);C.Cap([122,150],[170,150],'C_{in}',{side:-1});C.w([170,150],[268,150]);C.w([40,230],[40,265]);C.G(40,265);
+  const m=C.mos(290,150,{id:'m'});
+  C.rail(300,18,'V_{DD}');C.w([300,18],[300,30]);C.R([300,30],[300,100],'R_D',{side:1,id:'rd'});C.w([300,100],[300,120]);C.nd(300,110);
+  C.w([300,110],[340,110]);C.Cap([340,110],[390,110],'C_{out}',{side:-1});C.w([390,110],[480,110]);C.nd(430,110);C.R([430,110],[430,200],'R_L',{side:-1,id:'rl'});C.w([430,200],[430,265]);C.G(430,265);C.term(480,110);
+  C.T(480,96,'v_{out}','big','middle');C.T(480,132,'','val','middle',null,'vo');
+  C.w([300,180],[300,200]);C.nd(300,200);C.R([300,200],[300,255],'R_S',{side:1,id:'rs'});C.w([300,255],[300,265]);C.G(300,265);
+  C.w([300,200],[360,200]);C.Cap([360,200],[360,255],'C_S',{side:-1});C.w([360,255],[360,265]);C.G(360,265);
+  C.T(232,136,'','val2','middle',null,'vg');C.T(232,120,'I_G = 0','hi','middle');C.T(318,75,'','val','start',null,'id');C.T(340,140,'','val2','start',null,'vds');C.T(120,120,'','val2','middle',null,'vs');C.T(120,105,'v_{sig}','hi','middle');
+  C.flow('r1',[[200,18],[200,150]]);C.flow('r2',[[200,150],[200,265]]);C.flow('sig',[[40,170],[40,150],[200,150]],{signal:true});
+  C.flow('d',[[300,18],[300,110],[300,120]]);C.flow('out',[[300,110],[430,110],[430,265]],{signal:true});C.flow('s',[[300,180],[300,265]]);C.flow('cs',[[300,200],[360,200],[360,265]],{signal:true});
+  C.bindPlay();
+  const st=sliders('l4csl-ctl',[
+    {key:'vs',id:'l4csl-vs',label:'v<sub>sig</sub> (שיא)',min:5,max:1000,step:5,value:50,map:v=>v/1000,fmt:v=>si(v,'V')},
+    {key:'Rsig',id:'l4csl-rsig',label:'R<sub>sig</sub>',min:0,max:500,step:10,value:50,map:v=>v*1000,fmt:v=>si(v,'Ω')},
+    {key:'RG1',id:'l4csl-rg1',label:'R<sub>G1</sub>',min:0.1,max:10,step:0.1,value:2,map:v=>v*1e6,fmt:v=>si(v,'Ω')},
+    {key:'RG2',id:'l4csl-rg2',label:'R<sub>G2</sub>',min:0.1,max:5,step:0.1,value:1,map:v=>v*1e6,fmt:v=>si(v,'Ω')},
+    {key:'RD',id:'l4csl-rd',label:'R<sub>D</sub>',min:0.5,max:20,step:0.1,value:5,map:v=>v*1000,fmt:v=>si(v,'Ω')},
+    {key:'RS',id:'l4csl-rs',label:'R<sub>S</sub>',min:0.1,max:5,step:0.1,value:2,map:v=>v*1000,fmt:v=>si(v,'Ω')},
+    {key:'RL',id:'l4csl-rl',label:'R<sub>L</sub>',min:1,max:100,step:1,value:10,map:v=>v*1000,fmt:v=>si(v,'Ω')},
+    {key:'k',id:'l4csl-k',label:'k = ½k\'<sub>n</sub>W/L',min:0.1,max:5,step:0.1,value:1,map:v=>v*1e-3,fmt:v=>si(v,'A/V²')},
+    {key:'Vt',id:'l4csl-vt',label:'V<sub>t</sub>',min:0.5,max:2.5,step:0.1,value:1,fmt:v=>v.toFixed(1)+' V'},
+    {key:'VDD',id:'l4csl-vdd',label:'V<sub>DD</sub>',min:5,max:24,step:0.5,value:15,fmt:v=>v.toFixed(1)+' V'}],upd);
+  let Q={},W={};const N=400;
+  function dc(){const {RG1,RG2,RD,RS,RL,k,Vt,VDD,Rsig}=st,VG=VDD*RG2/(RG1+RG2);
+    const g=(vgs,vds)=>{const vov=vgs-Vt;if(vov<=0||vds<=0)return 0;return vds>=vov?k*vov*vov:k*(2*vov*vds-vds*vds);};
+    const Imax=VDD/(RD+RS);
+    const ID=VG<=Vt?0:bisect(I=>g(VG-I*RS,VDD-I*(RD+RS))-I,0,Imax,80);
+    const VGS=VG-ID*RS,VOV=Math.max(0,VGS-Vt),VDS=VDD-ID*(RD+RS),mode=VOV<=0?'cut':VDS<VOV?'tri':'sat';
+    const gm=2*k*VOV,Rin=par(RG1,RG2),RLp=par(RD,RL),Av=-gm*RLp,kd=Rin/(Rin+Rsig),Gv=Av*kd,VD=VDD-ID*RD,VS=ID*RS;
+    Q={mode,ID,VG,VGS,VOV,VDS,VD,VS,gm,Rin,RLp,Av,kd,Gv,IR:VDD/(RG1+RG2)};}
+  function build(){const {vs,k,Vt}=st,{ID,RLp,kd,VDS,VOV,mode}=Q;const vsg=[],vg=[],vo=[],lin=[],id=[];let mx=-1e9,mn=1e9;
+    const up=ID*RLp,lo=-(VDS-VOV);
+    for(let i=0;i<N;i++){const t=2*i/N,s=vs*Math.sin(2*Math.PI*t),vgs=kd*s;let ii=mode==='cut'?0:k*Math.max(0,VOV+vgs)*Math.max(0,VOV+vgs);let v=-(ii-ID)*RLp;
+      if(v>up){v=up;ii=0;}if(v<lo){v=lo;ii=ID-lo/RLp;}
+      vsg.push([t,s*1e3]);vg.push([t,vgs*1e3]);vo.push([t,v]);lin.push([t,Q.Gv*s]);id.push(ii);mx=Math.max(mx,v);mn=Math.min(mn,v);}
+    W={vsg,vg,vo,lin,id,up,lo,mx,mn};}
+  function paint(ph){const i=Math.floor(((ph%2)/2)*N)%N,{vs,RL,Rsig,RG1,RG2}=st,ii=W.id[i],vo=W.vo[i][1],vgs=W.vg[i][1]/1e3,iac=ii-Q.ID,iout=vo/RL,Imax=Math.max(Q.ID*2.5,1e-4);
+    C.I('r1',mag(Q.IR,Imax));C.I('r2',mag(Q.IR,Imax));C.I('d',mag(ii,Imax));C.I('s',mag(ii,Imax));
+    const Iac=Math.max(Math.abs(Q.gm*vs*Q.kd),1e-9);
+    C.I('sig',clamp(Math.abs(W.vsg[i][1]/1e3-vgs)/Math.max(vs*(1-Q.kd)+1e-9,1e-9)*0.6,0,1)*(Rsig>0?1:0),Math.sign(W.vsg[i][1])||1);
+    C.I('out',clamp(Math.abs(iout)/Math.max(Math.abs(W.mx-W.mn)/2/RL,1e-9)*0.8,0,1),Math.sign(iout)||1);C.I('cs',clamp(Math.abs(iac)/Iac*0.8,0,1),Math.sign(iac)||1);
+    const tri=vo<=W.lo+1e-9;C.st('m',Q.mode==='cut'?'dim':(tri||Q.mode==='tri')?'hot':'on');
+    C.set('vg','v_G = '+fx(Q.VG+vgs,2)+' V');C.set('id','i_D = '+si(ii,'A'));C.set('vds','V_{DS} = '+fx(Q.VDS-vo,2)+' V');C.set('vo','= '+fx(vo,2)+' V');C.set('vs',fx(W.vsg[i][1],0)+' mV');
+    const ym=Math.max(vs*1e3,1)*1.2;
+    draw(cv,{x0:0,x1:2,y0:-ym,y1:ym,xl:'t / T',yl:'[mV]',cursor:ph%2,series:[{c:'t2',w:1.6,pts:W.vsg},{c:'t3',w:2.2,pts:W.vg}]});
+    const lim=Math.max(0.2,Math.min(Math.max(Math.abs(Q.Gv*vs),W.up,Math.abs(W.lo))*1.12,Math.max(Math.abs(Q.Gv*vs),Math.abs(W.mx),Math.abs(W.mn))*1.4));
+    draw(cv2,{x0:0,x1:2,y0:-lim,y1:lim,xl:'t / T',yl:'v_out [V]',cursor:ph%2,series:[{c:'t5',w:1.2,dash:[4,4],pts:[[0,W.up],[2,W.up]]},{c:'t5',w:1.2,dash:[4,4],pts:[[0,W.lo],[2,W.lo]]},{c:'t3',w:1.6,dash:[6,4],pts:W.lin},{c:'t1',w:2.6,pts:W.vo}]});}
+  C.tick=(t)=>paint(t*0.25);
+  function upd(){dc();build();const {vs}=st;
+    const Avm=(W.mx-W.mn)/(2*vs*Q.kd),asym=(W.mx+W.mn)/Math.max(1e-9,W.mx-W.mn)*100;let s;
+    if(Q.mode==='tri')s=pill('Q בטריודה: אין הגבר','bad');else if(Q.mode==='cut')s=pill('Q בקטעון (V_G < V_t)'.replace('V_G','V<sub>G</sub>').replace('V_t','V<sub>t</sub>'),'bad');else if(W.mx>=W.up-1e-6||W.mn<=W.lo+1e-6)s=pill('קטימה ('+(W.mn<=W.lo+1e-6?'טריודה':'קטעון')+')','bad');else if(Math.abs(asym)>5)s=pill('עיוות '+Math.abs(asym).toFixed(0)+'%','warn');else s=pill('ליניארי · אות קטן','ok');
+    readouts('r-l4csl',[['מצב',s,'html'],['V<sub>G</sub> = V<sub>DD</sub>·R<sub>G2</sub>/(R<sub>G1</sub>+R<sub>G2</sub>)',fx(Q.VG,2)+' V'],['I<sub>D</sub> (שורש תקף)',si(Q.ID,'A')],['V<sub>GS</sub> / V<sub>OV</sub>',fx(Q.VGS,2)+' / '+fx(Q.VOV,2)+' V'],['V<sub>S</sub> / V<sub>D</sub> / V<sub>DS</sub>',fx(Q.VS,2)+' / '+fx(Q.VD,2)+' / '+fx(Q.VDS,2)+' V'],['בדיקת רוויה V<sub>DS</sub> ≥ V<sub>OV</sub>',Q.VDS>=Q.VOV?'✓':'✗ טריודה'],['g<sub>m</sub> = 2I<sub>D</sub>/V<sub>OV</sub>',si(Q.gm,'S')],['R<sub>in</sub> = R<sub>G1</sub>‖R<sub>G2</sub>',si(Q.Rin,'Ω')],['R<sub>in</sub>/(R<sub>in</sub>+R<sub>sig</sub>)',Q.kd.toFixed(3)],['A<sub>v</sub> = −g<sub>m</sub>(R<sub>D</sub>‖R<sub>L</sub>)',Q.Av.toFixed(2)],['G<sub>v</sub> נוסחה / נמדד',Q.Gv.toFixed(2)+' / '+(-Avm*Q.kd).toFixed(2)],['טווח מוצא (קטעון / טריודה)','+'+fx(W.up,2)+' / '+fx(W.lo,2)+' V']]);
+    paint(C.t*0.25);}
+  presets({'l4csl-ex':{'l4csl-vs':50,'l4csl-rsig':50,'l4csl-rg1':2,'l4csl-rg2':1,'l4csl-rd':5,'l4csl-rs':2,'l4csl-rl':10,'l4csl-k':1,'l4csl-vt':1,'l4csl-vdd':15},'l4csl-big':{'l4csl-vs':600,'l4csl-rsig':50,'l4csl-rg1':2,'l4csl-rg2':1,'l4csl-rd':5,'l4csl-rs':2,'l4csl-rl':10,'l4csl-k':1,'l4csl-vt':1,'l4csl-vdd':15},'l4csl-tri':{'l4csl-vs':50,'l4csl-rsig':50,'l4csl-rg1':2,'l4csl-rg2':1,'l4csl-rd':14,'l4csl-rs':2,'l4csl-rl':10,'l4csl-k':1,'l4csl-vt':1,'l4csl-vdd':15},'l4csl-load':{'l4csl-vs':50,'l4csl-rsig':500,'l4csl-rg1':2,'l4csl-rg2':1,'l4csl-rd':5,'l4csl-rs':2,'l4csl-rl':10,'l4csl-k':1,'l4csl-vt':1,'l4csl-vdd':15}});
+  upd();
+})();
+}
+const b4=LESSONS[4].build;LESSONS[4].build=function(root){b4.call(this,root);labCsl(root);};
 })();
 /* ---- l5-cel.js ---- */
 /* ==== שיעור 5: מגבר CE שלם וחי — ממתח במחלק, קבלי צימוד ועקיפה, אות DC+AC ==== */
