@@ -6464,6 +6464,242 @@ CONTENT[2].quiz.push(
 {q:'בגשר \\(V_{O,P}=30\\,\\text{V}\\), \\(R=300\\,\\Omega\\), \\(f=50\\,\\text{Hz}\\). איזה קבל נותן גלית של 1V?',o:['100 µF','500 µF','1000 µF','5000 µF'],a:2,e:'\\(C=\\dfrac{V_{O,P}}{2fRV_r}=\\dfrac{30}{2\\cdot50\\cdot300\\cdot1}=1000\\,\\mu\\text{F}\\).',x:['נותן גלית של 10V.','נותן 2V.',null,'נותן 0.2V: יותר ממה שביקשו, ופולסי דיודה גדולים יותר.']},
 {q:'מדוע זרם השיא בדיודה של ספק עם קבל גדול בהרבה מזרם העומס?',o:['כי הדיודה מגבירה זרם','כי כל המטען שהעומס צורך במחזור נכנס בחלון הולכה קצר ליד השיא','כי הקבל מתפרק דרך הדיודה','כי השנאי מגדיל זרם'],a:1,e:'הדיודה מוליכה רק כשהמקור גבוה מהקבל, זווית קצרה ליד השיא; \\(\\int i_D dt=I_LT\\) בחלון קצר → זרם גבוה.',x:['דיודה לא מגבירה.',null,'הקבל מתפרק דרך העומס, הדיודה חסומה אז.','השנאי משנה מתח וזרם ביחס קבוע, לא יוצר פולסים.']});
 })();
+/* ---- c2-fullwave.js ---- */
+/* ==== שיעור 2: המיישר הדו-דרכי מפורק לפרמטרים — תיאוריה עם איורים מסומנים + מעבדת "בחר פרמטר" ==== */
+(function(){
+const H=String.raw,T=CONTENT[2].theory;
+const after=(prefix,sec)=>{const i=T.findIndex(s=>s.t.startsWith(prefix));T.splice(i<0?T.length:i+1,0,sec);};
+const EX={VP:220,a:10,VD:0.7,RL:100,f:50};                       // הדוגמה המספרית המשותפת לכל הסעיפים
+/* ---------- ציור משותף: מיישר גל שלם עם שנאי (סנף מרכזי / גשר) ---------- */
+function drawFW(C,top,o){o=o||{};
+  C.V([50,185],[50,105],'v_P',{kind:'ac',side:-1,off:24,id:'vp'});C.w([50,105],[50,60],[120,60],[120,95]);C.w([50,185],[50,230],[120,230],[120,195]);
+  C.L([120,95],[120,195],'',{id:'lp'});C.w([146,70],[146,220]);C.w([154,70],[154,220]);C.T(133,150,'N_1','hi','middle');C.T(150,56,'a = N_1/N_2','hi','middle');
+  C.flow('p',[[50,105],[50,60],[120,60],[120,95],[120,195],[120,230],[50,230],[50,185]]);
+  if(top==='ct'){
+    C.L([180,75],[180,145],'',{id:'ls1',flipc:true});C.L([180,145],[180,215],'',{id:'ls2',flipc:true});C.T(166,112,'N_2','hi','middle');C.T(166,182,'N_2','hi','middle');
+    C.nd(180,145);C.w([180,145],[215,145]);C.G(215,145);C.T(222,140,'סנף','he','start');
+    C.w([180,75],[180,40],[230,40]);C.D([230,40],[300,40],'D_1',{id:'d1',side:1});C.w([300,40],[400,40]);C.nd(400,40);
+    C.w([180,215],[180,250],[230,250]);C.D([230,250],[300,250],'D_2',{id:'d2',side:1});C.w([300,250],[340,250],[340,40]);C.nd(340,40);
+    C.R([400,40],[400,170],'R_L',{side:1,id:'rl'});C.w([400,170],[400,190]);C.G(400,190);
+    C.T(205,100,'+','hi','middle');C.T(205,135,'−','hi','middle');C.T(200,118,'v_{S1}','val2','start');C.T(205,160,'+','hi','middle');C.T(205,205,'−','hi','middle');C.T(200,188,'v_{S2}','val2','start');
+    C.T(265,24,'V_D','val','middle');C.T(265,236,'V_D','val','middle');
+    C.flow('d1',[[180,75],[180,40],[400,40]]);C.flow('d2',[[180,215],[180,250],[340,250],[340,40],[400,40]]);C.flow('l',[[400,40],[400,190]]);
+    C.T(330,30,'i_{D1}','val','middle');C.T(330,240,'i_{D2}','val','middle');
+  }else{
+    const tp=[270,60],bt=[270,200],lf=[210,130],rg=[330,130];
+    C.L([180,95],[180,195],'',{id:'ls1',flipc:true});C.T(166,150,'N_2','hi','middle');C.T(200,100,'+','hi','middle');C.T(200,190,'−','hi','middle');C.T(196,150,'v_S','val2','start');
+    C.w([180,95],[180,60],tp);C.w([180,195],[180,200],bt);
+    C.D(lf,tp,'D_4',{id:'d4',side:1});C.D(tp,rg,'D_1',{id:'d1',side:-1});C.D(bt,rg,'D_2',{id:'d2',side:1});C.D(lf,bt,'D_3',{id:'d3',side:-1});
+    C.w(rg,[370,130],[370,40],[400,40]);C.nd(400,40);C.R([400,40],[400,170],'R_L',{side:1,id:'rl'});C.w([400,170],[400,230],[200,230],[200,130],lf);
+    C.nd(...tp).nd(...bt).nd(...lf).nd(...rg);C.T(265,24,'2V_D (שתי דיודות בטור)','val','middle');
+    C.flow('d1',[[180,95],[180,60],tp,rg,[370,130],[370,40],[400,40]]);C.flow('d1r',[[400,230],[200,230],[200,130],lf,bt,[180,200],[180,195]]);
+    C.flow('d2',[[180,195],[180,200],bt,rg,[370,130],[370,40],[400,40]]);C.flow('d2r',[[400,230],[200,230],[200,130],lf,tp,[180,60],[180,95]]);C.flow('l',[[400,40],[400,170]]);
+  }
+  C.T(418,70,'+','hi','middle');C.T(418,150,'−','hi','middle');C.T(430,110,'v_O','big','start');C.T(478,218,'','val','end',null,'vo');C.T(426,185,'i_L','val','start');
+}
+/* ---------- מספרים לדוגמה ---------- */
+function calc(top,p){const VSrms=p.VP/p.a,VS=VSrms*Math.SQRT2,nD=top==='ct'?1:2,VOP=Math.max(0,VS-nD*p.VD),VDC=2*VOP/Math.PI,VRMS=VOP/Math.SQRT2,IDC=VDC/p.RL,Ipk=VOP/p.RL,PIV=top==='ct'?2*VS-p.VD:VS-p.VD;
+  return {VSrms,VS,nD,VOP,VDC,VRMS,IDC,Ipk,IDavg:IDC/2,PIV,fout:2*p.f,PL:VRMS*VRMS/p.RL,dead:nD*p.VD};}
+/* ---------- סעיפי תיאוריה ---------- */
+const ct=calc('ct',EX),br=calc('br',EX);
+after('גל-שלם: גשר דיודות',{t:'המיישר הדו-דרכי מפורק לפרמטרים: מה כל אות מסמלת, ואיפה היא במעגל',h:H`
+<p>בשאלת מיישר יש הרבה אותיות, אבל כולן יושבות על <b>חמישה מקומות</b> במעגל: הרשת (ראשי), המשני, הדיודה, נגד העומס, והזמן. באיורים כל פרמטר מסומן במקום שבו מודדים אותו. הדוגמה המספרית בכל הסעיפים: רשת \(220\,\text{Vrms}\), \(a=10\), \(V_D=0.7\,\text{V}\), \(R_L=100\,\Omega\), \(f=50\,\text{Hz}\).</p>
+`+circ('th2-ct',lg('t1','זרם','dot')+'<span>סנף מרכזי: הנקודות זורמות ב-D₁ בחצי החיובי וב-D₂ בחצי השלילי, ותמיד באותו כיוון ב-R<sub>L</sub></span>')+circ('th2-br',lg('t1','זרם','dot')+'<span>גשר: בכל חצי מחזור שתי דיודות מוליכות (D₁+D₃ או D₂+D₄), ולכן מפל של 2V<sub>D</sub></span>')+H`
+<div class="tbl"><table><thead><tr><th>סימן</th><th>מה זה</th><th>איפה במעגל</th><th>נוסחה</th><th>סנף מרכזי</th><th>גשר</th></tr></thead><tbody>
+<tr><td>\(V_{P,rms}\)</td><td>מתח הרשת, ערך יעיל</td><td>על הליפוף הראשי</td><td>נתון</td><td colspan="2">220 V</td></tr>
+<tr><td>\(a\)</td><td>מקדם ההשנאה</td><td>יחס הליפופים</td><td>\(a=\dfrac{N_1}{N_2}=\dfrac{V_P}{V_S}=\dfrac{I_S}{I_P}\)</td><td colspan="2">10</td></tr>
+<tr><td>\(V_{S,rms}\)</td><td>מתח המשני (בסנף מרכזי: כל חצי)</td><td>בין קצה המשני לסנף / בין שני הקצוות</td><td>\(V_{P,rms}/a\)</td><td colspan="2">22 V</td></tr>
+<tr><td>\(V_S\)</td><td><b>שיא</b> המשני. זה מה שהדיודה "רואה"</td><td>אותו מקום, ברגע השיא</td><td>\(\sqrt2\,V_{S,rms}\)</td><td colspan="2">31.1 V</td></tr>
+<tr><td>\(V_D\)</td><td>מפל על דיודה מוליכה</td><td>על כל דיודה ON</td><td>≈0.7 V (סיליקון)</td><td>×1</td><td>×2 (שתיים בטור)</td></tr>
+<tr><td>\(V_{O,P}\)</td><td>שיא המוצא</td><td>על \(R_L\), ברגע השיא</td><td>\(V_S-V_D\) / \(V_S-2V_D\)</td><td>${ct.VOP.toFixed(1)} V</td><td>${br.VOP.toFixed(1)} V</td></tr>
+<tr><td>\(V_{DC}\)</td><td>הממוצע של \(v_O\) (מד-מתח DC)</td><td>על \(R_L\), ממוצע על מחזור</td><td>\(\dfrac{2V_{O,P}}{\pi}\)</td><td>${ct.VDC.toFixed(1)} V</td><td>${br.VDC.toFixed(1)} V</td></tr>
+<tr><td>\(V_{rms}\)</td><td>הערך היעיל של \(v_O\) (קובע הספק)</td><td>על \(R_L\)</td><td>\(\dfrac{V_{O,P}}{\sqrt2}\)</td><td>${ct.VRMS.toFixed(1)} V</td><td>${br.VRMS.toFixed(1)} V</td></tr>
+<tr><td>\(I_{DC}\)</td><td>הזרם הישר (ממוצע) בעומס</td><td>דרך \(R_L\)</td><td>\(V_{DC}/R_L\)</td><td>${(ct.IDC*1e3).toFixed(0)} mA</td><td>${(br.IDC*1e3).toFixed(0)} mA</td></tr>
+<tr><td>\(i_{L,\max}\)</td><td>שיא זרם העומס</td><td>דרך \(R_L\)</td><td>\(V_{O,P}/R_L\)</td><td>${(ct.Ipk*1e3).toFixed(0)} mA</td><td>${(br.Ipk*1e3).toFixed(0)} mA</td></tr>
+<tr><td>\(i_{D,AVG}\)</td><td>זרם ממוצע בדיודה (כל אחת מוליכה חצי מחזור)</td><td>דרך \(D_1\) או \(D_2\)</td><td>\(I_{DC}/2\)</td><td>${(ct.IDavg*1e3).toFixed(0)} mA</td><td>${(br.IDavg*1e3).toFixed(0)} mA</td></tr>
+<tr><td>\(i_{D,\max}\)</td><td>שיא הזרם בדיודה (בלי קבל)</td><td>דרך הדיודה המוליכה</td><td>\(V_{O,P}/R_L\)</td><td>${(ct.Ipk*1e3).toFixed(0)} mA</td><td>${(br.Ipk*1e3).toFixed(0)} mA</td></tr>
+<tr><td>PIV</td><td>המתח ההפוך המקסימלי על הדיודה החסומה</td><td>על \(D_2\) ברגע שיא חיובי</td><td>\(2V_S-V_D\) / \(V_S-V_D\)</td><td>${ct.PIV.toFixed(1)} V</td><td>${br.PIV.toFixed(1)} V</td></tr>
+<tr><td>\(f_{out}\)</td><td>תדר המוצא</td><td>על \(R_L\)</td><td>\(2f\)</td><td colspan="2">100 Hz</td></tr>
+<tr><td>\(P_L\)</td><td>הספק בעומס</td><td>ב-\(R_L\)</td><td>\(V_{rms}^2/R_L\)</td><td>${ct.PL.toFixed(1)} W</td><td>${br.PL.toFixed(1)} W</td></tr>
+</tbody></table></div>
+`+co('key','🔑','שלושה מתחים שונים על אותו נגד',H`<p>על \(R_L\) יש בו-זמנית שלושה מספרים: <b>שיא</b> \(V_{O,P}\) (מה שרואים בסקופ), <b>ממוצע</b> \(V_{DC}\) (מה שמד-מתח DC מראה; זה "הזרם הישר" כשמחלקים ב-\(R_L\)) ו<b>יעיל</b> \(V_{rms}\) (מה שמחמם את הנגד). השאלה "מה המתח במוצא" היא לא שאלה: צריך לדעת איזה מהשלושה מבקשים.</p>`)+golab(2,'l2-par','בחר פרמטר וראה אותו מסומן על המעגל ועל הגרף')});
+after('המיישר הדו-דרכי מפורק',{t:'איך המעגל נראה בכל רגע: חצי חיובי, חצי שלילי, והמעגל השקול ל-DC',h:H`
+<p>"ניתוח DC" במיישר הוא לא נקודת עבודה כמו בטרנזיסטור. המעגל מחליף צורה פעמיים במחזור, ולכן מנתחים אותו <b>שלוש פעמים</b>: פעם לכל חצי מחזור (מי מוליך, מה המעגל השקול), ופעם אחת "בממוצע" כדי לקבל את ערכי ה-DC.</p>
+`+circ('th2-pos',lg('t4','מוליכה')+'<span>חצי מחזור חיובי: הקצה העליון של המשני חיובי, D₁ ON (קצר עם 0.7V), D₂ OFF (נתק). המעגל השקול: v<sub>S1</sub> → 0.7V → R<sub>L</sub></span>')+circ('th2-neg',lg('t4','מוליכה')+'<span>חצי מחזור שלילי: הקצה התחתון חיובי, D₂ ON, D₁ OFF. אותו מעגל שקול, הזרם ב-R<sub>L</sub> באותו כיוון</span>')+circ('th2-dc','<span>המעגל השקול ל-DC: מקור V<sub>DC</sub> = 2V<sub>O,P</sub>/π שמזרים I<sub>DC</sub> = V<sub>DC</sub>/R<sub>L</sub>. זה מה שמד-מתח ומד-זרם DC היו מודדים</span>')+H`
+<ol>
+<li><b>חצי חיובי</b> (\(v_{S1}>0\)): D₁ בממתח קדמי (אנודה גבוהה מהקתודה) ומוליכה, D₂ בממתח אחורי וחסומה. מחליפים D₁ במקור 0.7V ואת D₂ בנתק: נשאר מעגל של מקור, 0.7V ונגד. \(v_O=v_{S1}-V_D\), \(i_L=v_O/R_L\).</li>
+<li><b>חצי שלילי</b> (\(v_{S1}<0\), ולכן \(v_{S2}=-v_{S1}>0\)): התפקידים מתחלפים. בגלל הסנף המרכזי, D₂ מזרימה את הזרם <b>לאותו כיוון</b> דרך \(R_L\): \(v_O=|v_{S1}|-V_D\). לכן "דו-דרכי": שני החצאים מגיעים לעומס.</li>
+<li><b>בממוצע</b>: \(v_O(t)\) היא גיבנות חיוביות בתדר \(2f\). הממוצע שלהן \(V_{DC}=2V_{O,P}/\pi\), והזרם הישר \(I_{DC}=V_{DC}/R_L\). זה המעגל השקול השלישי.</li>
+</ol>
+`+co('warn','⚠️','הטעות הנפוצה בחצי השלילי',H`<p>לחשוב ש-\(v_{S2}\) הוא "עוד מקור". זהו אותו ליפוף משני עם סנף באמצע: כשהקצה העליון ב-\(+V_S\) התחתון ב-\(-V_S\), ולהפך. לכן המתח <b>בין שני הקצוות</b> הוא \(2v_S\), וזה בדיוק מה שנופל על הדיודה החסומה (הסעיף הבא).</p>`)+golab(2,'l2-par','הקפא את המעגל בחצי החיובי, בשלילי ובממוצע')+golab(2,'l2-live','המיישר רגע אחר רגע, עם קבל')});
+after('איך המעגל נראה בכל רגע',{t:'ממתח אחורי בדיודה: למה הדיודה החסומה סופגת את כל המתח, ומה זה PIV',h:H`
+<p><b>ממתח אחורי</b> (reverse bias) הוא המצב שבו הקתודה (צד N) גבוהה מהאנודה (צד P). אזור המחסור בצומת מתרחב, רק זרם זליגה זעיר \(I_S\) (ננו-אמפרים) עובר, ובכל מודל של הקורס הדיודה היא <b>נתק</b>. שתי מסקנות חשובות:</p>
+<ul>
+<li><b>אין זרם → אין מפל על הנגדים שבדרך</b>. כל מתח המקור "מתיישב" על הדיודה החסומה. לכן המתח ההפוך על דיודה הוא תמיד הפרש בין שני צמתים שאת שניהם קובעים רכיבים אחרים.</li>
+<li>אם המתח ההפוך עובר את מתח הפריצה \(V_{BR}\), הדיודה מוליכה בכיוון ההפוך (כמו זנר), ובדיודת יישור רגילה זה בדרך כלל סופה. לכן בוחרים דיודה עם \(V_{BR}\) גדול מ-PIV עם מרווח.</li>
+</ul>
+`+circ('th2-piv','<span>ברגע השיא החיובי: הקצה העליון ב-+V<sub>S</sub>, התחתון ב-−V<sub>S</sub>, המוצא ב-V<sub>S</sub>−V<sub>D</sub>. על D₂ (אנודה ב-−V<sub>S</sub>, קתודה ב-V<sub>S</sub>−V<sub>D</sub>) נופל 2V<sub>S</sub>−V<sub>D</sub></span>')+H`
+<p><b>איך מחשבים PIV בכל מעגל</b>: מניחים את הדיודה OFF, מוצאים את פוטנציאל האנודה ואת פוטנציאל הקתודה מהשאר של המעגל ברגע הגרוע ביותר, ומחסרים: \(v_D=v_A-v_K\). הערך השלילי ביותר הוא −PIV.</p>
+<div class="tbl"><table><thead><tr><th>מיישר</th><th>אנודה של הדיודה החסומה</th><th>קתודה</th><th>PIV</th><th>בדוגמה</th></tr></thead><tbody>
+<tr><td>סנף מרכזי</td><td>\(-V_S\) (הקצה השני של המשני)</td><td>\(V_S-V_D\) (המוצא, שמוחזק על ידי הדיודה המוליכה)</td><td>\(2V_S-V_D\)</td><td>${ct.PIV.toFixed(1)} V</td></tr>
+<tr><td>גשר</td><td>\(-V_D\) (דרך הדיודה המוליכה השנייה)</td><td>\(V_S-2V_D\)</td><td>\(V_S-V_D\)</td><td>${br.PIV.toFixed(1)} V</td></tr>
+<tr><td>חצי גל</td><td>\(-V_S\)</td><td>0 (העומס, אין זרם)</td><td>\(V_S\)</td><td>31.1 V</td></tr>
+<tr><td>חצי גל עם קבל</td><td>\(-V_S\)</td><td>\(+V_S\) (הקבל שומר את השיא)</td><td>\(2V_S\)</td><td>62.2 V</td></tr>
+</tbody></table></div>
+<p>המחיר של הסנף המרכזי (דיודה אחת בדרך, מפל קטן) הוא PIV כפול; המחיר של הגשר (PIV קטן) הוא שני מפלי דיודה. זו ההחלפה הקלאסית בין שתי הטופולוגיות.</p>
+`+co('why','💡','איך בודקים שדיודה באמת חסומה',H`<p>בשיטת נחש-ובדוק: הנחת OFF נכונה אם \(v_A-v_K<V_{D0}\) לאורך כל הזמן שבו הנחת אותה. בסנף מרכזי בחצי החיובי: \(v_A-v_K=-v_{S1}-(v_{S1}-V_D)=-(2v_{S1}-V_D)<0.7\) ✓ לכל \(v_{S1}>0\).</p>`)+golab(2,'l2-pv','PIV חי: המתח על הדיודה החסומה לאורך הזמן')+golab(1,'l1-pn','צומת PN בממתח אחורי: אזור המחסור מתרחב')});
+after('ממתח אחורי בדיודה',{t:'הזרם הישר על נגד העומס, צעד אחר צעד, ומה עושים כשמבקשים כל נתון אחר',h:H`
+<p><b>"זרם ישר"</b> (DC) בעומס פירושו הממוצע של \(i_L(t)\) על מחזור שלם, כי העומס מקבל גיבנות ולא קו ישר. הצעדים, בלי קבל:</p>
+<ol>
+<li>\(V_S=\sqrt2\,V_{P,rms}/a=31.1\,\text{V}\).</li>
+<li>\(V_{O,P}=V_S-V_D=30.4\,\text{V}\) (סנף מרכזי) או \(V_S-2V_D=29.7\,\text{V}\) (גשר).</li>
+<li>\(V_{DC}=\dfrac{2V_{O,P}}{\pi}=19.4\,\text{V}\) / \(18.9\,\text{V}\). (למה \(2/\pi\): הממוצע של חצי סינוס הוא \(2/\pi\approx0.637\) מהשיא; בחצי גל חצי מהזמן המוצא אפס, ולכן \(1/\pi\).)</li>
+<li>\(I_{DC}=\dfrac{V_{DC}}{R_L}=\dfrac{19.4}{100}=194\,\text{mA}\) / \(189\,\text{mA}\).</li>
+<li>אם שואלים על <b>דיודה</b>: כל דיודה נושאת את \(i_L\) רק חצי מהזמן, לכן \(i_{D,AVG}=I_{DC}/2=97\,\text{mA}\), ושיא \(i_{D,\max}=V_{O,P}/R_L=304\,\text{mA}\).</li>
+</ol>
+`+scope('th2-il','short',lg('t1','i<sub>L</sub>(t)')+lg('t2','i<sub>D1</sub>(t)','dash')+lg('t3','i<sub>D2</sub>(t)','dash')+lg('t4','I<sub>DC</sub> = ממוצע i<sub>L</sub>','dash')+lg('t5','i<sub>D,AVG</sub> = I<sub>DC</sub>/2','dash'),'זרמים')+H`
+<p><b>עם קבל סינון</b> התמונה משתנה: המוצא כמעט ישר, \(V_{DC}\approx V_{O,P}-V_r/2\), ולכן \(I_{DC}\approx V_{O,P}/R_L\) (הנוסחה בדף: \(I_L=(V_P-2V_D)/R\) לגשר). הדיודות מוליכות בפולסים קצרים: \(i_{D,AVG}=I_L\left(1+\pi\sqrt{V_P/2V_r}\right)\), \(i_{D,\max}=I_L\left(1+2\pi\sqrt{V_P/2V_r}\right)\).</p>
+<div class="tbl"><table><thead><tr><th>מבקשים</th><th>עושים</th><th>נוסחה (גל שלם)</th></tr></thead><tbody>
+<tr><td>מתח המשני</td><td>מחלקים ב-\(a\) (או כופלים ב-\(N_2/N_1\)); זוכרים שזה rms</td><td>\(V_{S,rms}=V_{P,rms}/a,\ V_S=\sqrt2V_{S,rms}\)</td></tr>
+<tr><td>שיא המוצא</td><td>מורידים מפל אחד (סנף) או שניים (גשר)</td><td>\(V_{O,P}=V_S-nV_D\)</td></tr>
+<tr><td>מתח DC / ממוצע</td><td>בלי קבל: \(2/\pi\) מהשיא. עם קבל: שיא פחות חצי גלית</td><td>\(\dfrac{2V_{O,P}}{\pi}\) · \(V_{O,P}-\dfrac{V_r}{2}\)</td></tr>
+<tr><td>מתח יעיל</td><td>בלי קבל: \(1/\sqrt2\) מהשיא (כמו סינוס מלא)</td><td>\(V_{rms}=V_{O,P}/\sqrt2\)</td></tr>
+<tr><td>זרם ישר בעומס</td><td>\(V_{DC}\) חלקי \(R_L\)</td><td>\(I_{DC}=V_{DC}/R_L\)</td></tr>
+<tr><td>הספק בעומס</td><td>תמיד עם הערך היעיל, לא עם הממוצע</td><td>\(P_L=V_{rms}^2/R_L\)</td></tr>
+<tr><td>זרם בדיודה</td><td>ממוצע: חצי מ-\(I_{DC}\) (בלי קבל) · שיא: \(V_{O,P}/R_L\). עם קבל: נוסחאות הפולס</td><td>\(i_{D,AVG}=I_{DC}/2\)</td></tr>
+<tr><td>PIV / בחירת דיודה</td><td>לפי הטבלה בסעיף הקודם; \(V_{BR}>\text{PIV}\), \(I_{\max}>i_{D,\max}\)</td><td>\(2V_S-V_D\) · \(V_S-V_D\)</td></tr>
+<tr><td>תדר המוצא</td><td>כפול מהרשת (שתי גיבנות במחזור)</td><td>\(f_{out}=2f\)</td></tr>
+<tr><td>גלית</td><td>רק עם קבל; \(2f\) בגל שלם</td><td>\(V_r=\dfrac{V_{O,P}}{2fR_LC}\)</td></tr>
+<tr><td>זרם בראשי</td><td>זרם המשני חלקי \(a\) (שימור הספק)</td><td>\(I_P=I_S/a\)</td></tr>
+</tbody></table></div>
+`+co('warn','⚠️','שלוש טעויות של "זרם ישר"',H`<ul><li>\(I_{DC}=V_{O,P}/R_L\) בלי קבל: זה השיא, לא הממוצע. חסר הפקטור \(2/\pi\).</li><li>הספק עם \(V_{DC}\): \(P=V_{DC}^2/R_L\) נותן \(3.8\,\text{W}\) במקום \(4.6\,\text{W}\). הספק הוא תמיד \(V_{rms}^2/R_L\).</li><li>זרם ממוצע בדיודה שווה לזרם העומס: נכון רק בחצי גל. בגל שלם כל דיודה עובדת חצי מהזמן.</li></ul>`)+golab(2,'l2-par','בחר i_L או i_D וראה את הממוצעים על הגרף')});
+after('הזרם הישר על נגד העומס',{t:'איך מסרטטים את צורת המתח במוצא על גרף: שישה צעדים',h:H`
+<p>סרטוט נכון שווה הרבה נקודות וגם מונע טעויות חישוב. באיורים דוגמה עם מספרים נוחים לסרטוט: \(V_S=6\,\text{V}\) שיא, \(V_D=0.7\,\text{V}\), \(f=50\,\text{Hz}\) (\(T=20\,\text{ms}\)), סנף מרכזי.</p>
+<ol>
+<li><b>צירים</b>: זמן ב-ms, מתח ב-V. מסמנים \(T/2\), \(T\), \(3T/2\), \(2T\) (10, 20, 30, 40 ms) ואת \(V_S\) על ציר המתח.</li>
+<li><b>הכניסה</b>: סינוס \(v_S(t)=V_S\sin(2\pi ft)\) מקווקו. מוסיפים קווים דקים ב-\(\pm V_D\): מתחתם אף דיודה לא מוליכה (בגשר: \(\pm2V_D\)).</li>
+</ol>
+`+scope('th2-sk1','short',lg('t2','v<sub>S</sub>(t)','dash')+lg('t5','±V<sub>D</sub>','dash')+lg('warn','אזור מת: |v<sub>S</sub>| < V<sub>D</sub>'),'צעדים 1–2')+H`
+<ol start="3">
+<li><b>הופכים את החצי השלילי למעלה</b> (זה המיישר הדו-דרכי): מקבלים \(|v_S|\), גיבנות בתדר כפול.</li>
+<li><b>מורידים \(V_D\)</b> מכל גיבנת: השיא הופך ל-\(V_{O,P}=V_S-V_D\), והגיבנות "נוגעות" באפס קצת לפני ואחרי כל מעבר אפס. שם המוצא <b>שטוח באפס</b> (אזור מת), כי \(|v_S|<V_D\). בפועל במבחן מסמנים זאת כפיסה שטוחה קטנה ליד כל מעבר אפס.</li>
+<li><b>מוסיפים את הקווים המשניים</b>: \(V_{DC}=2V_{O,P}/\pi\) מקווקו (הממוצע), ואם צריך גם \(V_{rms}\). רושמים את הערכים על הציר.</li>
+</ol>
+`+scope('th2-sk2','short',lg('t1','v<sub>O</sub>(t)')+lg('t2','|v<sub>S</sub>|','dash')+lg('t4','V<sub>DC</sub>','dash')+lg('t3','V<sub>O,P</sub>','dot'),'צעדים 3–5')+H`
+<ol start="6">
+<li><b>עם קבל</b>: מכל שיא יוצאים בירידה אקספוננציאלית (כמעט קו ישר כש-\(RC\gg T\)) עד שהקו פוגש את הגיבנת הבאה. מסמנים \(V_r\) בין השיא לשקע, את חלון ההולכה \(t_1\to t_2\) שבו הדיודה טוענת, ואת \(V_{DC}=V_{O,P}-V_r/2\).</li>
+</ol>
+`+scope('th2-sk3','short',lg('t1','v<sub>O</sub>(t) עם קבל')+lg('t2','|v<sub>S</sub>| − V<sub>D</sub>','dash')+lg('t4','V<sub>DC</sub>','dash')+lg('t3','t₁, t₂','dot')+lg('warn','V<sub>r</sub>'),'צעד 6')+H`
+`+co('key','🎯','מה בודקים לפני שמגישים',H`<ul><li>שיא המוצא נמוך מהכניסה ב-\(V_D\) (או \(2V_D\)), לא שווה לה.</li><li>תדר המוצא כפול: שתי גיבנות בכל מחזור של הכניסה. בחצי גל: גיבנת אחת ואפס.</li><li>המוצא אף פעם לא שלילי (עומס טהור).</li><li>הממוצע מסומן נמוך מהשיא: \(0.64\) מהשיא בגל שלם, \(0.32\) בחצי גל.</li><li>עם קבל: הקו יורד <b>אחרי</b> השיא, לא לפניו, ונפגש עם הגיבנת הבאה בעלייה שלה.</li></ul>`)+golab(2,'l2-par','הסרטוט חי: שנה V_S ו-V_D וראה את האזור המת')+golab(2,'l2-pk','גלאי שיא מאפס: t₁, t₂ והחלון')});
+/* ---------- האיורים של התיאוריה נמצברים כשהלשונית נבנית ---------- */
+function theoryFigs(p){
+  if(!document.getElementById('th2-ct')||document.querySelector('#th2-ct svg'))return;
+  const C1=Circuit('th2-ct',480,292);drawFW(C1,'ct');C1.T(265,284,'PIV = 2V_S − V_D על הדיודה החסומה','val','middle');C1.set('vo','V_{O,P} = V_S − V_D');
+  C1.I('p',0.5);C1.I('d1',0.7);C1.I('d2',0);C1.I('l',0.7);C1.st('d1','on');C1.st('d2','dim');
+  C1.tick=(t)=>{const s=Math.sin(2*Math.PI*0.25*t),m=Math.abs(s)*0.8;C1.I('d1',s>0?m:0);C1.I('d2',s<0?m:0);C1.I('l',m);C1.I('p',m*0.5,s>0?1:-1);C1.st('d1',s>0?'on':'dim');C1.st('d2',s<0?'on':'dim');};
+  const C2=Circuit('th2-br',480,280);drawFW(C2,'br');C2.set('vo','V_{O,P} = V_S − 2V_D');C2.T(265,262,'PIV = V_S − V_D על כל דיודה חסומה','val','middle');
+  C2.tick=(t)=>{const s=Math.sin(2*Math.PI*0.25*t),m=Math.abs(s)*0.8;['d1','d1r'].forEach(k=>C2.I(k,s>0?m:0));['d2','d2r'].forEach(k=>C2.I(k,s<0?m:0));C2.I('l',m);C2.I('p',m*0.5,s>0?1:-1);
+    C2.st('d1',s>0?'on':'dim');C2.st('d3',s>0?'on':'dim');C2.st('d2',s<0?'on':'dim');C2.st('d4',s<0?'on':'dim');};
+  const C3=Circuit('th2-pos',480,292);drawFW(C3,'ct');C3.I('p',0.5);C3.I('d1',0.8);C3.I('d2',0);C3.I('l',0.8);C3.st('d1','on');C3.st('d2','dim');C3.set('vo','v_O = v_{S1} − 0.7');C3.T(265,284,'D_2: נתק (ממתח אחורי)','he','middle');C3.T(265,76,'D_1: קצר + 0.7V','he','middle');
+  const C4=Circuit('th2-neg',480,292);drawFW(C4,'ct');C4.I('p',0.5,-1);C4.I('d1',0);C4.I('d2',0.8);C4.I('l',0.8);C4.st('d1','dim');C4.st('d2','on');C4.set('vo','v_O = |v_{S1}| − 0.7');C4.T(265,76,'D_1: נתק','he','middle');C4.T(265,284,'D_2: קצר + 0.7V','he','middle');
+  const C5=Circuit('th2-dc',480,180);C5.bat([120,130],[120,60],'V_{DC}',{side:1,off:26});C5.w([120,60],[120,40],[300,40]);C5.R([300,40],[300,150],'R_L',{side:1});C5.w([300,150],[300,160],[120,160],[120,130]);C5.nd(300,40);
+  C5.T(120,25,'V_{DC} = 2V_{O,P}/π = '+ct.VDC.toFixed(1)+' V','val','start');C5.T(322,100,'I_{DC} = V_{DC}/R_L','val','start');C5.T(322,120,'= '+(ct.IDC*1e3).toFixed(0)+' mA','val','start');C5.T(210,178,'מד-מתח DC ומד-זרם DC מראים את זה','he','middle');
+  C5.flow('i',[[120,60],[120,40],[300,40],[300,150],[300,160],[120,160],[120,130]]);C5.I('i',0.6);
+  const C6=Circuit('th2-piv',480,292);drawFW(C6,'ct');C6.I('p',0.5);C6.I('d1',0.8);C6.I('d2',0);C6.I('l',0.8);C6.st('d1','on');C6.st('d2','hot');
+  C6.T(180,30,'+V_S = +31.1','val','middle');C6.T(174,244,'−V_S = −31.1','val','end');C6.set('vo','V_O = V_S − V_D = 30.4 V');C6.T(265,284,'על D_2: −31.1 − 30.4 = −61.5 V = −PIV','val','middle');
+  /* ---- גרפים ---- */
+  const VS=6,VD=0.7,T=20,N=600,sk1=[],sk2=[],abs=[],cap=[],hum=[];let vc=0;const RC=60;
+  for(let k=0;k<=N;k++){const t=40*k/N,s=VS*Math.sin(2*Math.PI*t/T),a=Math.abs(s),vo=Math.max(0,a-VD);sk1.push([t,s]);abs.push([t,a]);sk2.push([t,vo]);
+    const dt=40/N;if(vo>vc)vc=vo;else vc=vc*Math.exp(-dt/RC);cap.push([t,vc]);hum.push([t,vo]);}
+  const VOP=VS-VD,VDC=2*VOP/Math.PI,dz=Math.asin(VD/VS)/(2*Math.PI)*T;
+  const bands=[];for(let z=0;z<=40;z+=T/2)bands.push({x0:z-dz,x1:z+dz,c:'warn',a:.22});
+  const c1=reg('th2-sk1');draw(c1,{x0:0,x1:40,y0:-VS*1.2,y1:VS*1.2,xl:'t [ms]',yl:'[V]',bands,series:[{c:'t5',w:1.2,dash:[4,4],pts:[[0,VD],[40,VD]]},{c:'t5',w:1.2,dash:[4,4],pts:[[0,-VD],[40,-VD]]},{c:'t2',w:2,dash:[6,4],pts:sk1}],points:[{x:5,y:VS,c:'t2',r:4,label:'V_S = 6V'},{x:10,y:0,c:'warn',r:3,label:'T/2'},{x:20,y:0,c:'warn',r:3,label:'T'}]});
+  const c2=reg('th2-sk2');draw(c2,{x0:0,x1:40,y0:-0.5,y1:VS*1.2,xl:'t [ms]',yl:'[V]',bands,series:[{c:'t2',w:1.3,dash:[6,4],pts:abs},{c:'t4',w:1.4,dash:[5,4],pts:[[0,VDC],[40,VDC]]},{c:'t1',w:2.6,pts:sk2}],points:[{x:5,y:VOP,c:'t3',r:5,label:'V_O,P = V_S − V_D = '+VOP.toFixed(1)+'V'},{x:28,y:VDC,c:'t4',r:4,label:'V_DC = 2V_O,P/π = '+VDC.toFixed(2)+'V'}]});
+  const vmin=Math.min(...cap.slice(N/4).map(p=>p[1])),Vr=VOP-vmin;let t1=0,t2=0;for(let k=Math.floor(N*0.55);k<N*0.8;k++){if(!t1&&cap[k][1]<=hum[k][1]+1e-6&&hum[k][1]>cap[k-1][1])t1=cap[k][0];if(t1&&!t2&&cap[k][0]>t1&&sk2[k][1]>=VOP-1e-3)t2=cap[k][0];}
+  const c3=reg('th2-sk3');draw(c3,{x0:0,x1:40,y0:-0.5,y1:VS*1.2,xl:'t [ms]',yl:'[V]',bands:[{y0:vmin,y1:VOP,c:'warn',a:.12,label:'V_r = '+Vr.toFixed(2)+'V'}],series:[{c:'t2',w:1.3,dash:[6,4],pts:sk2},{c:'t4',w:1.4,dash:[5,4],pts:[[0,VOP-Vr/2],[40,VOP-Vr/2]]},{c:'t1',w:2.6,pts:cap}],points:[{x:t1||22,y:cap[Math.round((t1||22)/40*N)][1],c:'t3',r:4,label:'t₁ (הדיודה נדלקת)'},{x:t2||25,y:VOP,c:'t3',r:4,label:'t₂ (שיא, נכבית)'},{x:36,y:VOP-Vr/2,c:'t4',r:3,label:'V_DC = V_O,P − V_r/2'}]});
+  const il=[],id1=[],id2=[];for(let k=0;k<=N;k++){const t=40*k/N,s=Math.sin(2*Math.PI*t/T),vo=Math.max(0,Math.abs(ct.VS*s)-EX.VD),i=vo/EX.RL*1e3;il.push([t,i]);id1.push([t,s>0?i:0]);id2.push([t,s<0?i:0]);}
+  const c4=reg('th2-il');draw(c4,{x0:0,x1:40,y0:0,y1:ct.Ipk*1e3*1.15,xl:'t [ms]',yl:'[mA]',series:[{c:'t4',w:1.4,dash:[5,4],pts:[[0,ct.IDC*1e3],[40,ct.IDC*1e3]]},{c:'t5',w:1.4,dash:[5,4],pts:[[0,ct.IDavg*1e3],[40,ct.IDavg*1e3]]},{c:'t2',w:1.4,dash:[6,4],pts:id1},{c:'t3',w:1.4,dash:[6,4],pts:id2},{c:'t1',w:2.4,pts:il}],points:[{x:5,y:ct.Ipk*1e3,c:'t1',r:4,label:'i_max = V_O,P/R_L = '+(ct.Ipk*1e3).toFixed(0)+'mA'},{x:28,y:ct.IDC*1e3,c:'t4',r:4,label:'I_DC = '+(ct.IDC*1e3).toFixed(0)+'mA'},{x:34,y:ct.IDavg*1e3,c:'t5',r:4,label:'i_D,AVG = '+(ct.IDavg*1e3).toFixed(0)+'mA'}]});
+  kickLoop();
+}
+const _typeset=typeset;typeset=function(el){_typeset(el);if(el&&el.id==='pn-2-theory')theoryFigs(el);};
+/* ---------- מעבדה: בחר פרמטר ---------- */
+function labPar(root){
+section(root,{id:'l2-par',tag:'מעגל חי · מדריך פרמטרים',title:'המיישר הדו-דרכי: בחר פרמטר וראה אותו מסומן על המעגל ועל הגרף',short:'מדריך פרמטרים',
+lead:'כל כפתור בשורה העליונה הוא פרמטר מהשאלות. לחיצה מדגישה במעגל את הרכיב שעליו מודדים אותו, מסמנת אותו על הגרף, ומציגה את הנוסחה עם המספרים של הסליידרים. בשורת "מצב" אפשר להקפיא את המעגל בחצי החיובי, בחצי השלילי, או לראות את המעגל השקול ל-DC. בלי קבל סינון (לקבל יש מעבדה משלו).',
+body:'<div class="lab"><div class="controls"><div class="seg" id="l2par-top"><button type="button" data-v="ct" aria-pressed="true">סנף מרכזי</button><button type="button" data-v="br" aria-pressed="false">גשר</button></div>'+
+'<div class="seg" id="l2par-sel"><button type="button" data-v="VP" aria-pressed="true">V<sub>P</sub></button><button type="button" data-v="a">a</button><button type="button" data-v="VS">V<sub>S</sub></button><button type="button" data-v="VD">V<sub>D</sub></button><button type="button" data-v="VOP">V<sub>O,P</sub></button><button type="button" data-v="VDC">V<sub>DC</sub></button><button type="button" data-v="VRMS">V<sub>rms</sub></button><button type="button" data-v="IL">i<sub>L</sub>, I<sub>DC</sub></button><button type="button" data-v="ID">i<sub>D</sub></button><button type="button" data-v="PIV">PIV</button><button type="button" data-v="F">f<sub>out</sub></button></div>'+
+'<div class="seg" id="l2par-view"><button type="button" data-v="anim" aria-pressed="true">אנימציה</button><button type="button" data-v="pos">הקפא: חצי חיובי</button><button type="button" data-v="neg">הקפא: חצי שלילי</button><button type="button" data-v="dc">מעגל שקול DC</button></div><div class="sliders" id="l2par-ctl"></div></div>'+
+'<div class="scopes">'+circ('cx-l2par-ct',lg('t1','זרם','dot')+lg('t4','מוליכה')+lg('t1','הפרמטר שנבחר (מודגש)'),true)+circ('cx-l2par-br',lg('t1','זרם','dot')+lg('t4','מוליכה'),true)+scope('c-l2par','short',lg('t2','v<sub>S</sub>(t)','dash')+lg('t1','v<sub>O</sub>(t)')+lg('t3','הפרמטר שנבחר','dot'),'מתחים')+scope('c-l2par2','short','<span id="l2par-cap2"></span>','זרמים / מתח הפוך')+'</div></div>'+
+'<div class="note" id="l2par-exp" style="margin-top:12px"></div><div class="readouts" id="r-l2par"></div>'+
+notes('<h3>איך להשתמש</h3><ul><li>עבור על הכפתורים לפי הסדר: הם מסודרים כמו שרשרת החישוב במבחן (רשת → שנאי → דיודה → מוצא → זרמים → PIV).</li><li>"הקפא: חצי חיובי" מראה את המעגל השקול של אותו רגע: הדיודה המוליכה ירוקה, החסומה כבויה, והזרם עובר במסלול אחד.</li><li>"מעגל שקול DC" מראה את מה שמד-מתח DC היה מודד: הממוצע, לא השיא.</li><li>הקטן את V<sub>P</sub> ל-5V או הגדל את V<sub>D</sub>: האזור המת ליד מעבר האפס נעשה מורגש.</li></ul>','<h3>הנוסחה של הפרמטר שנבחר</h3><div id="l2par-fx"></div>')});
+(function(){
+  const CC={ct:Circuit('cx-l2par-ct',480,292),br:Circuit('cx-l2par-br',480,292)},cv=reg('c-l2par'),cv2=reg('c-l2par2');
+  drawFW(CC.ct,'ct');drawFW(CC.br,'br');Object.values(CC).forEach(c=>c.bindPlay());
+  const getT=seg('l2par-top',()=>{show();upd();}),getS=seg('l2par-sel',()=>upd()),getV=seg('l2par-view',()=>upd());
+  const st=sliders('l2par-ctl',[
+    {key:'VP',id:'l2par-vp',label:'V<sub>P,rms</sub> (רשת)',min:5,max:240,step:5,value:220,fmt:v=>v+' Vrms'},
+    {key:'a',id:'l2par-a',label:'a = N<sub>1</sub>/N<sub>2</sub>',min:1,max:20,step:0.5,value:10,fmt:v=>v.toFixed(1)},
+    {key:'VD',id:'l2par-vd',label:'V<sub>D</sub>',min:0,max:1,step:0.05,value:0.7,fmt:v=>v.toFixed(2)+' V'},
+    {key:'RL',id:'l2par-rl',label:'R<sub>L</sub>',min:10,max:1000,step:10,value:100,fmt:v=>si(v,'Ω')},
+    {key:'f',id:'l2par-f',label:'f (רשת)',min:40,max:70,step:10,value:50,fmt:v=>v+' Hz'}],upd);
+  function show(){const t=getT();['ct','br'].forEach(k=>document.getElementById('cx-l2par-'+k).closest('figure').hidden=k!==t);}
+  const N=400;let M=null,W=null;
+  function build(){const t=getT(),p=st;M=calc(t,p);const T=1/p.f;W={T,vs:[],vo:[],il:[],id1:[],id2:[],vd2:[]};
+    for(let k=0;k<N;k++){const x=2*k/N,s=M.VS*Math.sin(2*Math.PI*x),vo=Math.max(0,Math.abs(s)-M.dead),il=vo/p.RL;
+      W.vs.push([x*T*1e3,s]);W.vo.push([x*T*1e3,vo]);W.il.push([x*T*1e3,il*1e3]);W.id1.push([x*T*1e3,s>0?il*1e3:0]);W.id2.push([x*T*1e3,s<0?il*1e3:0]);
+      // מתח על הדיודה החסומה (D2): סנף: v_S2 - v_O ; גשר: -V_D - v_O כשמוליכה הזוג האחר
+      const vd2=t==='ct'?(s>0?-(s)-vo:p.VD):(s>0?-(p.VD)-vo:p.VD);W.vd2.push([x*T*1e3,s>0?vd2:(vo>0?p.VD:Math.min(p.VD,-s))]);}}
+  const HL={VP:['vp','lp'],a:['lp','ls1','ls2'],VS:['ls1','ls2'],VD:['d1','d2','d3','d4'],VOP:['rl'],VDC:['rl'],VRMS:['rl'],IL:['rl'],ID:['d1','d2','d3','d4'],PIV:['d2','d4'],F:[]};
+  const EXP={
+    VP:['V<sub>P,rms</sub>: מתח הרשת על הראשי','הערך היעיל שנתון בשאלה (220V). לא מגיע לדיודות: רק דרך השנאי. שיא הראשי: √2·V<sub>P,rms</sub>.','V_{S,rms} = V_{P,rms}/a'],
+    a:['a = N<sub>1</sub>/N<sub>2</sub>: מקדם ההשנאה','יחס הליפופים. a&gt;1 מוריד מתח ומעלה זרם באותו יחס (הספק נשמר). בסנף מרכזי N<sub>2</sub> הוא <b>כל חצי</b>. אם נתון N<sub>2</sub>/N<sub>1</sub>, הפוך.','a = N_1/N_2 = V_P/V_S = I_S/I_P'],
+    VS:['V<sub>S</sub>: שיא המתח על המשני','נמדד בין קצה המשני לסנף (סנף מרכזי) או בין שני הקצוות (גשר). זה המתח שהדיודה "רואה". rms→שיא: ×√2.','V_S = √2·V_{P,rms}/a'],
+    VD:['V<sub>D</sub>: מפל על דיודה מוליכה','≈0.7V בסיליקון. נספר פעם אחת (סנף מרכזי) או פעמיים (גשר, שתי דיודות בטור). יוצר "אזור מת" ליד מעבר האפס שבו המוצא 0.','V_{O,P} = V_S − n·V_D'],
+    VOP:['V<sub>O,P</sub>: שיא המוצא','הגובה של הגיבנות על R<sub>L</sub>: השיא של המשני פחות מפלי הדיודות. זה מה שרואים בסקופ.','V_{O,P} = V_S − V_D (סנף) · V_S − 2V_D (גשר)'],
+    VDC:['V<sub>DC</sub>: הממוצע של v<sub>O</sub>','מה שמד-מתח DC מראה. ממוצע חצי-סינוס הוא 2/π≈0.64 מהשיא (בגל שלם). עם קבל: V<sub>O,P</sub> − V<sub>r</sub>/2.','V_{DC} = 2V_{O,P}/π'],
+    VRMS:['V<sub>rms</sub>: הערך היעיל של v<sub>O</sub>','קובע את ההספק על R<sub>L</sub>: P = V<sub>rms</sub>²/R<sub>L</sub>. בגל שלם זהה לסינוס מלא: V<sub>O,P</sub>/√2. בחצי גל: V<sub>O,P</sub>/2.','V_{rms} = V_{O,P}/√2'],
+    IL:['i<sub>L</sub>(t) ו-I<sub>DC</sub>: זרם העומס','i<sub>L</sub> = v<sub>O</sub>/R<sub>L</sub>, אותה צורה כמו המתח. <b>הזרם הישר</b> הוא הממוצע: I<sub>DC</sub> = V<sub>DC</sub>/R<sub>L</sub>. השיא: V<sub>O,P</sub>/R<sub>L</sub>.','I_{DC} = V_{DC}/R_L = 2V_{O,P}/(πR_L)'],
+    ID:['i<sub>D</sub>: הזרם בדיודה','כל דיודה מוליכה חצי מחזור בלבד: השיא כמו בעומס, הממוצע חצי מ-I<sub>DC</sub>. בדיודה חסומה הזרם 0. (עם קבל: פולסים קצרים וגבוהים.)','i_{D,AVG} = I_{DC}/2 · i_{D,max} = V_{O,P}/R_L'],
+    PIV:['PIV: המתח ההפוך המקסימלי','המתח (קתודה מעל אנודה) על הדיודה <b>החסומה</b> ברגע השיא. אין בה זרם, אז כל המתח נופל עליה. בוחרים דיודה עם V<sub>BR</sub> &gt; PIV.','PIV = 2V_S − V_D (סנף) · V_S − V_D (גשר)'],
+    F:['f<sub>out</sub>: תדר המוצא','המוצא חוזר על עצמו כל חצי מחזור של הרשת: שתי גיבנות למחזור. לכן f<sub>out</sub> = 2f, וזו הסיבה ל-2f בנוסחת הגלית.','f_{out} = 2f · T_{out} = T/2']};
+  function paint(ph){const t=getT(),c=CC[t],p=st,i=Math.floor(((ph%2)/2)*N)%N,s=W.vs[i][1],vo=W.vo[i][1],il=W.il[i][1]/1e3,sel=getS(),view=getV(),Im=Math.max(M.Ipk,1e-6);
+    const mode=view==='dc'?'dc':null;const sgn=s>0?1:-1,m=mode?M.IDC/Im*0.8:mag(il,Im),pos=mode?true:s>0;
+    if(t==='ct'){c.I('d1',mode?m*0.5:(s>0?m:0));c.I('d2',mode?m*0.5:(s<0?m:0));c.I('l',m);c.I('p',mode?0:m*0.5,sgn);}
+    else{['d1','d1r'].forEach(k=>c.I(k,mode?m*0.5:(s>0?m:0)));['d2','d2r'].forEach(k=>c.I(k,mode?m*0.5:(s<0?m:0)));c.I('l',m);c.I('p',mode?0:m*0.5,sgn);}
+    const hl=HL[sel],state=id=>hl.includes(id)?'hot':null;
+    const onD=t==='ct'?{d1:s>0&&vo>0,d2:s<0&&vo>0}:{d1:s>0&&vo>0,d3:s>0&&vo>0,d2:s<0&&vo>0,d4:s<0&&vo>0};
+    Object.keys(onD).forEach(id=>c.st(id,state(id)||(mode?'dim':(onD[id]?'on':'dim'))));
+    ['vp','lp','ls1','ls2','rl'].forEach(id=>c.st(id,state(id)));
+    c.set('vo',mode?'V_{DC} = '+fx(M.VDC,1)+' V':'= '+fx(vo,1)+' V');
+    const ms=W.T*1e3,xc=(ph%2)*ms,x1=2*ms,S=[{c:'t2',w:1.4,dash:[6,4],pts:W.vs},{c:'t1',w:2.4,pts:W.vo}],P=[],B=[];let y1=M.VS*1.4,y0=-M.VS*1.2;
+    if(sel==='VS'){P.push({x:ms/4,y:M.VS,c:'t3',r:5,label:'V_S = '+fx(M.VS,1)+'V'});}
+    if(sel==='VD'){for(let z=0;z<=2;z+=0.5){const dz=Math.asin(Math.min(1,M.dead/M.VS))/(2*Math.PI)*ms;B.push({x0:z*ms-dz,x1:z*ms+dz,c:'warn',a:.25});}P.push({x:ms/4,y:M.VS,c:'t2',r:4,label:'V_S'},{x:ms/4,y:M.VOP,c:'t3',r:5,label:'V_S − '+M.nD+'V_D'});}
+    if(sel==='VOP'){P.push({x:ms/4,y:M.VOP,c:'t3',r:5,label:'V_{O,P} = '+fx(M.VOP,1)+'V'});}
+    if(sel==='VDC'||view==='dc'){S.push({c:'t4',w:1.6,dash:[5,4],pts:[[0,M.VDC],[x1,M.VDC]]});P.push({x:ms*1.3,y:M.VDC,c:'t4',r:4,label:'V_DC = '+fx(M.VDC,1)+'V'});}
+    if(sel==='VRMS'){S.push({c:'t5',w:1.6,dash:[5,4],pts:[[0,M.VRMS],[x1,M.VRMS]]});P.push({x:ms*1.3,y:M.VRMS,c:'t5',r:4,label:'V_rms = '+fx(M.VRMS,1)+'V'});}
+    if(sel==='F'){P.push({x:ms/4,y:M.VOP,c:'t3',r:4,label:'T_out = T/2 = '+fx(ms/2,1)+'ms'},{x:3*ms/4,y:M.VOP,c:'t3',r:4});}
+    draw(cv,{x0:0,x1,y0,y1,xl:'t [ms]',yl:'[V]',cursor:xc,bands:B,series:S,points:P});
+    const cap2=document.getElementById('l2par-cap2');
+    if(sel==='PIV'){cap2.innerHTML=lg('t3','v<sub>D</sub>(t) על הדיודה החסומה (אנודה − קתודה)')+lg('bad','−PIV','dash');
+      draw(cv2,{x0:0,x1,y0:-M.PIV*1.2,y1:Math.max(2,p.VD*3,M.PIV*0.1),xl:'t [ms]',yl:'[V]',cursor:xc,series:[{c:'bad',w:1.4,dash:[5,4],pts:[[0,-M.PIV],[x1,-M.PIV]]},{c:'t3',w:2.4,pts:W.vd2}],points:[{x:ms/4,y:-M.PIV,c:'bad',r:5,label:'PIV = '+fx(M.PIV,1)+'V'}]});}
+    else{cap2.innerHTML=lg('t1','i<sub>L</sub>(t)')+lg('t2','i<sub>D1</sub>','dash')+lg('t3','i<sub>D2</sub>','dash')+lg('t4','I<sub>DC</sub>','dash')+lg('t5','i<sub>D,AVG</sub>','dash');
+      const S2=[{c:'t2',w:1.3,dash:[6,4],a:sel==='ID'?1:.5,pts:W.id1},{c:'t3',w:1.3,dash:[6,4],a:sel==='ID'?1:.5,pts:W.id2},{c:'t1',w:sel==='IL'?2.8:1.8,pts:W.il}],P2=[];
+      if(sel==='IL'||view==='dc'){S2.push({c:'t4',w:1.6,dash:[5,4],pts:[[0,M.IDC*1e3],[x1,M.IDC*1e3]]});P2.push({x:ms*1.3,y:M.IDC*1e3,c:'t4',r:4,label:'I_DC = '+si(M.IDC,'A')});}
+      if(sel==='ID'){S2.push({c:'t5',w:1.6,dash:[5,4],pts:[[0,M.IDavg*1e3],[x1,M.IDavg*1e3]]});P2.push({x:ms*1.3,y:M.IDavg*1e3,c:'t5',r:4,label:'i_D,AVG = I_DC/2 = '+si(M.IDavg,'A')},{x:ms/4,y:M.Ipk*1e3,c:'t3',r:4,label:'i_D,max = '+si(M.Ipk,'A')});}
+      draw(cv2,{x0:0,x1,y0:0,y1:M.Ipk*1e3*1.35+1e-6,xl:'t [ms]',yl:'[mA]',cursor:xc,series:S2,points:P2});}}
+  Object.keys(CC).forEach(k=>{CC[k].tick=(t)=>{if(getT()===k&&W&&getV()==='anim')paint(t*0.25);};});
+  function upd(){show();build();const t=getT(),sel=getS(),view=getV(),e=EXP[sel],p=st;
+    const val={VP:p.VP+' Vrms',a:p.a.toFixed(1),VS:fx(M.VS,2)+' V (rms: '+fx(M.VSrms,2)+' V)',VD:fx(p.VD,2)+' V × '+M.nD,VOP:fx(M.VOP,2)+' V',VDC:fx(M.VDC,2)+' V',VRMS:fx(M.VRMS,2)+' V',IL:'I_DC = '+si(M.IDC,'A')+' · שיא '+si(M.Ipk,'A'),ID:'ממוצע '+si(M.IDavg,'A')+' · שיא '+si(M.Ipk,'A'),PIV:fx(M.PIV,1)+' V',F:M.fout+' Hz'}[sel];
+    document.getElementById('l2par-exp').innerHTML='<h3>'+e[0]+'</h3><p>'+e[1]+'</p><p><b>עכשיו:</b> '+val.replace(/_([A-Za-z]+)/g,'<sub>$1</sub>')+'</p>';
+    document.getElementById('l2par-fx').innerHTML=F('',e[2].replace(/_\{([^}]*)\}/g,'<sub>$1</sub>').replace(/_([A-Za-z0-9]+)/g,'<sub>$1</sub>'));
+    readouts('r-l2par',[['V<sub>S</sub> (rms / שיא)',fx(M.VSrms,1)+' / '+fx(M.VS,1)+' V'],['V<sub>O,P</sub>',fx(M.VOP,2)+' V'],['V<sub>DC</sub> = 2V<sub>O,P</sub>/π',fx(M.VDC,2)+' V'],['V<sub>rms</sub> = V<sub>O,P</sub>/√2',fx(M.VRMS,2)+' V'],['I<sub>DC</sub> = V<sub>DC</sub>/R<sub>L</sub>',si(M.IDC,'A')],['i<sub>L,max</sub> = V<sub>O,P</sub>/R<sub>L</sub>',si(M.Ipk,'A')],['i<sub>D,AVG</sub> = I<sub>DC</sub>/2',si(M.IDavg,'A')],['PIV',fx(M.PIV,1)+' V'],['f<sub>out</sub> = 2f',M.fout+' Hz'],['P<sub>L</sub> = V<sub>rms</sub>²/R<sub>L</sub>',si(M.PL,'W')],['אזור מת (|v<sub>S</sub>| &lt; '+M.nD+'V<sub>D</sub>)',(2*Math.asin(Math.min(1,M.dead/M.VS))/Math.PI*100).toFixed(1)+'% מכל חצי מחזור']]);
+    const c=CC[t];
+    if(view==='anim'){c.playing=true;kickLoop();paint(c.t*0.25);}else{c.playing=false;paint(view==='pos'?0.25:view==='neg'?0.75:0.25);}}
+  show();upd();
+})();
+}
+const b2=LESSONS[2].build;LESSONS[2].build=function(root){b2.call(this,root);labPar(root);};
+})();
 /* ---- c3-content.js ---- */
 /* ==== שיעור 3 (MOSFET): תוכן לימודי נוסף ==== */
 (function(){
