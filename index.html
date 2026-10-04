@@ -2442,7 +2442,7 @@ const R=String.raw;
 const CONTENT={};
 const tg=(k,t)=>'<span class="tag '+k+'">'+t+'</span>';
 const co=(kind,icon,head,body)=>'<div class="callout '+kind+'"><span class="ci">'+icon+'</span><div><b class="h">'+head+'</b>'+body+'</div></div>';
-const golab=(n,s,t)=>'<button type="button" class="golab" data-go="#/l/'+n+'/lab/'+s+'">🔬 '+(t||'נסה במעבדה')+'</button>';
+const golab=(n,s,t)=>'<button type="button" class="golab" data-go="#/l/'+n+'/lab/'+s+'">🔬 <span>'+(t||'נסה במעבדה')+'</span></button>';
 
 
 /* LESSON 1 · דיודות ודיודת זנר — source: שיעור 1 PDF */
@@ -9234,7 +9234,7 @@ lab(p,n){const root=document.createElement('div');
 algo(p,n){const C=CONTENT[n];if(!C){p.innerHTML=soon('אלגוריתם הפתרון',n);return;}
   const A=C.algo;
   p.innerHTML='<p class="lead" style="margin-top:10px">תרשימי זרימה ממוספרים לכל סוג שאלה. ◆ צהוב הוא נקודת בדיקה: שם מחליטים אם ממשיכים או חוזרים אחורה.</p><div class="legend">'+tg('dc','DC')+' ניתוח נקודת עבודה · '+tg('ac','AC')+' אות קטן · <span class="ok-t">✓</span> תקין · <span class="bad-t">✗</span> סתירה</div>'+
-  '<div class="flows">'+A.flows.map((f,fi)=>'<section class="flowc"><header><span class="badge">'+String.fromCharCode(1488+fi)+'</span><h2>'+f.t+'</h2>'+f.tags.map(x=>tg(x,x.toUpperCase())).join('')+'<p>'+f.p+'</p></header><ol class="fl">'+f.steps.map((s,i)=>'<li class="'+(s.chk?'chk':'')+'"><span class="bub"><b>'+(s.chk?'?':i+1)+'</b></span><div class="st">'+s.t+(s.tag?tg(s.tag,s.tag.toUpperCase()):'')+'</div><div class="dd">'+s.d+'</div></li>').join('')+'</ol></section>').join('')+
+  '<div class="flows">'+A.flows.map((f,fi)=>'<section class="flowc"><header><span class="badge">'+String.fromCharCode(1488+fi)+'</span><h2>'+f.t+'</h2>'+f.tags.map(x=>tg(x,x.toUpperCase())).join('')+'<p>'+f.p+'</p></header><ol class="fl">'+f.steps.map((s,i)=>'<li class="'+(s.chk?'chk':'')+'"><span class="bub"><b>'+(s.chk?'?':i+1)+'</b></span><div class="st"><span>'+s.t+'</span>'+(s.tag?tg(s.tag,s.tag.toUpperCase()):'')+'</div><div class="dd">'+s.d+'</div></li>').join('')+'</ol></section>').join('')+
   '<section class="flowc"><header><h2>⚠️ מלכודות מבחן נפוצות</h2><p>הטעויות שעולות הכי הרבה נקודות.</p></header><div class="gotchas">'+A.gotchas.map(g=>'<div class="gotcha"><b>'+g.t+'</b><p>'+g.d+'</p></div>').join('')+'</div></section>'+
   '<section class="flowc"><header><h2>⚡ נוסחאות קיצור</h2></header><div class="tbl shortcuts"><table><tbody>'+A.shortcuts.map(s=>'<tr><td style="direction:ltr;text-align:left">'+s[0]+'</td><td>'+s[1]+'</td></tr>').join('')+'</tbody></table></div></section></div>';
   typeset(p);},
