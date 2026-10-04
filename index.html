@@ -9237,7 +9237,7 @@ algo(p,n){const C=CONTENT[n];if(!C){p.innerHTML=soon('אלגוריתם הפתר�
   '<div class="flows">'+A.flows.map((f,fi)=>'<section class="flowc"><header><span class="badge">'+String.fromCharCode(1488+fi)+'</span><h2>'+f.t+'</h2>'+f.tags.map(x=>tg(x,x.toUpperCase())).join('')+'<p>'+f.p+'</p></header><ol class="fl">'+f.steps.map((s,i)=>'<li class="'+(s.chk?'chk':'')+'"><span class="bub"><b>'+(s.chk?'?':i+1)+'</b></span><div class="st"><span>'+s.t+'</span>'+(s.tag?tg(s.tag,s.tag.toUpperCase()):'')+'</div><div class="dd">'+s.d+'</div></li>').join('')+'</ol></section>').join('')+
   '<section class="flowc"><header><h2>⚠️ מלכודות מבחן נפוצות</h2><p>הטעויות שעולות הכי הרבה נקודות.</p></header><div class="gotchas">'+A.gotchas.map(g=>'<div class="gotcha"><b>'+g.t+'</b><p>'+g.d+'</p></div>').join('')+'</div></section>'+
   '<section class="flowc"><header><h2>⚡ נוסחאות קיצור</h2></header><div class="tbl shortcuts"><table><tbody>'+A.shortcuts.map(s=>'<tr><td style="direction:ltr;text-align:left">'+s[0]+'</td><td>'+s[1]+'</td></tr>').join('')+'</tbody></table></div></section></div>';
-  typeset(p);},
+  bindGo(p);typeset(p);},
 solved(p,n){const C=CONTENT[n];if(!C){p.innerHTML=soon('תרגילי מבחן פתורים',n);return;}
   const nsh=C.solved.filter(x=>/^גיליון/.test(x.lvl)).length;
   p.innerHTML='<p class="lead" style="margin-top:10px">נסה לפתור לבד, ואז חשוף שלב אחד בכל פעם. כל שלב נפתח רק אחרי הקודם, כמו במבחן.'+(nsh?' בהמשך הרשימה: <b>'+nsh+' שאלות מגיליונות ההגשה</b> של הקורס, פתורות צעד-צעד עם האיור המקורי.':'')+'</p><div class="probs"></div>';
