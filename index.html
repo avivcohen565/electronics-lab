@@ -1124,11 +1124,12 @@ function Circuit(hostId,w,h){
 }
 function setLabel(t,text){
   while(t.firstChild)t.removeChild(t.firstChild);
-  const re=/_\{([^}]*)\}|_([A-Za-z0-9α-ω]+)/g;let last=0,m;const s=String(text);
-  while((m=re.exec(s))){if(m.index>last)t.appendChild(document.createTextNode(s.slice(last,m.index)));
-    const sp=mk('tspan',{dy:'3','font-size':'0.72em'},t);sp.textContent=m[1]||m[2];
-    const back=mk('tspan',{dy:'-3'},t);back.textContent=' ';last=re.lastIndex;}
-  if(last<s.length)t.appendChild(document.createTextNode(s.slice(last)));
+  const re=/_\{([^}]*)\}|_([A-Za-z0-9α-ω]+)/g;let last=0,m,low=false;const s=String(text);
+  /* טקסט שאחרי אינדקס תחתון עולה חזרה לקו הבסיס בלי להוסיף רווח */
+  const txt=str=>{if(!str)return;if(low){const up=mk('tspan',{dy:'-3'},t);up.textContent=str;low=false;}else t.appendChild(document.createTextNode(str));};
+  while((m=re.exec(s))){txt(s.slice(last,m.index));
+    const sp=mk('tspan',{dy:low?'0':'3','font-size':'0.72em'},t);sp.textContent=m[1]||m[2];low=true;last=re.lastIndex;}
+  txt(s.slice(last));
 }
 let loopRaf=0,loopLast=0;
 function kickLoop(){if(!loopRaf){loopLast=0;loopRaf=requestAnimationFrame(loop);}}
