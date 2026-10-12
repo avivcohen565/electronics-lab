@@ -7820,7 +7820,7 @@ A.flows.push(
 <p>(עם \(n=1\): \(r_d=25\,\Omega\), \(v_d=${mV(vd1)}\,\text{mV}\), \(i_d=${uA(id1)}\,\mu\text{A}\).) <b>בלי התנגדות מקור</b> (\(R_s=0\)) המקור מחזיק את הצומת ישירות: \(v_d=v_s=10\,\text{mV}\) ו-\(i_d=v_s/r_d=${uA(X.vs/rd2)}\,\mu\text{A}\). בכל מקרה \(r_d\parallel R\approx r_d\) כי \(R\gg r_d\): זרם האות עובר כמעט כולו בדיודה, וב-\(R\) נשאר \(v_d/R\approx${(vd2/X.R*1e6).toFixed(1)}\,\mu\text{A}\).</p>`+circ('d1alg-b4','<span>המעגל המצומצם: מחלק מתח בין R<sub>s</sub> ל-r<sub>d</sub>∥R. המספרים עבור n=2</span>')},
  {t:'סופרפוזיציה: כתוב את התשובה המלאה ושרטט אותה',d:H`\[v_D(t)=V_D+v_d(t)=0.70+${n3(vd2)}\sin\omega t\ [\text{V}],\qquad i_D(t)=I_D+i_d(t)=1.0+${(id2*1e3).toFixed(2)}\sin\omega t\ [\text{mA}]\]
 <p class="exam">שתי השורות האלה, וגרף קטן לכל אחת: קו ה-DC מקווקו, ועליו סינוס קטן. אם \(\omega\) לא נתון, ציר הזמן בלי מספרים. שימו לב לסקאלה: האות הוא פחות מאחוז מה-DC במתח, וכ-10% ממנו בזרם.</p>`+scope('d1alg-b5','short',lg('t1','v<sub>D</sub>(t) = V<sub>D</sub> + v<sub>d</sub>(t)')+lg('t5','V<sub>D</sub> = 0.7 V','dash'),'מתח הדיודה בזמן')+scope('d1alg-b6','short',lg('t2','i<sub>D</sub>(t) = I<sub>D</sub> + i<sub>d</sub>(t)')+lg('t5','I<sub>D</sub> = 1 mA','dash'),'זרם הדיודה בזמן')},
- {t:'האות באמת קטן?',chk:1,d:H`<div class="br"><span class="y">✓ \(v_d\ll nV_T\)</span><span>כאן \(v_d/nV_T=${mV(vd2)}/50\approx0.1\): הקירוב \(e^x\approx1+x\) טוב (עיוות של כ-5% בין חצי המחזור החיובי לשלילי).</span><span class="n">✗ \(v_d\) בסדר הגודל של \(nV_T\)</span><span>למשל \(R_s=0\) עם \(n=1\): \(10/25=0.4\). אז פותרים עם האקספוננט המלא, או מציינים שהתשובה מקורבת.</span></div>
+ {t:'האות באמת קטן?',chk:1,d:H`<div class="br"><span class="y">✓ \(v_d\ll nV_T\)</span><span>כאן \(v_d/nV_T=${mV(vd2)}/50\approx0.1\): הקירוב \(e^x\approx1+x\) טוב: \(e^{\pm0.1}-1=+0.105/-0.095\), כלומר כל חצי מחזור סוטה בכ-5% מהקו הישר.</span><span class="n">✗ \(v_d\) בסדר הגודל של \(nV_T\)</span><span>למשל \(R_s=0\) עם \(n=1\): \(10/25=0.4\). אז פותרים עם האקספוננט המלא, או מציינים שהתשובה מקורבת.</span></div>
 <p>כלל אצבע (לא בדף הנוסחאות): \(v_d\le0.2\,nV_T\), כלומר \(5\,\text{mV}\) ב-\(n=1\) או \(10\,\text{mV}\) ב-\(n=2\). במבחן, כשכתוב "אות קטן", משתמשים ב-\(r_d\) בלי לבדוק.</p>`+golab(1,'l1-ll','קו עבודה, Q, המשיק והעיוות באמפליטודה גדולה')+golab(1,'l1-dac','DC + AC בזמן אמת עם קבל צימוד')}
 ]});
 
@@ -7836,7 +7836,7 @@ after('מודל שני, מודל שלישי',{t:'סולם הפוטנציאלים
 </ol>
 `+circ('d1th-l1','<span>שלב 1: כולן OFF, V<sub>A</sub> = 10V. מתחת לכל דיודה: V<sub>P</sub> − V<sub>N</sub> שהיא "רוצה"</span>')+circ('d1th-l2',LG_I+LG_ON+lg('comp-dim','חסומה')+'<span>שלב 2–3: D₃ נדלקת ונועלת את A על 0.7V; D₁ ו-D₂ בממתח אחורי</span>')+H`
 <p><b>האינטואיציה</b>: כל דיודה היא דלת חד-כיוונית אל המקור שלה. צומת שנמשך למעלה (דרך נגד למקור חיובי) ייעצר על ידי הדלת <b>הנמוכה</b> ביותר: הוא לא יכול לעלות מעל "הקתודה הנמוכה + 0.7". צומת שנמשך למטה (דרך נגד למקור שלילי) ייעצר על ידי האנודה <b>הגבוהה</b> ביותר. באיור הבא התפקידים הפוכים: האנודות למקורות, הקתודות משותפות, והצומת נמשך ל-\(-10\,\text{V}\).</p>
-`+circ('d1th-l3',LG_I+LG_ON+lg('comp-dim','חסומה')+'<span>המקרה ההפוך: אנודות למקורות, קתודה משותפת. האנודה הגבוהה (+6V) מנצחת, הצומת ננעל על 5.3V</span>')+H`
+`+circ('d1th-l3',LG_I+LG_ON+lg('comp-dim','חסומה')+'<span>המקרה ההפוך: אנודות למקורות, קתודה משותפת. האנודה הגבוהה (6V) מנצחת, הצומת ננעל על 5.3V</span>')+H`
 <p>ואותו כלל על המעגל של זרימה ה באלגוריתם (\(+5\,\text{V}\) דרך \(1\,\text{k}\Omega\) ל-A; \(D_1\) דרך \(2\,\text{k}\Omega\) לאדמה, \(D_2\) ל-\(-3\,\text{V}\)):</p>
 <div class="tbl"><table><thead><tr><th>מצב</th><th>\(V_A\)</th><th>\(D_1\): \(V_P-V_N\)</th><th>\(D_2\): \(V_P-V_N\)</th><th>מסקנה</th></tr></thead><tbody>
 <tr><td>כולן OFF</td><td>\(5\,\text{V}\) (אין זרם)</td><td>\(5-0=5\,\text{V}\)</td><td>\(5-(-3)=8\,\text{V}\)</td><td>\(D_2\) נדלקת ראשונה</td></tr>
@@ -7910,7 +7910,7 @@ function drawA1(C,mode){const M=mode,diodes=(M==='guess'||M==='final');
   if(M==='guess'){
     C.T(202,94,'P','hi','start');C.T(202,136,'N','hi','start');C.T(252,82,'P','hi','middle');C.T(290,82,'N','hi','middle');
     C.I('f1',0.45);C.I('fd1',0.35);C.I('fd2',0.35);
-    notes(['הניחוש הראשון:','+5V דוחף דרך R1 אל A,','ומ-A לכיוון החץ','בשתי הדיודות','לכן שתיהן ON (לבדוק!)'],'he');
+    notes(['הניחוש הראשון:','המקור 5V דוחף דרך R1 אל A,','ומ-A לכיוון החץ','בשתי הדיודות','לכן שתיהן ON (לבדוק!)'],'he');
   }else if(M==='model'){
     C.T(204,94,'+','hi','start');C.T(204,136,'−','hi','start');C.T(204,116,'0.7 V','val','start');C.T(252,82,'+','hi','middle');C.T(288,82,'−','hi','middle');C.T(270,100,'0.7 V','val','middle');
     C.T(176,152,'B','big','end');
@@ -7983,8 +7983,8 @@ function ladder(C,dir,phase){
     C.w([410,130],[120,130]);C.nd(230,130).nd(320,130);C.R([120,130],[24,130],'1 kΩ',{side:1,id:'r'});C.term(24,130);C.T(24,152,'−10 V','val','middle');
     C.T(175,152,'V_B = 5.3 V','val2','middle');C.T(84,168,'I = 15.3 mA','val','middle');
     C.flow('i',[[230,50],[230,130],[24,130]]);C.I('i',0.7);C.st('d0','on');C.st('d1','dim');C.st('d2','dim');
-    C.T(178,180,'V_P − V_N:','hi','end');['ON: 0.7 V','3−5.3=−2.3','0−5.3=−5.3'].forEach((s,k)=>C.T(xs[k],180,s,k===0?'val':'hi','middle'));
-    heT(C,240,208,'הצומת נמשך למטה: האנודה הגבוהה (+6V) מנצחת, B ננעל על 5.3V','c');
+    C.T(178,188,'V_P − V_N:','hi','end');['ON: 0.7 V','3−5.3=−2.3','0−5.3=−5.3'].forEach((s,k)=>C.T(xs[k],188,s,k===0?'val':'hi','middle'));
+    heT(C,240,208,'הצומת נמשך למטה: האנודה הגבוהה (6V) מנצחת, B ננעל על 5.3V','c');
   }
 }
 function figs(){
@@ -8022,7 +8022,7 @@ function figs(){
     const tan=[[Q2v-(Q2i-ya/1e3)*Q2r,ya],[Q2v+(yb/1e3-Q2i)*Q2r,yb]];
     draw(cv,{x0:xa,x1:xb,y0:ya,y1:yb,xl:'V_D [V]',yl:'I_D [mA]',bands:[{x0:Q2v-dv,x1:Q2v+dv,c:'warn',a:.2}],
       series:[{c:'t5',w:1.3,dash:[4,4],pts:[[0.7,ya],[0.7,yb]]},{c:'t2',w:2,pts:[[xa,(X.VDD-xa)/X.R*1e3],[xb,(X.VDD-xb)/X.R*1e3]]},{c:'t3',w:1.6,dash:[6,4],pts:tan},{c:'t1',w:2.6,pts:ex}],
-      points:[{x:Q2v,y:Q2i*1e3,c:'t3',label:'Q'},{x:Q2v+dv,y:(Q2i+dv/Q2r)*1e3,c:'warn',r:4,label:'+5 mV ⇒ +'+(dv/Q2r*1e3).toFixed(2)+' mA'},{x:Q2v-dv,y:(Q2i-dv/Q2r)*1e3,c:'warn',r:4,label:'−5 mV ⇒ −'+(dv/Q2r*1e3).toFixed(2)+' mA'},{x:0.7,y:1.3,c:'t5',r:3,label:'V_D0 = 0.7 V'},{x:0.655,y:(X.VDD-0.655)/X.R*1e3,c:'t2',r:3,label:'−1/R'}]});}
+      points:[{x:Q2v,y:Q2i*1e3,c:'t3'},{x:Q2v-0.0035,y:(X.VDD-Q2v+0.0035)/X.R*1e3,c:'t3',r:0.01,label:'Q'},{x:Q2v+dv,y:(Q2i+dv/Q2r)*1e3,c:'warn',r:4},{x:Q2v-dv,y:(Q2i-dv/Q2r)*1e3,c:'warn',r:4},{x:0.701,y:0.78,c:'warn',r:0.01,label:'±5 mV → ±'+(dv/Q2r*1e3).toFixed(2)+' mA'},{x:0.7,y:1.3,c:'t5',r:3,label:'V_D0 = 0.7 V'},{x:0.655,y:(X.VDD-0.655)/X.R*1e3,c:'t2',r:3,label:'−1/R'}]});}
   kickLoop();
 }
 const _ts=typeset;typeset=function(el){_ts(el);if(el&&(el.id==='pn-'+N+'-theory'||el.id==='pn-'+N+'-algo')){figs();
@@ -8297,12 +8297,12 @@ function drawStage(C,o){o=o||{};const Y=125;
   C.w([240,92],[310,92]);C.Cap([310,92],[350,92],'C_{C2}',{side:-1,id:'c2'});C.w([350,92],[430,92]);C.nd(385,92);C.R([385,92],[385,165],'R_L',{side:-1,id:'rl'});C.w([385,165],[385,232]);C.G(385,232);C.term(430,92);C.T(430,78,'v_o','big','middle');
   C.w([240,155],[240,165]);C.nd(240,165);C.R([240,165],[240,222],'R_S',{side:1,id:'rs'});C.w([240,222],[240,232]);C.G(240,232);
   C.w([240,165],[320,165],[320,172]);C.Cap([320,172],[320,222],'C_S',{side:-1,id:'cs'});C.w([320,222],[320,232]);C.G(320,232);
-  if(o.zc){C.w([118,Y],[118,Y-13],[148,Y-13],[148,Y]);C.w([310,92],[310,79],[350,79],[350,92]);C.w([320,172],[333,172],[333,222],[320,222]);['c1','c2','cs','rs'].forEach(id=>C.st(id,'dim'));}
+  if(o.zc){C.w([118,Y],[118,Y+13],[148,Y+13],[148,Y]);C.w([310,92],[310,105],[350,105],[350,92]);C.w([320,172],[333,172],[333,222],[320,222]);['c1','c2','cs','rs'].forEach(id=>C.st(id,'dim'));}
   if(o.dc){['c1','c2','cs','vs','rsig','rl'].forEach(id=>C.st(id,'dim'));
     heT(C,95,50,'DC: קבל = נתק');C.T(95,68,'v_{sig} = 0','val','middle');C.T(95,86,'I_G = 0','hi','middle');
-    C.T(180,147,'','val2','end',null,'vg');C.T(213,147,'','val2','middle',null,'vgs');C.T(213,161,'','val2','middle',null,'vgs2');C.T(257,46,'','val','start',null,'id');C.T(255,118,'','val2','start',null,'vd');C.T(258,136,'','val2','start',null,'vds');C.T(252,181,'','val2','start',null,'vsn');C.T(300,262,'','val','middle',null,'chk');
+    C.T(177,147,'','val2','end',null,'vg');C.T(12,262,'','val2','start',null,'vgs');C.T(257,46,'','val','start',null,'id');C.T(255,118,'','val2','start',null,'vd');C.T(258,136,'','val2','start',null,'vds');C.T(252,181,'','val2','start',null,'vsn');C.T(318,262,'','val','middle',null,'chk');
     C.flow('id',[[240,22],[240,232]]);C.flow('ig',[[185,22],[185,232]]);C.I('id',o.vals?mag(o.vals.ID*1e-3,3e-3):0.4);C.I('ig',0.2);
-    const v=o.vals;if(v){C.set('vg','V_G = '+f1(B.VG)+' V');if(v.full){C.set('vgs','V_{GS} =');C.set('vgs2',f2(v.VGS)+' V');C.set('id','I_D = '+f2(v.ID)+' mA');C.set('vd','V_D = '+f2(v.VD)+' V');C.set('vds','V_{DS} = '+f2(v.VDS)+' V');C.set('vsn','V_S = '+f2(v.VS)+' V');
+    const v=o.vals;if(v){C.set('vg','V_G = '+f1(B.VG)+' V');if(v.full){C.set('vgs','V_{GS} = V_G − V_S = '+f2(v.VGS)+' V');C.set('id','I_D = '+f2(v.ID)+' mA');C.set('vd','V_D = '+f2(v.VD)+' V');C.set('vds','V_{DS} = '+f2(v.VDS)+' V');C.set('vsn','V_S = '+f2(v.VS)+' V');
       C.set('chk','V_{DS} = '+f2(v.VDS)+' ≥ V_{OV} = '+f2(v.VOV)+' ✓');C.st('m','on');}}
   }else if(o.ann==='before'){C.T(95,52,'ספק קבוע = אדמה לאות','he','middle');C.T(95,70,'קבל גדול = חוט לאות','he','middle');C.T(95,88,'|Z_C| ≈ 16 Ω ≪ kΩ','val','middle');}
   else if(o.ann==='after'){C.T(95,52,'הספק ירד לאדמה','he','middle');C.T(95,70,'כל קבל הוחלף בחוט','he','middle');C.T(95,88,'הנגד בסורס מקוצר','he','middle');}
@@ -8346,8 +8346,8 @@ function drawPmos(C){
   C.w([150,125],[208,125]);
   C.T(180,113,'V_G','val2','middle');C.T(258,104,'V_S','val2','start');C.T(258,150,'V_D','val2','start');C.T(257,46,'I_D','val','start');
   C.flow('id',[[240,22],[240,232]]);C.I('id',0.5);C.st('m','on');
-  C.T(320,70,'V_{SG} = V_S − V_G','val','start');C.T(320,92,'V_{OV} = V_{SG} − | V_t |','val2','start');C.T(320,114,'I_D = K_p·V²_{OV}','val2','start');
-  C.T(320,136,'V_{SD} = V_S − V_D','val2','start');C.T(320,158,'V_{SD} ≥ V_{OV} ⇒','val2','start');C.T(395,180,'רוויה','he','middle');C.T(395,204,'הזרם נכנס בסורס (למעלה)','he','middle');
+  C.T(320,70,'V_{SG} = V_S − V_G','val','start');C.T(320,92,'V_{OV} = V_{SG} − |V_t|','val2','start');C.T(320,114,'I_D = K_p·V²_{OV}','val2','start');
+  C.T(320,136,'V_{SD} = V_S − V_D','val2','start');C.T(320,158,'V_{SD} ≥ V_{OV} ⇒','val2','start');C.T(395,180,'רוויה','he','middle');C.T(388,204,'הזרם נכנס בסורס (למעלה)','he','middle');
   C.T(330,258,'KVL: V_{DD} − V_G = V_{SG} + I_D R_S','val','middle');
 }
 /* 1d. הטרנזיסטור עם האותות הקטנים מסומנים */
@@ -8479,7 +8479,7 @@ after('g_m במספרים',{t:'מבקשים → עושים → נוסחה: שא�
 <tr><td><b>\(r_o\)</b></td><td>רק אם נתון \(\lambda\) או \(V_A\); אחרת \(\infty\)</td><td>\(r_o=\dfrac{1}{\lambda I_D}=\dfrac{V_A}{I_D}\)</td><td>\(\lambda=0.02\): \(1/(0.02\cdot${f2(Q.ID)}\text{m})=${kΩ(1/(0.02*Q.ID*1e-3))}\)</td></tr>
 <tr><td><b>גבול האות הקטן</b></td><td>תנאי הקורס (דף נוסחאות 2.7)</td><td>\(v_{gs}\le0.2V_{OV}\)</td><td>\(\le${f2(Q.vgsmax)}\,\text{V}\) שיא</td></tr>
 <tr><td><b>תנופת מוצא מקסימלית</b></td><td>מי מגביל קודם: הדריין יורד עד גבול הרוויה, או הזרם יורד לאפס (דף נוסחאות 2.10)</td><td>\(V_{O\max}=\min\left[V_{DSQ}-V_{OV},\ I_{DQ}R_{AC}\right]\)</td><td>\(\min[${f2(Q.VDS-Q.VOV)},\ ${f2(Q.ID*B.RD)}]=${f2(Q.swing)}\,\text{V}\) (\(R_{AC}=R_D\), ללא \(R_L\))</td></tr>
-<tr><td><b>\(V_t\) עם אפקט מצע</b></td><td>לפני הכול, אם \(V_{SB}\ne0\); ואז משתמשים ב-\(V_t\) החדש בכל השורות</td><td>\(V_t=V_{t0}+\gamma\left(\sqrt{0.6+V_{SB}}-\sqrt{0.6}\right)\)</td><td>\(V_{SB}=2\): \(1+0.5(1.612-0.775)=1.42\,\text{V}\)</td></tr>
+<tr><td><b>\(V_t\) עם אפקט מצע</b></td><td>לפני הכול, אם \(V_{SB}\ne0\); ואז משתמשים ב-\(V_t\) החדש בכל השורות</td><td>\(V_t=V_{t0}+\gamma\left(\sqrt{0.6+V_{SB}}-\sqrt{0.6}\right)\)</td><td>\(V_{SB}=2,\ \gamma=0.5\): \(1+0.5(1.612-0.775)=1.42\,\text{V}\)</td></tr>
 </tbody></table></div>
 <p>הסדר בשאלה מלאה הוא תמיד מלמעלה למטה: סוג הרכיב וסימן \(V_t\) → (אפקט מצע) → נקודת עבודה בהנחת רוויה → בדיקה → (טריודה) → \(g_m\), \(r_o\) → מודל אות קטן → הגבר (שיעור 4). מי שמחשב \(g_m\) לפני שבדק רוויה מחשב מספר של טרנזיסטור שלא קיים.</p>
 `+co('key','🔑','שלוש שאלות לפני שמתחילים',H`<ol><li>N או P? Enhancement או Depletion? (סימן \(V_t\), כיוון הזרם, \(V_{SG}\) או \(V_{GS}\).)</li><li>המספר שנתון הוא \(K_n\) או \(k_n'W/L\)? (החצי.)</li><li>יש \(\lambda\)? (\(r_o\) סופי, ובטריודה מתעלמים ממנו בכל מקרה.)</li></ol>`)+golab(3,'l3-dc','נקודת עבודה חיה: הזז R<sub>D</sub> עד הטריודה')+golab(3,'l3-ss','g<sub>m</sub> ו-r<sub>o</sub> מנקודת העבודה')});
