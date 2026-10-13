@@ -488,6 +488,20 @@ svg.circ .dvbox{fill:none;stroke:var(--accent);stroke-width:1.6;stroke-dasharray
 .used>b{display:block;margin-bottom:6px;font-family:var(--display)}
 .used ul{margin:0;padding-inline-start:18px}
 .used li{margin:5px 0;font-size:14.5px;line-height:1.6}
+.sref.warnref{color:var(--warn);background:color-mix(in srgb,var(--warn) 12%,transparent)}
+.bref{display:inline-block;font:600 12.5px/1.35 var(--display);color:var(--muted);background:var(--surface2);border:1px solid var(--line);border-radius:999px;padding:4px 10px;margin:2px 0}
+.m26nav{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px;margin-top:16px}
+.m26nav a{display:flex;flex-direction:column;gap:3px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--surface);text-decoration:none;color:var(--text)}
+.m26nav a span{font-size:13px;color:var(--muted);line-height:1.35}
+.m26nav a:hover{border-color:var(--accent)}
+.m26q{scroll-margin-top:70px;margin-top:30px}
+.m26q>h2.xh{display:flex;align-items:center;gap:12px;margin-bottom:4px}
+.m26n{display:inline-grid;place-items:center;min-width:38px;height:38px;border-radius:10px;background:var(--accent);color:#fff;font:700 20px/1 var(--display)}
+.m26topic{color:var(--muted);margin:0 0 6px}
+.m26part{margin:22px 0 4px;font:700 15px/1.3 var(--display);color:var(--accent)}
+.m26src{margin:8px 0 0;padding-inline-start:20px}.m26src li{margin:5px 0}
+.m26ex{margin:8px 0;padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface2)}
+.m26ex summary{cursor:pointer}.m26ex p{margin:8px 0 0}
 .sheetnote{margin:14px 0 0;padding:12px 14px;border-radius:12px;background:var(--accent-soft);border:1px solid var(--line);font-size:14.5px}
 
 /* ---- גיליונות תרגול ---- */
@@ -4769,7 +4783,7 @@ function sideHTML(){
   const ql=(h,k,ic,t,w)=>'<a href="'+h+'" '+(cur.page===k?'aria-current="page"':'')+(w?' class="wide"':'')+'><span>'+ic+'</span>'+t+'</a>';
   side.innerHTML='<a class="brand" href="#/"><svg viewBox="0 0 26 26" aria-hidden="true"><rect x="1" y="1" width="24" height="24" rx="7" fill="var(--accent)"/><path d="M5 13h5l2-5 3 10 2-5h4" fill="none" stroke="var(--on-accent)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg><span>אלקטרוניקה תקבילית<small>סביבת למידה למבחן</small></span></a>'+
     '<div class="oprog"><div class="row"><span>התקדמות בקורס</span><b>'+cp.pct+'%</b></div><div class="pbar"><span style="width:'+cp.pct+'%"></span></div><div class="row" style="margin-top:6px"><span>'+cp.c+'/'+cp.tot+' תשובות נכונות</span></div></div>'+
-    '<div class="qlinks">'+ql('#/','home','🏠','בית')+ql('#/f','f','Σ','נוסחאות')+ql('#/sheet','sheet','🧾','דף הנוסחאות למבחן')+ql('#/exam','exam','⏱️','סימולטור מבחן')+ql('#/calc','calc','🧮','מחשבון עבודה')+ql('#/x2026','x2026','📄','פתרון מבחן 2026',1)+ql('#/div','div','➗','מחלק מתח ומחלק זרם',1)+ql('#/q','q','🎲','תרגול מעורב',1)+'</div>'+
+    '<div class="qlinks">'+ql('#/','home','🏠','בית')+ql('#/f','f','Σ','נוסחאות')+ql('#/sheet','sheet','🧾','דף הנוסחאות למבחן')+ql('#/exam','exam','⏱️','סימולטור מבחן')+ql('#/calc','calc','🧮','מחשבון עבודה')+ql('#/m26a','m26a','📝','מבחן 2026 מועד א׳',1)+ql('#/x2026','x2026','📄','פתרון מבחן 2026',1)+ql('#/div','div','➗','מחלק מתח ומחלק זרם',1)+ql('#/q','q','🎲','תרגול מעורב',1)+'</div>'+
     tree+
     '<div class="sidefoot"><button type="button" class="pillbtn" id="themebtn"></button><button type="button" class="pillbtn" id="flowtog" aria-pressed="false" title="החלפת תצוגת הזרם"><i></i><span></span></button><button type="button" class="pillbtn" id="ttsbtn" title="הקראה קולית של התוכן"></button></div>';
   bindSideButtons();
@@ -4830,7 +4844,7 @@ function buildHome(d){
     '<div class="cta"><a class="btn solid" href="#/l/1">להתחיל משיעור 1</a><a class="btn line" href="#/exam">⏱️ סימולטור מבחן</a></div></div>'+
     '<figure class="scope" style="margin:0"><div id="hero-c"></div><figcaption>'+lg('t1','מיישר גשר: הזרם בעומס זורם תמיד באותו כיוון')+'</figcaption></figure></div>'+
     '<div id="h-resume"></div>'+
-    '<div class="tools"><a class="tool" href="#/sheet"><span class="ic">🧾</span><span><b>דף הנוסחאות של המבחן</b><span>7 העמודים הרשמיים, כל נוסחה ממוספרת וניתנת לחיפוש</span></span></a><a class="tool" href="#/x2026"><span class="ic">📄</span><span><b>פתרון מבחן 2026</b><span>4 שאלות בפירוק מלא, בגובה העיניים, עם מעגל חי לכל שאלה</span></span></a><a class="tool" href="#/div"><span class="ic">➗</span><span><b>מחלק מתח ומחלק זרם</b><span>מתי כל אחד, מי במונה, ואיפה הם מסתתרים בכל חישוב הגבר</span></span></a><a class="tool" href="#/exam"><span class="ic">⏱️</span><span><b>סימולטור מבחן</b><span>20 שאלות אקראיות, 60 דקות, דוח נושאים חלשים</span></span></a><a class="tool" href="#/calc"><span class="ic">🧮</span><span><b>מחשבון נקודת עבודה</b><span>MOSFET ו-BJT: DC, תחום מאומת ופרמטרי אות קטן</span></span></a><a class="tool" href="#/f"><span class="ic">Σ</span><span><b>דף נוסחאות</b><span>כל הנוסחאות ב-LaTeX, עם חיפוש והעתקה</span></span></a></div>'+
+    '<div class="tools"><a class="tool" href="#/sheet"><span class="ic">🧾</span><span><b>דף הנוסחאות של המבחן</b><span>8 העמודים של הדף החדש, כל נוסחה ממוספרת וניתנת לחיפוש</span></span></a><a class="tool" href="#/m26a"><span class="ic">📝</span><span><b>מבחן 2026 מועד א׳ (סמסטר ג)</b><span>4 שאלות: קודם הנושא כולו, אחר כך כל סעיף, עם הדף החדש. דגש על תלות בטמפרטורה</span></span></a><a class="tool" href="#/x2026"><span class="ic">📄</span><span><b>פתרון מבחן 2026</b><span>4 שאלות בפירוק מלא, בגובה העיניים, עם מעגל חי לכל שאלה</span></span></a><a class="tool" href="#/div"><span class="ic">➗</span><span><b>מחלק מתח ומחלק זרם</b><span>מתי כל אחד, מי במונה, ואיפה הם מסתתרים בכל חישוב הגבר</span></span></a><a class="tool" href="#/exam"><span class="ic">⏱️</span><span><b>סימולטור מבחן</b><span>20 שאלות אקראיות, 60 דקות, דוח נושאים חלשים</span></span></a><a class="tool" href="#/calc"><span class="ic">🧮</span><span><b>מחשבון נקודת עבודה</b><span>MOSFET ו-BJT: DC, תחום מאומת ופרמטרי אות קטן</span></span></a><a class="tool" href="#/f"><span class="ic">Σ</span><span><b>דף נוסחאות</b><span>כל הנוסחאות ב-LaTeX, עם חיפוש והעתקה</span></span></a></div>'+
     GROUPS.map(g=>'<div class="group-h">'+g[0]+'</div><div class="grid">'+g[1].map(n=>{const L=LESSONS[n];
       return '<a class="card" href="#/l/'+n+'"><div style="display:flex;justify-content:space-between;align-items:center"><span class="num">'+String(n).padStart(2,'0')+'</span>'+(full(n)?'<span class="badge">5 שלבים מלאים</span>':'<span class="badge gray">מעבדה + בוחן</span>')+'</div><h3>'+L.title+'</h3><p>'+L.sub+'</p><div class="pbar"><span data-lp="'+n+'" style="width:0"></span></div><div class="meta"><span>'+L.topics+' · '+quizOf(n).length+' שאלות</span><span data-lpt="'+n+'">0%</span></div></a>';}).join('')+'</div>').join('')+
     '<footer>התיאוריה, האלגוריתמים, התרגילים והבוחן בכל שיעור נכתבו לפי סיכומי LevelUp של הקורס. במקומות שבהם נמצאה טעות בסיכום, היא מסומנת בשיעור עם החישוב המתוקן. V<sub>T</sub> = 25mV בכל החישובים. ההדמיות הן מודלים לימודיים ולא סימולציית SPICE.</footer>';
@@ -4857,120 +4871,426 @@ function heroBridge(){
 }
 
 
-/* =================== דף הנוסחאות הרשמי של המבחן (7 עמודים) =================== */
+/* =================== דף הנוסחאות הרשמי של המבחן (8 עמודים, הגרסה החדשה) =================== */
+// New exam formula sheet (8 pages). Generated by tools/build_sheet.py
+// ids: <page>.<n>, reading order right-to-left, top to bottom.
 const SHEET=[
-{p:1,title:'דיודה, מיישר חד דרכי, מיישר דו דרכי',secs:[
+{p:1,title:'דיודה, דיודת זנר, מיישר חד-דרכי ודו-דרכי, שנאי, אות סינוסי',secs:[
+ {h:'דוגמת מעגל DC / ac (ראש העמוד)',items:[
+  {id:'1.1',l:'מודל ac של הדיודה במעגל הדוגמה (שרטוט שמאלי עליון); ב-DC: מנתקים את הדיודה ועושים תבנין (V_th, R_th)',t:'r_d=\\frac{nV_T}{I_{DQ}}'}]},
  {h:'דיודה',items:[
-  {id:'1.1',l:'משוואת הדיודה',t:'I_D=I_S\\,e^{V_D/nV_T}\\ \\Leftrightarrow\\ V_D=nV_T\\ln(I_D/I_S)'},
-  {id:'1.2',l:'מתח תרמי ותלות בטמפרטורה',t:'V_T=\\frac{kT}{q};\\quad I_S(T)=I_S(T_0)\\cdot2^{\\frac{T-T_0}{5}}'},
-  {id:'1.3',l:'הפרש מתחים בין שני זרמים',t:'V_{D1}-V_{D2}=nV_T\\ln(I_{D1}/I_{D2})=2.3\\,nV_T\\log(I_{D1}/I_{D2})'},
-  {id:'1.4',l:'דיודת זנר',t:'V_Z=V_{Z0}+r_zI_Z;\\qquad r_z=\\frac{\\Delta V}{\\Delta I}'},
-  {id:'1.5',l:'מייצב זנר: מתח המוצא',t:'V_O=V_{Z0}\\frac{R}{r_z+R}+V^+\\frac{r_z}{r_z+R}-I_L\\,(r_z\\parallel R)'},
-  {id:'1.6',l:'מייצב זנר: שינוי במוצא',t:'\\Delta V_O=\\Delta V^+\\frac{r_z}{r_z+R}-\\Delta I_L\\,(r_z\\parallel R)'},
-  {id:'1.7',l:'דיודה לאות קטן (התנגדות דינמית)',t:'r_D=\\left.\\frac{dV_D}{dI_D}\\right|_{Q}=\\frac{nV_T}{I_{DQ}}=\\frac{n\\cdot25\\text{mV}}{I_{DQ}}'}]},
+  {id:'1.2',l:'משוואת הדיודה',t:'I_D=I_S\\cdot e^{\\frac{V_D}{nV_T}}\\ \\Leftrightarrow\\ V_D=nV_T\\ln(I_D/I_S)'},
+  {id:'1.3',l:'מתח תרמי ותלות I_S בטמפרטורה',t:'V_T=\\frac{kT}{q}\\ ;\\ I_S(T)=I_S(T_O)\\times2^{\\frac{T-T_O}{5}}'},
+  {id:'1.4',l:'הפרש מתחים בין שני זרמים',t:'V_{D1}-V_{D2}=nV_T\\ln(I_{D1}/I_{D2})=2.3\\cdot n\\cdot V_T\\log(I_{D1}/I_{D2})'},
+  {id:'1.5',l:'מציאת נקודת עבודה של דיודה (I_DQ, V_DQ): מנתקים את הדיודה ועושים שקול תבנין (למציאת הנגד מאפסים את כל מקורות ה-DC); קו העומס DC חותך את הצירים ב-U_DC/R וב-U_DC',t:'U_{DC}=V_{th};\\quad I=\\frac{V_{th}}{R_{th}};\\quad \\text{DC load line: }\\frac{U_{DC}}{R}\\ \\text{(on }I_D\\text{)},\\ U_{DC}\\ \\text{(on }V_D\\text{)}'},
+  {id:'1.6',l:'דיודה לאות קטן (צומת NP-PN) — התנגדות דינמית',t:'r_D=\\left.\\frac{dV_D}{dI_D}\\right|_{Q\\text{-point}}=\\frac{nV_T}{I_{DQ}}=\\frac{n\\times25mV}{I_{DQ}}'},
+  {id:'1.7',l:'הספק על הדיודה',t:'P=V_D\\cdot I_D\\,[W]'}]},
+ {h:'דיודת זנר',items:[
+  {id:'1.8',l:'מודל הזנר (DC: מקור V_Z0 בטור עם r_z; AC: r_z בלבד)',t:'V_Z=V_{Z0}+r_z\\cdot I_Z;\\qquad r_z=\\frac{\\Delta V}{\\Delta I}'},
+  {id:'1.9',l:'מייצב זנר: מתח המוצא (Nominal voltage + Line regulation − Load regulation)',t:'V_O=V_{Z0}\\left(\\frac{R}{r_z+R}\\right)+V^+\\cdot\\left(\\frac{r_z}{r_z+R}\\right)-I_L\\cdot(r_z\\parallel R)'},
+  {id:'1.10',l:'מייצב זנר: שינוי במתח המוצא',t:'\\Delta V_O=\\Delta V^+\\cdot\\left(\\frac{r_z}{r_z+R}\\right)-\\Delta I_L\\cdot(r_z\\parallel R)'}]},
  {h:'מיישר חד דרכי',items:[
-  {id:'1.8',l:'מתח DC במוצא, גלית וזרם עומס',t:'V_{Odc}=(V_{I\\max}-V_D)-\\tfrac12\\Delta V;\\quad \\Delta V=V_r;\\quad I_L=I_{Lm}=\\frac{V_{om}}{R_L}'},
-  {id:'1.9',l:'גלית',t:'\\Delta V=\\frac{V_{S\\max}-V_D}{fRC}'},
-  {id:'1.10',l:'זרם ממוצע ומקסימלי בדיודה',t:'i_{Dav}=I_L\\left(1+\\pi\\sqrt{2V_p/V_r}\\right);\\quad i_{D\\max}=I_L\\left(1+2\\pi\\sqrt{2V_p/V_r}\\right)'},
-  {id:'1.11',l:'זווית הולכה',t:'\\omega\\,\\Delta t=\\sqrt{2V_r/V_p}'}]},
+  {id:'1.11',l:'מתח מוצא ממוצע — שלוש צורות (בצד ימין)',t:'V_{odc}=V_p-\\tfrac12\\Delta V=V_{c(\\max)}-\\tfrac12\\Delta V=V_{c(\\min)}+\\tfrac12\\Delta V'},
+  {id:'1.12',l:'זרם ממוצע וזרם מקסימלי בדיודה',t:'i_{Dav}=I_L\\left(1+\\pi\\sqrt{2V_p/V_r}\\right);\\quad i_{D\\max}=I_L\\left(1+2\\pi\\sqrt{2V_p/V_r}\\right)'},
+  {id:'1.13',l:'אדווה וזרם העומס',t:'\\Delta V=V_r;\\quad I_L=I_{Lm}=\\frac{V_{om}}{R_L}'},
+  {id:'1.14',l:'מתח DC במוצא',t:'V_{Odc}=(V_{I\\max}-V_D)-\\frac12\\Delta V'},
+  {id:'1.15',l:'זווית הולכה של דיודה',t:'\\omega\\Delta t=\\sqrt{\\frac{2V_r}{V_p}}'},
+  {id:'1.16',l:'אדווה',t:'\\Delta V=\\frac{V_{S\\max}-V_D}{fRC}'},
+  {id:'1.17',l:'אם נתון: "דיודה אידיאלית" / "דיודה מעשית"',t:'V_D=0\\,[V]\\ \\ \\text{(ideal)};\\qquad V_D=0.7\\,[V]\\ \\ \\text{(practical)}'},
+  {id:'1.18',l:'מסגרת אדווה: חד-דרכי · עם סנף מרכזי · גשר דיודות',t:'\\Delta V=\\frac{V_P-V_D}{fRC};\\quad \\Delta V=\\frac{V_P-V_D}{2fRC}\\ \\text{(CT)};\\quad \\Delta V=\\frac{V_P-2V_D}{2fRC}\\ \\text{(bridge)}'}]},
  {h:'מיישר דו דרכי',items:[
-  {id:'1.12',l:'גלית עם שנאי סנף מרכזי',t:'V_r=\\Delta V=\\frac{V_{m\\max}-V_D}{2fRC}'},
-  {id:'1.13',l:'גלית עם גשר דיודות, זרם עומס',t:'V_r=\\Delta V=\\frac{V_{m\\max}-2V_D}{2fRC};\\quad I_L=I_{Lm}=\\frac{V_{om}}{R_L}'},
-  {id:'1.14',l:'זרם ממוצע, מקסימלי וזווית הולכה',t:'i_{Dav}=I_L\\left(1+\\pi\\sqrt{V_p/2V_r}\\right);\\ i_{D\\max}=I_L\\left(1+2\\pi\\sqrt{V_p/2V_r}\\right);\\ \\omega\\Delta t=\\sqrt{2V_r/V_p}'}]}]},
-{p:2,title:'טרנזיסטור MOSFET: ניתוח DC, ניתוח AC, חיבור CS, חיבור CD',secs:[
- {h:'ניתוח DC · NMOS',items:[
-  {id:'2.1',l:'תנאי הולכה, סוגים ונתוני יצרן',t:'V_{GS}\\le V_t\\Rightarrow\\text{נתק};\\ V_{GS}>V_t\\Rightarrow\\text{הולכה};\\quad V_t>0\\ \\text{Enh.},\\ V_t<0\\ \\text{Dep.};\\quad k_n\'=\\mu_nC_{ox},\\ K_n=\\tfrac12k_n\'\\tfrac{W}{L}'},
-  {id:'2.2',l:'רוויה ללא אפקט התקצרות התעלה',t:'I_D=\\tfrac12k_n\'\\tfrac{W}{L}\\,(V_{GS}-V_t)^2'},
-  {id:'2.3',l:'רוויה עם אפקט התקצרות התעלה',t:'I_D=\\tfrac12k_n\'\\tfrac{W}{L}\\,V_{OV}^2(1+\\lambda V_{DS});\\quad \\lambda=\\frac{1}{V_A}'},
-  {id:'2.4',l:'תנאי רוויה',t:'V_{DS}>V_{GS}-V_t=V_{OV}'},
-  {id:'2.5',l:'נגד שפך מקסימלי',t:'R_{D\\max}=\\frac{V_{DD}-V_{GSQ}+V_t}{I_{DQ}}-R_S'}]},
- {h:'ניתוח DC · PMOS',items:[
-  {id:'2.6',l:'תנאי הולכה, זרם ורוויה',t:'V_{GS}\\ge V_t\\Rightarrow\\text{נתק};\\ V_{GS}<V_t\\Rightarrow\\text{הולכה};\\quad I_D=\\tfrac12k_p\'\\tfrac{W}{L}(V_{GS}-V_t)^2;\\quad V_{DS}<V_{GS}-V_t\\Leftrightarrow\\text{saturation}'}]},
- {h:'ניתוח AC',items:[
-  {id:'2.7',l:'תנאי אות קטן',t:'v_{gs}\\le0.2\\,(V_{GSQ}-V_t)=0.2V_{OVQ}'},
-  {id:'2.8',l:'התנגדות מוצא',t:'r_0=\\frac{V_A}{I_{DQ}}=\\frac{1}{\\lambda I_{DQ}}'},
-  {id:'2.9',l:'טרנס-מוליכות (שלוש צורות)',t:'g_m=k_n\'\\tfrac{W}{L}(V_{GSQ}-V_t)=k_n\'\\tfrac{W}{L}V_{OVQ};\\quad g_m=\\sqrt{2k_n\'(W/L)I_{DQ}};\\quad g_m=\\frac{2I_{DQ}}{V_{GSQ}-V_t}=\\frac{2I_{DQ}}{V_{OVQ}}'},
-  {id:'2.10',l:'תנופת מוצא מקסימלית',t:'V_{O\\max}\\big|_{v_O=v_{ds}}=\\min\\left[(V_{DSQ}-V_{GSQ}+V_t),\\ I_{DQ}R_{AC}\\right];\\quad V_{O\\max}\\big|_{v_O\\ne v_{ds}}=I_{D\\max}R_L\';\\ I_{D\\max}=\\min\\left[\\frac{V_{DSQ}-V_{GSQ}+V_t}{R_{AC}},I_{DQ}\\right]'},
-  {id:'2.11',l:'מודל אות קטן (עם ובלי אפקט התקצרות)',t:'i_d=g_mv_{gs}\\ \\parallel\\ r_0;\\qquad \\mu=g_mr_0;\\qquad r_0\\to\\infty:\\ i_d=g_mv_{gs}'}]},
- {h:'חיבור CS',items:[
-  {id:'2.12',l:'CS: כניסה, הגבר, מוצא',t:'R_{in}\\to\\infty;\\quad A_V=\\frac{v_o}{v_i}=-\\frac{g_mR_L\'}{(1+g_mR_S)+\\frac{R_S+R_L\'}{r_o}}\\Big|_{r_o\\to\\infty}=-\\frac{g_mR_L\'}{1+g_mR_S};\\quad R_o=(g_mR_S+1)r_0+R_S\\big|_{r_o\\to\\infty}\\to\\infty'}]},
- {h:'חיבור CD',items:[
-  {id:'2.13',l:'CD: כניסה, הגבר, מוצא',t:'R_{in}\\to\\infty;\\quad A_V=\\frac{g_m(R_L\\parallel r_o)}{g_m(R_L\\parallel r_o)+1}\\Big|_{r_o\\to\\infty}=\\frac{g_mR_L\'}{1+g_mR_L\'};\\quad R_{out}=r_o\\parallel\\frac1{g_m}\\Big|_{r_o\\to\\infty}=\\frac1{g_m}'}]}]},
-{p:3,title:'חיבור CG, טרנזיסטור BJT: ניתוח DC, ניתוח AC, חיבור CE',secs:[
- {h:'חיבור CG',items:[
-  {id:'3.1',l:'CG: עומס, כניסה, הגבר, מוצא',t:'R_L\'=R_D\\parallel R_L;\\quad R_{in}=\\frac{r_o+R_L\'}{1+g_mr_o}\\Big|_{r_o\\to\\infty}=\\frac1{g_m};\\quad A_V=\\frac{(1+g_mr_o)R_L\'}{r_o+R_L\'}\\Big|_{r_o\\to\\infty}=g_mR_L\';\\quad R_o=(g_mr_o+1)R_{sig}\\parallel R_S+r_0\\to\\infty'}]},
- {h:'BJT · ניתוח DC',items:[
-  {id:'3.2',l:'תבנין של רשת הבסיס וההנחה',t:'V_{bb}=V_{TH}=\\frac{V_{cc}R_2}{R_1+R_2};\\quad R_b=R_{TH}=R_1\\parallel R_2;\\quad \\text{assumption: }I_c=\\beta I_b;\\ |V_{cc}|>|V_{ce}|=|V_{be}+V_{cb}|>|V_{be(on)}|'},
-  {id:'3.3',l:'נקודת עבודה',t:'I_{bQ}=\\frac{V_{bb}-V_{be}}{R_b+(\\beta+1)R_e};\\quad I_{cQ}=\\beta I_{bQ}=\\frac{\\beta(V_{bb}-V_{be})}{R_b+R_e(\\beta+1)};\\quad V_{ceQ}=V_{cc}-I_c(R_c+R_e)'},
-  {id:'3.4',l:'הקשר α–β',t:'\\beta=\\frac{\\alpha}{1-\\alpha};\\qquad \\alpha=\\frac{\\beta}{\\beta+1}'},
-  {id:'3.5',l:'תנופת מוצא מקסימלית',t:'v_O=v_{CE}:\\ v_{O\\max}=\\min\\big((V_{CEQ}-V_{CEsat}),(I_{CQ}R_{AC})\\big);\\quad v_O\\ne v_{CE}:\\ i_{C\\max}=\\min\\Big(I_{CQ},\\frac{V_{CEQ}-V_{CEsat}}{R_{AC}}\\Big),\\ v_{O\\max}=i_{C\\max}R_L\''}]},
- {h:'BJT · ניתוח AC (מודל אות קטן כולל Early)',items:[
-  {id:'3.6',l:'r_π, r_e, r_o',t:'r_\\pi=\\frac{v_{be}}{i_b}=\\frac{V_T}{I_B}=\\frac{\\beta V_T}{I_C};\\quad r_e=\\frac{r_\\pi}{\\beta+1}\\simeq\\frac{r_\\pi}{\\beta}=\\frac1{g_m};\\quad r_o=\\frac{V_A}{I_C}'}]},
- {h:'חיבור CE',items:[
-  {id:'3.7',l:'CE: הגבר זרם, הגבר מתח, כניסה, מוצא',t:'\\frac{i_O}{i_i}=-\\beta;\\quad \\frac{v_O}{v_i}=-\\frac{\\beta R_L\'}{r_\\pi+(\\beta+1)R_E}\\Big|_{R_E=0}=-\\frac{\\beta R_L\'}{r_\\pi}=-g_mR_L\';\\quad R_{in}=r_\\pi+R_E(\\beta+1)=(\\beta+1)(r_e+R_E);\\quad R_O=\\infty'}]}]},
-{p:4,title:'חיבור CC, חיבור CB, מקורות זרם, מגבר הפרש BJT',secs:[
- {h:'חיבור CC',items:[
-  {id:'4.1',l:'CC: כניסה, הגברים, מוצא',t:'R_{in}=r_\\pi+(\\beta+1)R_L\'=(\\beta+1)(r_e+R_L\');\\quad \\frac{i_O}{i_b}=\\beta+1;\\quad \\frac{v_O}{v_i}=\\frac{(\\beta+1)R_L\'}{r_\\pi+(\\beta+1)R_L\'}=\\frac{R_L\'}{R_L\'+r_e};\\quad R_O=\\frac{R_B+r_\\pi}{\\beta+1}=\\frac{R_B}{\\beta+1}+r_e'}]},
- {h:'חיבור CB',items:[
-  {id:'4.2',l:'CB: כניסה, הגברים, מוצא',t:'R_{in}=\\frac{r_\\pi+R_B}{\\beta+1}\\Big|_{R_B=0}=\\frac{r_\\pi}{\\beta+1}=r_e=\\frac1{g_m};\\quad \\frac{i_O}{i_i}=\\alpha=\\frac{\\beta}{\\beta+1};\\quad \\frac{v_O}{v_i}=\\frac{\\beta R_L\'}{r_\\pi+R_B}\\Big|_{R_B=0}=\\frac{\\beta R_L\'}{r_\\pi}=g_mR_L\';\\quad R_O=\\infty'}]},
- {h:'מקור זרם ראי BJT',items:[
-  {id:'4.3',l:'ראי BJT: זרם ייחוס, זרם מוצא, התנגדות מוצא',t:'I_{REF}\\big|_{I_{o1}=I_{o2}}=I_o=\\frac{\\beta}{\\beta+2}\\frac{V_{cc}-V_{be}}{R}\\approx\\frac{V_{cc}-V_{be}}{R};\\quad I_o\\big|_{I_{o1}=mI_{o2}}=I_{REF}\\frac{m}{1+\\frac{m+1}{\\beta}}\\Big(1+\\frac{V_O-V_{BE}}{V_{A2}}\\Big);\\quad R_O=r_{o2}=\\frac{V_A}{I_o}'}]},
- {h:'מקור זרם לזרמים של מיקרואמפרים (וידלר)',items:[
-  {id:'4.4',l:'וידלר',t:'I_OR_E=V_T\\ln\\Big(\\frac{I_{REF}}{I_O}\\Big);\\quad R_O=\\frac{V\'}{i\'}\\cong r_{o2}\\big(g_m(R_E\\parallel r_\\pi)+1\\big)'}]},
- {h:'מקור זרם ראי FET',items:[
-  {id:'4.5',l:'ראי FET',t:'\\frac{I_O}{I_{REF}}=\\frac{(W/L)_2}{(W/L)_1};\\quad I_O\\cong I_{REF}\\frac{(W/L)_2}{(W/L)_1}\\big(1+\\lambda(V_O-V_{GS})\\big);\\quad R_O=r_{o2}=\\frac{V_A}{I_O}=\\frac1{\\lambda I_O}'}]},
- {h:'מגבר הפרש BJT (עם R_E)',items:[
-  {id:'4.6',l:'הגבר הפרשי והתנגדות כניסה הפרשית',t:'A_d=-\\frac{\\beta R_Cr_0}{(r_\\pi+R_E)(r_0+R_C+R_E)+\\beta R_Er_0};\\quad R_{id}=2\\Big((r_\\pi+R_E)+\\frac{R_E\\beta r_0}{r_0+R_C+R_E}\\Big)'},
-  {id:'4.7',l:'r_0→∞ ומוצא חד-צדדי',t:'A_d\\big|_{r_0\\to\\infty}=-\\frac{g_mR_C}{1+R_E/r_e}=-\\alpha\\frac{R_C}{r_e+R_E};\\quad R_{id}\\big|_{r_0\\to\\infty}=2\\big(r_\\pi+(\\beta+1)R_E\\big);\\quad A_{d,single}=\\frac{v_{O2}}{v_{id}}=-\\frac{v_{O1}}{v_{id}}=\\tfrac12\\frac{g_mR_C}{1+R_E/r_e}=\\tfrac12\\alpha\\frac{R_C}{r_e+R_E}'}]}]},
-{p:5,title:'מגבר הפרש BJT (המשך), מגבר הפרש FET, מגברי שרת אידיאליים',secs:[
- {h:'מגבר הפרש BJT עם מקור זרם',items:[
-  {id:'5.1',l:'הגבר הפרשי, חד-צדדי, כניסה הפרשית ומשותפת',t:'A_d=\\pm\\frac{\\beta\\,r_0\\parallel R_C}{r_e}=\\pm g_m\\,r_0\\parallel R_C;\\quad A_{d,single}=\\frac{v_O}{v_{id}}=\\pm\\tfrac12g_m\\,r_0\\parallel R_C;\\quad R_{id}=\\frac{v_{id}}{i_{in}}=2r_\\pi=2(\\beta+1)r_e;\\quad R_{iCM}=(\\beta+1)\\big(R_{EE}\\parallel\\tfrac{r_0}{2}\\big)\\big|_{r_0\\to\\infty}=2R_{EE}(\\beta+1)'},
-  {id:'5.2',l:'הגבר משותף ו-CMRR (חד-צדדי)',t:'A_{CM,single}=\\frac{v_{O1}}{v_{CM}}=\\frac{v_{O2}}{v_{CM}}=-\\frac{R_C}{2R_{EE}};\\quad CMRR_{single}=\\Big|\\frac{A_{d,single}}{A_{CM,single}}\\Big|=g_mR_{EE}'},
-  {id:'5.3',l:'אי-התאמה R_C1≠R_C2',t:'A_{cm,diff}\\cong\\frac{\\Delta R_C}{2R_{EE}}=A_{cm,single}\\Big(\\frac{\\Delta R_C}{R_C}\\Big);\\quad CMRR_{diff}=\\Big|\\frac{A_{d,diff}}{A_{cm,diff}}\\Big|=\\frac{g_mR_C}{\\Delta R_C/2R_{EE}}\\cong2g_mR_{EE}\\Big(\\frac{R_C}{\\Delta R_C}\\Big)'}]},
+  {id:'1.19',l:'מתח אדווה במיישר באמצעות שנאי עם סנף מרכזי',t:'V_{out\\,\\max}=V_{in\\,\\max}\\cdot\\frac{N_2}{2N_1}-V_D;\\quad V_r=\\Delta V=\\frac{V_{out\\,\\max}}{2fRC};\\quad V_{out\\,\\min}=V_{out\\,\\max}-\\Delta V'},
+  {id:'1.20',l:'מתח אדווה במיישר באמצעות גשר דיודות',t:'V_{out\\,\\max}=V_{in\\,\\max}\\cdot\\frac{N_2}{N_1}-2V_D;\\quad V_r=\\Delta V=\\frac{V_{out\\,\\max}}{2fRC};\\quad V_{out\\,\\min}=V_{out\\,\\max}-\\Delta V'},
+  {id:'1.21',l:'זרם העומס',t:'I_L=I_{Lm}=\\frac{V_{out\\,\\max}}{R_L}'},
+  {id:'1.22',l:'זרם ממוצע וזרם מקסימלי בדיודות',t:'i_{Dav}=I_L\\left(1+\\pi\\sqrt{\\frac{V_{out\\,\\max}}{2V_r}}\\right);\\quad i_{D\\max}=I_L\\left(1+2\\pi\\sqrt{\\frac{V_{out\\,\\max}}{2V_r}}\\right)'},
+  {id:'1.23',l:'זווית הולכה של דיודה',t:'\\omega\\Delta t=\\sqrt{\\frac{2V_r}{V_{out\\,\\max}}}'}]},
+ {h:'אות סינוסי (מסגרת בפינה הימנית התחתונה)',items:[
+  {id:'1.24',l:'פאזור, ערך מקסימלי, צורת הזמן ותדר זוויתי',t:'\\bar V=V_{rms}\\angle\\theta;\\quad V_{\\max}=V_{rms}\\cdot\\sqrt2;\\quad V(t)=V_{rms}\\sqrt2\\sin(\\omega t+\\theta)=V_{rms}\\sqrt2\\sin(2\\pi f\\cdot t+\\theta);\\quad \\omega=2\\pi f=\\frac{2\\pi}{T}'}]},
+ {h:'עבור שנאי',items:[
+  {id:'1.25',l:'יחסי מתחים וזרמים בשנאי',t:'V_2=V_1\\cdot\\frac{N_2}{N_1}\\ \\Leftrightarrow\\ \\frac{V_2}{V_1}=\\frac{N_2}{N_1};\\qquad \\frac{I_1}{I_2}=\\frac{N_2}{N_1}'}]},
+ {h:'ממוצע',items:[
+  {id:'1.26',l:'ממוצע על פני אות מחזורי',t:'V(t)_{avg}=\\frac1T\\int_0^TV(t)\\,dt'},
+  {id:'1.27',l:'ממוצע על פני חצי מחזור של אות סינוס-אידיאלי',t:'\\frac{2}{\\pi}\\cdot A'}]},
+ {h:'זנר במוצא (פינה שמאלית תחתונה)',items:[
+  {id:'1.28',l:'זרמי הנגד, העומס והזנר',t:'I_R=\\frac{V_c-V_z}{R};\\quad I_L=\\frac{V_z}{R_L};\\quad I_Z=I_R-I_L=\\frac{V_c-V_z}{R}-\\frac{V_z}{R_L}'},
+  {id:'1.29',l:'הספק הזנר ומתי הוא מקסימלי / מינימלי',t:'P_z=V_z\\cdot I_z\\,(W);\\quad P_{z\\max}\\Leftrightarrow V_c=V_{c\\max}=V_{out\\,\\max};\\quad P_{z\\min}\\Leftrightarrow V_c=V_{c\\min}=V_{out\\,\\min}'},
+  {id:'1.30',l:'נזכור: ככל שקיבול הקבל גדול יותר, האדווה ΔV קטנה יותר. בחישוב האדווה, דיודות זנר (אם קיימות) שמקבילות לקבל נחשבות כ-r_z',t:'C\\uparrow\\ \\Rightarrow\\ \\Delta V\\downarrow'}]}
+]},
+{p:2,title:'מיישרים: חד-דרכי, סנף מרכזי, גשר דיודות — טבלאות',secs:[
+ {h:'מקרא סימונים',items:[
+  {id:'2.1',l:'מתח כניסה (ראשוני), מתח המשני (כניסת המיישר), שיא המשני',t:'v_{in}=V_1;\\quad V_2=V_S;\\quad V_{2\\max}=V_{S\\max}=V_{I\\max}'},
+  {id:'2.2',l:'מתח מוצא וקבל מקסימלי; דיודה אידאלית',t:'V_{out\\,\\max}=V_p=V_{C\\max}=V_{om};\\qquad V_D=0\\Rightarrow V_{2\\max}=V_{out\\,\\max}'},
+  {id:'2.3',l:'מפל על דיודה מוליכה · מספר דיודות בטור',t:'V_D=V_{D0}\\approx0.7\\,V,\\quad n_D'},
+  {id:'2.4',l:'מתח אדווה (שיא לשיא) · מתח מוצא מינימלי וממוצע · זרם העומס (זרם ישר)',t:'\\Delta V=V_r;\\quad V_{out\\,\\min},\\ V_{Odc}=V_{DC};\\quad I_L=I_{Lm}=I_{DC}'},
+  {id:'2.5',l:'זרם ממוצע ומקסימלי בדיודה · זווית וזמן הולכה · תדר, מחזור, תדר זוויתי',t:'i_{Dav},\\ i_{D\\max};\\quad \\omega\\Delta t,\\ \\Delta t;\\quad f,\\ T=\\frac1f,\\ \\omega=2\\pi f'},
+  {id:'2.6',l:'ליפופים (בסנף N_2 לכל חצי, N_2,tot כל המשני) · התנגדות עומס כוללת וקבל סינון · תדר אדווה, מתח הפוך שיא, אפקטיבי',t:'N_1,\\ N_2,\\ N_{2,tot};\\quad R_{total},\\ C;\\quad f_r,\\ \\text{PIV},\\ V_{rms}'},
+  {id:'2.7',l:'הדיודות המוליכות: חצי חיובי (אדום) / חצי שלילי (כחול)',t:'+:\\ D_1\\ \\text{(CT)},\\ D_1,D_2\\ \\text{(bridge)};\\qquad -:\\ D_2\\ \\text{(CT)},\\ D_3,D_4\\ \\text{(bridge)}'}]},
+ {h:'מתחים, PIV, זרם ישר ותדר',items:[
+  {id:'2.8',l:'שיא המשני (עם שנאי) — זהה בשלושת המיישרים. מקרא: HW = חד-דרכי, CT = סנף מרכזי, BR = גשר',t:'V_{2\\max}=V_{in\\max}\\cdot\\frac{N_2}{N_1}\\quad\\text{(HW, CT, BR)}'},
+  {id:'2.9',l:'אם נתון N_2,tot (כל המשני) — HW · CT · BR',t:'\\text{HW: }V_{2\\max}=V_{in\\max}\\frac{N_{2,tot}}{N_1};\\quad \\text{CT: }V_{2\\max}=V_{in\\max}\\frac{N_{2,tot}}{2N_1};\\quad \\text{BR: }V_{2\\max}=V_{in\\max}\\frac{N_{2,tot}}{N_1}'},
+  {id:'2.10',l:'דיודות מוליכות בו-זמנית n_D · תדר האדווה — HW · CT (אחת בכל חצי) · BR (בטור)',t:'\\text{HW: }f_r=f,\\ n_D=1;\\quad \\text{CT: }f_r=2f,\\ n_D=1;\\quad \\text{BR: }f_r=2f,\\ n_D=2'},
+  {id:'2.11',l:'מתח מוצא מקסימלי (אידאלית V_D=0: V_out max = V_2max) — HW · CT · BR',t:'\\text{HW: }V_{out\\max}=V_{2\\max}-V_D;\\quad \\text{CT: }V_{out\\max}=V_{2\\max}-V_D;\\quad \\text{BR: }V_{out\\max}=V_{2\\max}-2V_D'},
+  {id:'2.12',l:'ללא שנאי (V_2 → V_in) — HW · CT (חייב שנאי עם סנף) · BR',t:'\\text{HW: }V_{out\\max}=V_{in\\max}-V_D;\\quad \\text{CT: }\\text{---};\\quad \\text{BR: }V_{out\\max}=V_{in\\max}-2V_D'},
+  {id:'2.13',l:'מתח הפוך מרבי על דיודה — ללא קבל — HW · CT · BR',t:'\\text{HW: }\\text{PIV}=V_{2\\max};\\quad \\text{CT: }\\text{PIV}=2V_{2\\max}-V_D;\\quad \\text{BR: }\\text{PIV}=V_{2\\max}-V_D'},
+  {id:'2.14',l:'מתח הפוך מרבי על דיודה — עם קבל — HW · CT · BR',t:'\\text{HW: }\\text{PIV}=2V_{2\\max}-V_D;\\quad \\text{CT: }\\text{PIV}=2V_{2\\max}-V_D;\\quad \\text{BR: }\\text{PIV}=V_{2\\max}-V_D'},
+  {id:'2.15',l:'אותו PIV דרך V_out max (עם קבל) — HW · CT · BR',t:'\\text{HW: }\\text{PIV}=V_{2\\max}+V_{out\\max};\\quad \\text{CT: }\\text{PIV}=V_{2\\max}+V_{out\\max};\\quad \\text{BR: }\\text{PIV}=V_{out\\max}+V_D'},
+  {id:'2.16',l:'PIV ללא שנאי (עם קבל) — HW · CT · BR',t:'\\text{HW: }\\text{PIV}=2V_{in\\max}-V_D;\\quad \\text{CT: }\\text{---};\\quad \\text{BR: }\\text{PIV}=V_{in\\max}-V_D'},
+  {id:'2.17',l:'V_rms ו-V_DC — ללא קבל — חד-דרכי · דו-דרכי (סנף וגשר)',t:'\\text{HW: }V_{rms}=\\frac{V_{out\\max}}{2},\\ V_{DC}=\\frac{V_{out\\max}}{\\pi};\\quad \\text{CT, BR: }V_{rms}=\\frac{V_{out\\max}}{\\sqrt2},\\ V_{DC}=\\frac{2V_{out\\max}}{\\pi}'},
+  {id:'2.18',l:'זרם ישר בעומס — ללא קבל — חד-דרכי · דו-דרכי',t:'\\text{HW: }I_{DC}=\\frac{V_{DC}}{R_{total}}=\\frac{V_{out\\max}}{\\pi R_{total}};\\quad \\text{CT, BR: }I_{DC}=\\frac{V_{DC}}{R_{total}}=\\frac{2V_{out\\max}}{\\pi R_{total}}'},
+  {id:'2.19',l:'ללא שנאי: אדמה משותפת למקור ולעומס — HW: כן · CT: — · BR: לא (העומס "צף")',t:'\\text{HW: }\\text{yes};\\quad \\text{CT: }\\text{---};\\quad \\text{BR: }\\text{no (floating load)}'}]},
+ {h:'עם קבל סינון C (זהה עם שנאי וללא שנאי)',items:[
+  {id:'2.20',l:'מתח אדווה — חד-דרכי · דו-דרכי (סנף וגשר)',t:'\\text{HW: }\\Delta V=V_r=\\frac{V_{out\\max}}{f\\,R_{total}C}=\\frac{I_L}{fC};\\quad \\text{CT, BR: }\\Delta V=V_r=\\frac{V_{out\\max}}{2f\\,R_{total}C}=\\frac{I_L}{2fC}'},
+  {id:'2.21',l:'מתח מוצא מינימלי',t:'V_{out\\min}=V_{out\\max}-\\Delta V'},
+  {id:'2.22',l:'מתח מוצא ממוצע',t:'V_{Odc}=V_{out\\max}-\\frac{\\Delta V}{2}'},
+  {id:'2.23',l:'זרם ישר בעומס',t:'I_L=I_{DC}=\\frac{V_{Odc}}{R_{total}}\\approx\\frac{V_{out\\max}}{R_{total}}'},
+  {id:'2.24',l:'זווית הולכה',t:'\\omega\\Delta t=\\sqrt{\\frac{2V_r}{V_{out\\max}}}'},
+  {id:'2.25',l:'זרם ממוצע בדיודה — חד-דרכי · דו-דרכי',t:'\\text{HW: }i_{Dav}=I_L\\left(1+\\pi\\sqrt{\\frac{2V_{out\\max}}{V_r}}\\right);\\quad \\text{CT, BR: }i_{Dav}=I_L\\left(1+\\pi\\sqrt{\\frac{V_{out\\max}}{2V_r}}\\right)'},
+  {id:'2.26',l:'זרם מקסימלי בדיודה — חד-דרכי · דו-דרכי',t:'\\text{HW: }i_{D\\max}=I_L\\left(1+2\\pi\\sqrt{\\frac{2V_{out\\max}}{V_r}}\\right);\\quad \\text{CT, BR: }i_{D\\max}=I_L\\left(1+2\\pi\\sqrt{\\frac{V_{out\\max}}{2V_r}}\\right)'},
+  {id:'2.27',l:'קבל נדרש לאדווה רצויה — חד-דרכי · דו-דרכי',t:'\\text{HW: }C=\\frac{I_L}{fV_r};\\quad \\text{CT, BR: }C=\\frac{I_L}{2fV_r}'},
+  {id:'2.28',l:'תנאי הקירוב — חד-דרכי · דו-דרכי',t:'\\text{HW: }R_{total}C\\gg T;\\quad \\text{CT, BR: }R_{total}C\\gg\\frac{T}{2}'}]},
+ {h:'שנאי, תדר וממוצע (עמודה שמאלית)',items:[
+  {id:'2.29',l:'מתח המשני (שנאי)',t:'V_2=V_1\\cdot\\frac{N_2}{N_1}'},
+  {id:'2.30',l:'יחס הזרמים בשנאי',t:'\\frac{I_1}{I_2}=\\frac{N_2}{N_1}'},
+  {id:'2.31',l:'שיא מתוך ערך אפקטיבי',t:'V_{2\\max}=\\sqrt2\\,V_{2,rms}'},
+  {id:'2.32',l:'תדר זוויתי',t:'\\omega=2\\pi f=\\frac{2\\pi}{T}'},
+  {id:'2.33',l:'ממוצע מתח (הגדרה)',t:'V_{avg}=\\frac1T\\int_0^TV(t)\\,dt'},
+  {id:'2.34',l:'ממוצע סינוס על חצי מחזור',t:'\\bar V=\\frac{2}{\\pi}A'}]},
+ {h:'עומס מורכב',items:[
+  {id:'2.35',l:'עומס מורכב — נגדים בטור',t:'R_{total}=R_1+R_2+\\dots'},
+  {id:'2.36',l:'עומס מורכב — נגדים במקביל',t:'R_{total}=R_1\\parallel R_2=\\frac{R_1R_2}{R_1+R_2}'},
+  {id:'2.37',l:'המוצא על חלק מהעומס',t:'V_{out}=V_C\\cdot\\frac{R_2}{R_1+R_2}'},
+  {id:'2.38',l:'בכל נוסחאות האדווה והזרם',t:'R\\to R_{total}'}]},
+ {h:'DC ו-AC (שורה תחתונה)',items:[
+  {id:'2.39',l:'DC — נקודת העבודה: הקבל נתק, הדיודה ⇐ V_D0; המוצא נקבע ע"י הנגדים בלבד (מחלק מתח)',t:'Z_C\\to\\infty;\\quad D\\Rightarrow V_{D0}'},
+  {id:'2.40',l:'AC — האדווה (בתדר f_r): אדווה קטנה; הדיודה ⇐ r_d',t:'Z_C=\\frac{1}{2\\pi f_rC}\\ll R_{total};\\quad r_d=\\frac{nV_T}{I_{DQ}}'}]}
+]},
+{p:3,title:'טרנזיסטור BJT ו-MOSFET: ניתוח DC ו-AC; מגבר הפרש BJT ו-FET',secs:[
+ {h:'טרנזיסטור BJT · ניתוח DC -- אות גדול (קבל -- נתק | מקורות ac מקוצרים)',items:[
+  {id:'3.1',l:'קשרי זרמים',t:'I_e=I_b(\\beta+1);\\qquad I_c=\\beta I_b'},
+  {id:'3.2',l:'מתח תבנין והתנגדות תבנין',t:'V_{bb}=V_{TH}=\\frac{V_{cc}R_2}{R_1+R_2};\\quad R_b=R_{TH}=R_1\\parallel R_2=\\frac{R_1R_2}{R_1+R_2}'},
+  {id:'3.3',l:'הנחת פעילות ובדיקת ההנחה',t:'\\text{assumption: }I_c=\\beta I_b;\\quad \\text{proof: }|V_{cc}|\\gt|V_{ce}=V_{be}+V_{cb}|\\gt|V_{be(on)}|'},
+  {id:'3.4',l:'זרם בסיס',t:'I_{bQ}=\\frac{V_{bb}-V_{be}}{R_b+(\\beta+1)R_e}'},
+  {id:'3.5',l:'זרם קולקטור',t:'I_{cQ}=\\beta I_{bQ}=\\frac{\\beta(V_{bb}-V_{be})}{R_b+R_e(\\beta+1)}'},
+  {id:'3.6',l:'מתח קולקטור-פולט',t:'V_{ceQ}=V_{cc}-I_c(R_c+R_e)'}]},
+ {h:'נקודת העבודה ב-BJT',items:[
+  {id:'3.7',l:'נקודת עבודה',t:'(V_{CE},\\ I_C)'}]},
+ {h:'מתח מוצא מקסימלי (סווינג) — BJT',items:[
+  {id:'3.8',l:'סווינג מוצא (v_O = v_CE)',t:'\\text{if }v_O=v_{CE}\\Rightarrow v_{O\\max}=\\min\\big((V_{CEQ}-V_{CEsat}),(I_{CQ}R_{AC})\\big)'},
+  {id:'3.9',l:'זרם מקסימלי וסווינג על העומס (v_O ≠ v_CE)',t:'\\text{if }v_O\\ne v_{CE}\\Rightarrow i_{C\\max}=\\min\\left(I_{CQ},\\frac{V_{CEQ}-V_{CEsat}}{R_{AC}}\\right);\\quad v_{O\\max}=i_{C\\max}R\'_L'}]},
+ {h:'ניתוח AC -- אות קטן — BJT (קבל -- קצר | מקורות DC מקוצרים)',items:[
+  {id:'3.10',l:'התנגדות בסיס',t:'r_\\pi\\equiv\\frac{v_{be}}{i_b}=\\frac{V_T}{I_B}=\\frac{\\beta V_T}{I_C}=\\frac{\\beta}{g_m}'},
+  {id:'3.11',l:'התנגדות פולט',t:'r_e=\\frac{r_\\pi}{\\beta+1}\\simeq\\frac{r_\\pi}{\\beta}=\\frac1{g_m}'},
+  {id:'3.12',l:'אפקט ארלי',t:'r_o=\\frac{V_A}{I_C};\\qquad V_T=25\\,mV'}]},
+ {h:'טרנזיסטור MOSFET / FET · ניתוח DC -- אות גדול · NMOS: נתון יצרן',items:[
+  {id:'3.13',l:'תנאי הולכה וסוג (NMOS)',t:'V_{GS}\\le V_t\\Rightarrow\\text{off};\\ V_{GS}\\gt V_t\\Rightarrow\\text{on};\\quad V_t\\gt0\\ \\text{Enh.},\\ V_t\\lt0\\ \\text{Dep.}'},
+  {id:'3.14',l:'פרמטרי תהליך (NMOS)',t:'k\'_n=\\mu_nC_{ox}\\left[\\frac{A}{V^2}\\right];\\quad K\'_n=\\frac12k\'_n\\left(\\frac{W}{L}\\right)'},
+  {id:'3.15',l:'תנאי רוויה (NMOS)',t:'V_{DS}\\gt V_{GS}-V_t=V_{OV}'},
+  {id:'3.16',l:'רוויה ללא אפקט',t:'I_D=\\frac12k\'_n\\left(\\frac{W}{L}\\right)(V_{GS}-V_t)^2'},
+  {id:'3.17',l:'עם התקצרות התעלה',t:'I_D=\\frac12k\'_n\\left(\\frac{W}{L}\\right)V_{OV}^2(1+\\lambda V_{DS});\\quad \\lambda=\\frac1{V_A}'},
+  {id:'3.18',l:'נגד מקסימלי',t:'R_{D\\max}=\\frac{V_{DD}-V_{GSQ}+V_t}{I_{DQ}}-R_S'}]},
+ {h:'PMOS: נתון יצרן',items:[
+  {id:'3.19',l:'תנאי הולכה וסוג (PMOS)',t:'V_{GS}\\ge V_t\\Rightarrow\\text{off};\\ V_{GS}\\lt V_t\\Rightarrow\\text{on};\\quad V_t\\lt0\\ \\text{Enh.},\\ V_t\\gt0\\ \\text{Dep.}'},
+  {id:'3.20',l:'פרמטרי תהליך (PMOS)',t:'k\'_p=\\mu_pC_{ox}\\left[\\frac{A}{V^2}\\right];\\quad K\'_P=\\frac12k\'_p\\left(\\frac{W}{L}\\right)'},
+  {id:'3.21',l:'תנאי רוויה (PMOS)',t:'V_{DS}\\lt V_{GS}-V_t\\iff|V_{DS}|\\gt|V_{GS}|-|V_t|'},
+  {id:'3.22',l:'זרם רוויה (PMOS)',t:'I_D=\\frac12k\'_p\\left(\\frac{W}{L}\\right)(V_{SG}-|V_t|)^2'},
+  {id:'3.23',l:'ניסוח חלופי (PMOS)',t:'I_D=\\frac12k\'_p\\left(\\frac{W}{L}\\right)(|V_{GS}|-|V_t|)^2'}]},
+ {h:'נקודת העבודה ב-FET',items:[
+  {id:'3.24',l:'נקודת עבודה',t:'(V_{DS},I_D):\\ V_{DS}=V_{DD}-I_DR_D-I_SR_S'}]},
+ {h:'ניתוח AC -- אות קטן — FET (קבל -- קצר | מקורות DC מקוצרים)',items:[
+  {id:'3.25',l:'מוליכות הדדית',t:'g_m=k\'_n\\left(\\frac{W}{L}\\right)V_{OVQ}=\\sqrt{2k\'_n\\left(\\frac{W}{L}\\right)I_{DQ}}=\\frac{2I_{DQ}}{V_{OVQ}}'},
+  {id:'3.26',l:'תנאי אות-קטן',t:'v_{gs}\\le0.2\\cdot(V_{GSQ}-V_t)=0.2V_{OVQ}'},
+  {id:'3.27',l:'מוצא והגבר מרבי',t:'r_0=\\frac{V_A}{I_{DQ}}=\\frac1{\\lambda I_{DQ}};\\qquad \\mu=g_mr_0'}]},
+ {h:'מודל לאות קטן (עם ובלי התקצרות התעלה)',items:[
+  {id:'3.28',l:'מודל אות קטן: מקור g_m·v_gs במקביל ל-r_0 שקול למקור μ·v_gs בטור עם r_0; ללא אפקט התקצרות התעלה r_0 → ∞',t:'\\mu=g_mr_0;\\quad g_mv_{gs}\\parallel r_0\\ \\Leftrightarrow\\ g_mr_0v_{gs}=\\mu v_{gs}\\ \\text{in series with }r_0;\\quad r_0\\to\\infty:\\ g_mv_{gs}'}]},
+ {h:'מתח מוצא מקסימלי (סווינג) — FET',items:[
+  {id:'3.29',l:'סווינג מוצא (v_O = v_ds)',t:'V_{O\\max}\\Big|_{v_O=v_{ds}}=\\min\\left[(V_{DSQ}-V_{GSQ}+V_t),\\ I_{DQ}R_{AC}\\right]'},
+  {id:'3.30',l:'סווינג על העומס (v_O ≠ v_ds)',t:'V_{O\\max}\\Big|_{v_O\\ne v_{ds}}=I_{D\\max}R\'_L;\\quad I_{D\\max}=\\min\\left[\\frac{V_{DSQ}-V_{GSQ}+V_t}{R_{AC}},\\ I_{DQ}\\right]'}]},
+ {h:'מגבר הפרש -- BJT',items:[
+  {id:'3.31',l:'תמיד באות קטן (נקודת הפולטים המשותפת)',t:'v_E=0'},
+  {id:'3.32',l:'הגבר הפרשי (עם R_E ו-r_0)',t:'A_d=-\\frac{\\beta R_Cr_0}{(r_\\pi+R_E)(r_0+R_C+R_E)+\\beta R_Er_0}'},
+  {id:'3.33',l:'התנגדות כניסה',t:'R_{id}=2\\left((r_\\pi+R_E)+\\frac{R_E\\beta r_0}{r_0+R_C+R_E}\\right)'},
+  {id:'3.34',l:'הגבר בגבול r_0 → ∞',t:'A_d\\Big|_{r_0\\to\\infty}=-\\frac{g_mR_C}{1+\\frac{R_E}{r_e}}=-\\alpha\\frac{R_C}{r_e+R_E}'},
+  {id:'3.35',l:'כניסה בגבול r_0 → ∞',t:'R_{id}\\Big|_{r_0\\to\\infty}=2\\big(r_\\pi+(\\beta+1)R_E\\big)'},
+  {id:'3.36',l:'הגבר חד-צדדי (עם R_E)',t:'A_{d\\_Single\\_ended}\\equiv\\frac{v_{O2}}{v_{id}}=-\\frac{v_{O1}}{v_{id}}=\\frac12\\cdot\\frac{g_mR_C}{1+\\frac{R_E}{r_e}}=\\frac12\\alpha\\frac{R_C}{r_e+R_E}'},
+  {id:'3.37',l:'ניסוח שקול (ללא R_E); R_in-next — רק אם קיים שלב בא',t:'A_d=\\pm\\frac{\\beta\\,r_0\\parallel R_C}{r_\\pi}=\\pm g_m\\,r_0\\parallel R_C\\parallel R_{in-next}'},
+  {id:'3.38',l:'חד-צדדי שקול',t:'A_{d\\_Single}\\equiv\\frac{v_o}{v_{id}}=\\pm\\frac12\\cdot g_m\\,r_0\\parallel R_C\\parallel R_{in-next}'},
+  {id:'3.39',l:'כניסה הפרשית',t:'R_{id}=\\frac{v_{id}}{i_{B1}}=2r_\\pi=2(\\beta+1)r_e'},
+  {id:'3.40',l:'כניסה משותפת',t:'R_{iCM}\\Big|_{r_O\\ne\\infty}=\\frac{v_{CM}}{i_B}=(\\beta+1)\\left(2R_{EE}\\parallel\\frac{r_O}{2}\\right)\\Big|_{r_O\\to\\infty}=2R_{EE}(\\beta+1)'},
+  {id:'3.41',l:'הגבר משותף',t:'A_{CM\\_Single}=\\frac{v_{O1}}{v_{CM}}=\\frac{v_{O2}}{v_{CM}}=-\\frac{R_C}{2R_{EE}}'},
+  {id:'3.42',l:'יחס דחייה',t:'CMRR_{Single}=\\left|\\frac{A_{d\\_Single}}{A_{CM\\_Single}}\\right|=g_mR_{EE}'},
+  {id:'3.43',l:'אי-התאמה',t:'R_{C1}\\ne R_{C2}\\Rightarrow A_{cm\\_diff}\\cong\\frac{\\Delta R_C}{2R_{EE}}=A_{cm\\_single}\\cdot\\left(\\frac{\\Delta R_C}{R_C}\\right)'},
+  {id:'3.44',l:'דחייה הפרשית',t:'CMRR_{diff}\\equiv\\left|\\frac{A_{d\\_diff}}{A_{cm\\_diff}}\\right|=\\frac{g_mR_C}{(\\Delta R_C/2R_{EE})}\\cong2g_mR_{EE}\\left(\\frac{R_C}{\\Delta R_C}\\right)'}]},
+ {h:'מגבר הפרש -- FET',items:[
+  {id:'3.45',l:'מתח יתר (בכותרת)',t:'V_{OV}=V_{GS}-V_t'},
+  {id:'3.46',l:'מעגל חשמלי שקול לאות קטן (V_s = 0 תמיד באות קטן)',t:'g_{m1}=g_{m2}=g_m;\\quad I_{S1}=-I_{S2};\\quad V_s=0'},
+  {id:'3.47',l:'תחום ליניארי',t:'0\\lt v_{id}\\le v_{id\\max}=\\sqrt2V_{OV};\\quad V_{CM\\min}\\le V_{CM}\\le V_{CM\\max}'},
+  {id:'3.48',l:'מתח משותף מינימלי',t:'V_{CM\\min}=V_{SS}+V_{CS\\min}+V_{GSQ};\\quad V_{CS\\min}=V_{GS}-V_t'},
+  {id:'3.49',l:'מתח משותף מקסימלי',t:'V_{CM\\max}=V_{DD}-\\frac{IR_D}{2}+V_t'},
+  {id:'3.50',l:'מוליכות הדדית',t:'g_m=\\frac{2I_D}{V_{GS}-V_t}=\\frac{2I_D}{V_{OV}}=\\frac{I}{V_{OV}}=\\frac{I}{V_{GS}-V_t}'},
+  {id:'3.51',l:'הגבר הפרשי',t:'A_d=\\pm g_m\\,r_0\\parallel R_D',n:'הסימן מודפס כ-± קטן מעל סימן מינוס (בשכבת הטקסט של ה-PDF מופיע מינוס בלבד: A_d = −g_m r_0‖R_D, כמו בעמוד 4). הסימן תלוי באיזה מוצא/כיוון נמדד — ראו מקרא "מתי ההגבר ההפרשי חיובי ומתי שלילי".'},
+  {id:'3.52',l:'הגבר חד-צדדי',t:'A_{d\\_Single\\_ended}=\\pm\\frac12g_m\\,r_0\\parallel R_D\\parallel R_{in-next}'},
+  {id:'3.53',l:'מתי ההגבר ההפרשי חיובי ומתי שלילי? (הסוגריים המסומנים בצבע ליד ההגבר)',t:'\\frac{V_o}{V_{in}}=+\\Rightarrow\\frac{v_{o1}-v_{o2}}{V_{in2}-V_{in1}}=\\frac{v_{o2}-v_{o1}}{V_{in1}-V_{in2}};\\quad \\frac{V_o}{V_{in}}=-\\Rightarrow\\frac{V_{o2}-V_{o1}}{V_{in2}-V_{in1}}=\\frac{V_{o1}-V_{o2}}{V_{in1}-V_{in2}};\\quad \\frac{v_{o2}}{v_{id}}=\\frac{v_{o2}}{V_{in1}-V_{in2}}=+\\frac12g_mR_D;\\quad \\frac{v_{o1}}{v_{id}}=\\frac{v_{o1}}{V_{in1}-V_{in2}}=-\\frac12g_mR_D'},
+  {id:'3.54',l:'הגבר משותף',t:'A_{CM\\_Single\\_ended}=\\frac{v_{O2}}{v_{CM}}=\\frac{v_{O1}}{v_{CM}}=-\\frac{R_D}{2R_{SS}}'},
+  {id:'3.55',l:'יחס דחייה',t:'CMRR_{Single\\_ended}=g_mR_{SS}'},
+  {id:'3.56',l:'אי-התאמה',t:'A_{CM\\_Single\\_ended}\\Big|_{g_{m1}\\ne g_{m2}}=\\frac{R_D}{2R_{SS}}\\times\\frac{\\Delta g_m}{g_m}'},
+  {id:'3.57',l:'דחייה באי-התאמה (הערה: הביטוי מתקבל עם A_d ההפרשי הדו-צדדי; עם A_d_Single מתקבל g_m²R_SS/Δg_m)',t:'CMRR_{Single\\_ended}\\Big|_{g_{m1}\\ne g_{m2}}=\\frac{2g_m^2R_{SS}}{\\Delta g_m}\\qquad\\left(\\text{with }A_{d\\_Single}:\\ \\frac{g_m^2R_{SS}}{\\Delta g_m}\\right)'},
+  {id:'3.58',l:'יחס דחייה ב-dB',t:'CMRR=\\left|\\frac{A_{d\\_single\\_ended}}{A_{cm}}\\right|\\ \\Rightarrow\\ CMRR_{dB}=20\\log[CMRR]'},
+  {id:'3.59',l:'אם נתון V_A → ∞; וב-DC הזרמים יתחלקו ל-2 תמיד בגלל הטרנזיסטורים (גם אם R1 ו-R2 שונים או אחד מהם 0)',t:'V_A\\to\\infty\\Rightarrow r_o\\to\\infty\\Rightarrow A_{cm}\\to0\\Rightarrow CMRR\\to\\infty'},
+  {id:'3.60',l:'מודל אות קטן — מוצא 1 (מסגרת סגולה, למטה משמאל)',t:'v_{o1}=-g_mV_{GS1}R_{D1}=-g_mV_{G1}R_{D1}=-\\frac{g_mR_{D1}}{2}V_{id};\\quad V_{d1}=v_{o1}=-\\frac12g_mR_{D1}(V_{g1}-V_{g2})\\quad(V_s=0,\\ V_{GS1}=V_{G1}=V_{in}=\\tfrac{V_{id}}{2})'},
+  {id:'3.61',l:'מודל אות קטן — מוצא 2 (מסגרת כתומה)',t:'I_{R_{D1}}=g_mV_{GS1}=I_{S1};\\quad I_{R_{D2}}=g_mV_{GS2}=I_{S2};\\quad I_{S2}=-I_{S1}\\Rightarrow V_{d2}=v_{o2}=+\\frac12g_mR_{D2}(V_{g1}-V_{g2})'}]}
+]},
+{p:4,title:'מגבר הפרש FET ו-BJT (חזרה), מקורות זרם ראי, וידלר, מחלק זרם',secs:[
  {h:'מגבר הפרש FET',items:[
-  {id:'5.4',l:'תחומי כניסה',t:'0<v_{id}\\le v_{id\\max}=\\sqrt2V_{OV};\\quad V_{CM\\min}\\le V_{CM}\\le V_{CM\\max};\\quad V_{CM\\min}=V_{SS}+V_{CS\\min}+V_{GSQ};\\ V_{CM\\max}=V_{DD}-\\frac{IR_D}{2}+V_t'},
-  {id:'5.5',l:'g_m והגברים',t:'g_m=\\frac{2I_D}{V_{GS}-V_t}=\\frac{2I_D}{V_{OV}}=\\frac{I}{V_{OV}};\\quad A_d=-g_m\\,r_0\\parallel R_D;\\quad A_{d,single}=\\pm\\tfrac12g_m\\,r_0\\parallel R_D'},
-  {id:'5.6',l:'הגבר משותף ו-CMRR',t:'A_{CM,single}=\\frac{v_{O2}}{v_{CM}}=\\frac{v_{O1}}{v_{CM}}=-\\frac{R_D}{2R_{SS}};\\quad CMRR_{single}=g_mR_{SS};\\quad A_{CM,single}\\big|_{g_{m1}\\ne g_{m2}}=\\frac{R_D}{2R_{SS}}\\frac{\\Delta g_m}{g_m};\\ CMRR\\big|_{g_{m1}\\ne g_{m2}}=\\frac{2g_m^2R_{SS}}{\\Delta g_m}'}]},
- {h:'מגברי שרת אידיאליים',items:[
-  {id:'5.7',l:'חיבור מהפך',t:'V_O=-\\frac{R_2}{R_1}V_{in}=-\\frac{Z_2}{Z_1}V_{in};\\qquad R_{in}=\\frac{V_i}{i_i}=R_1'},
-  {id:'5.8',l:'חיבור לא מהפך',t:'A_V=\\frac{V_O}{V_{in}}=1+\\frac{R_2}{R_1}'},
-  {id:'5.9',l:'הגבר סופי A (מהפך ולא מהפך)',t:'G\\big|_{A\\ne\\infty}^{inv}=-\\frac{R_2}{R_1}\\cdot\\frac{1}{1+\\frac1A\\left(1+\\frac{R_2}{R_1}\\right)};\\qquad G\\big|_{A\\ne\\infty}^{non-inv}=\\Big(1+\\frac{R_2}{R_1}\\Big)\\frac{1}{1+\\frac1A\\left(1+\\frac{R_2}{R_1}\\right)}'},
-  {id:'5.10',l:'מסכם הופך',t:'V_o=-\\Big(\\frac{R_f}{R_1}V_1+\\frac{R_f}{R_2}V_2+\\dots+\\frac{R_f}{R_n}V_n\\Big)'},
-  {id:'5.11',l:'מגבר הפרש',t:'V_O=\\Big(1+\\frac{R_2}{R_1}\\Big)\\frac{R_4}{R_3+R_4}V_2-\\frac{R_2}{R_1}V_1;\\qquad \\frac{R_4}{R_3}=\\frac{R_2}{R_1}\\Rightarrow V_o=(V_2-V_1)\\frac{R_2}{R_1}'}]}]},
-{p:6,title:'מגבר מכשור, Slew Rate, משוב: השוואת מתח–דגימת מתח, השוואת זרם–דגימת מתח',secs:[
- {h:'מגבר מכשור',items:[
-  {id:'6.1',l:'דרגה ראשונה',t:'v_{O1}=\\Big(1+\\frac{R_3}{R_G}\\Big)v_1-\\frac{R_3}{R_G}v_2;\\quad v_{O1}-v_{O2}=\\Big(1+\\frac{2R_3}{R_G}\\Big)(v_1-v_2);\\quad v_{O2}=\\Big(1+\\frac{R_3}{R_G}\\Big)v_2-\\frac{R_3}{R_G}v_1'}]},
+  {id:'4.1',l:'אם נתון V_A → ∞ (מסגרת)',t:'V_A\\to\\infty\\Rightarrow r_o\\to\\infty\\ (A_{cm}\\to0)\\Rightarrow CMRR=\\left|\\frac{A_d}{A_{cm}}\\right|\\to\\infty'},
+  {id:'4.2',l:'יחס דחיית האות המשותף ו-CMRR_dB',t:'CMRR\\to\\left|\\frac{A_{singel\\_ended}}{A_{cm}}\\right|\\to CMRR_{dB}=20\\log[CMRR]'},
+  {id:'4.3',l:'תחום ליניארי',t:'0\\lt v_{id}\\le v_{id\\max}=\\sqrt2V_{OV};\\quad V_{CM\\min}\\le V_{CM}\\le V_{CM\\max}'},
+  {id:'4.4',l:'מתח משותף מינימלי ומקסימלי (V_cs min — של מקור הזרם)',t:'V_{CM\\min}=V_{SS}+V_{CS\\min}+V_{GSQ};\\quad V_{CM\\max}=V_{DD}-\\frac{IR_D}{2}+V_t;\\qquad V_{cs\\min}=V_{GS}-V_t'},
+  {id:'4.5',l:'מוליכות הדדית',t:'g_m=\\frac{2I_D}{V_{GS}-V_t}=\\frac{2I_D}{V_{OV}}=\\frac{I}{V_{OV}}=\\frac{I}{V_{GS}-V_t}'},
+  {id:'4.6',l:'הגבר הפרשי והגבר הפרשי חד-צדדי (‖R_in-next אם קיים)',t:'A_d=-g_m\\,r_0\\parallel R_D;\\quad A_{d\\_Single\\_ended}=\\pm\\frac12g_m\\,r_0\\parallel R_D\\parallel R_{in-next}'},
+  {id:'4.7',l:'ההגבר המשותף החד-צדדי ויחס הדחייה',t:'A_{CM\\_Single\\_ended}=\\frac{v_{O2}}{v_{CM}}=\\frac{v_{O1}}{v_{CM}}=-\\frac{R_D}{2R_{SS}};\\quad CMRR_{Single\\_ended}=g_mR_{SS}'},
+  {id:'4.8',l:'אי-התאמה g_m1 ≠ g_m2',t:'A_{CM\\_Single\\_ended}\\Big|_{g_{m1}\\ne g_{m2}}=\\frac{R_D}{2R_{SS}}\\times\\frac{\\Delta g_m}{g_m};\\quad CMRR_{Single\\_ended}\\Big|_{g_{m1}\\ne g_{m2}}=\\frac{2g_m^2R_{SS}}{\\Delta g_m}'}]},
+ {h:'מגבר הפרש BJT עם מקור זרם (המשך, ללא כותרת)',items:[
+  {id:'4.9',l:'אי-התאמה R_C1 ≠ R_C2',t:'R_{C1}\\ne R_{C2}\\Rightarrow A_{cm\\_diff}\\cong\\frac{\\Delta R_C}{2R_{EE}}=A_{cm\\_single}\\cdot\\left(\\frac{\\Delta R_C}{R_C}\\right)'},
+  {id:'4.10',l:'דחייה הפרשית',t:'CMRR_{diff}\\equiv\\left|\\frac{A_{d\\_diff}}{A_{cm\\_diff}}\\right|=\\frac{g_mR_C}{(\\Delta R_C/2R_{EE})}\\cong2g_mR_{EE}\\left(\\frac{R_C}{\\Delta R_C}\\right)'},
+  {id:'4.11',l:'קשרי זרמים (ציור הטרנזיסטור)',t:'I_e=I_b(\\beta+1);\\qquad I_c=\\beta I_b'},
+  {id:'4.12',l:'הגבר הפרשי (‖R_in-next אם קיים)',t:'A_d=\\pm\\frac{\\beta r_0\\parallel R_C}{r_\\pi}=\\pm g_mr_0\\parallel R_C\\parallel R_{in-next}'},
+  {id:'4.13',l:'הגבר חד-צדדי (‖R_in-next אם קיים)',t:'A_{d\\_Single}\\equiv\\frac{v_O}{v_{id}}=\\pm\\frac12\\cdot g_mr_0\\parallel R_C\\parallel R_{in-next}'},
+  {id:'4.14',l:'התנגדות כניסה למגבר הפרש',t:'R_{id}=\\frac{v_{id}}{i_{B1}}=2r_\\pi=2(\\beta+1)r_e'},
+  {id:'4.15',l:'כניסה משותפת',t:'R_{iCM}\\Big|_{r_O\\ne\\infty}=\\frac{v_{CM}}{i_B}=(\\beta+1)\\left(R_{EE}\\parallel\\frac{r_O}{2}\\right)\\Big|_{r_O\\to\\infty}=2R_{EE}(\\beta+1)',n:'בעמוד 4 מודפס (R_EE ‖ r_O/2) בעוד שבעמוד 3 מודפס (2R_EE ‖ r_O/2). הגבול 2R_EE(β+1) מתאים לגרסת עמוד 3.'},
+  {id:'4.16',l:'הגבר משותף',t:'A_{CM\\_Single}=\\frac{v_{O1}}{v_{CM}}=\\frac{v_{O2}}{v_{CM}}=-\\frac{R_C}{2R_{EE}}'},
+  {id:'4.17',l:'יחס דחייה',t:'CMRR_{Single}=\\left|\\frac{A_{d\\_Single}}{A_{CM\\_Single}}\\right|=g_mR_{EE}'},
+  {id:'4.18',l:'מתח תרמי ו-r_π',t:'V_T=25m;\\qquad r_\\pi=\\beta\\cdot\\frac{V_T}{I_C}'},
+  {id:'4.19',l:'חלוקת זרם המקור בין הפולטים (מתחת לשרטוט)',t:'I_{E1}=I_{E2}=\\frac12I'}]},
+ {h:'מקור זרם ראי-BJT (AC: נתק)',items:[
+  {id:'4.20',l:'זרם ייחוס',t:'I_{REF}\\Big|_{I_{S1}=I_{S2}}=I_O=\\frac{\\beta}{\\beta+2}\\frac{V_{cc}-V_{be}}{R}\\approx\\frac{V_{cc}-V_{be}}{R}'},
+  {id:'4.21',l:'יחס שטחים (m)',t:'I_O\\Big|_{I_{S2}=mI_{S1},\\ V_A\\ne\\infty}=I_{REF}\\frac{m}{1+\\frac{m+1}{\\beta}}\\left(1+\\frac{V_O-V_{BE}}{V_{A2}}\\right)'},
+  {id:'4.22',l:'התנגדות מוצא (ומודל DC: I_o במקביל ל-r_o2)',t:'R_O=r_{O2}=\\frac{V_A}{I_O};\\qquad r_{o2}=\\frac{V_A}{I_o}'}]},
+ {h:'מקור זרם לזרמים של מיקרואמפרים ועשרות מיקרואמפרים',items:[
+  {id:'4.23',l:'משוואת וידלר',t:'I_OR_E=V_T\\ln\\left(\\frac{I_{REF}}{I_O}\\right)'},
+  {id:'4.24',l:'התנגדות מוצא',t:'R_O=\\frac{V\'}{i\'}\\cong r_{O2}\\left(g_mR_E\\parallel r_\\pi+1\\right)'},
+  {id:'4.25',l:'מקור זרם ייחוס שקול לנגד R מ-V_CC (מסגרת)',t:'I_{Reff}\\equiv R\\ \\ (\\text{from }V_{CC})'}]},
+ {h:'מקור זרם ראי-FET (AC: נתק)',items:[
+  {id:'4.26',l:'אידיאלי',t:'\\frac{I_O}{I_{REF}}=\\frac{(W/L)_2}{(W/L)_1}'},
+  {id:'4.27',l:'עם מודולציה',t:'I_O\\cong I_{REF}\\frac{(W/L)_2}{(W/L)_1}\\big(1+\\lambda(V_O-V_{GS})\\big)'},
+  {id:'4.28',l:'התנגדות מוצא',t:'R_O=r_{O2}=\\frac{V_A}{I_O}=\\frac1{\\lambda I_O}'}]},
+ {h:'נקודת עבודה עבור 2 הטרנזיסטורים המרכיבים את מקור הזרם',items:[
+  {id:'4.29',l:'משוואת הנגד ומשוואת הטרנזיסטור → (V_GS, I)',t:'I=\\frac{-V_x-V_{GS}}{R};\\quad I=\\frac12K\'_n\\left(\\frac{W}{L}\\right)\\cdot V_{ov}^2;\\quad V_{ov}=V_{GS}-V_t\\ \\Rightarrow\\ (V_{GS},I)'}]},
+ {h:'מגבר הפרש BJT: (עם R_E, למטה)',items:[
+  {id:'4.30',l:'הגבר הפרשי והתנגדות כניסה',t:'A_d=-\\frac{\\beta R_Cr_0}{(r_\\pi+R_E)(r_0+R_C+R_E)+\\beta R_Er_0};\\quad R_{id}=2\\left((r_\\pi+R_E)+\\frac{R_E\\beta r_0}{r_0+R_C+R_E}\\right)'},
+  {id:'4.31',l:'הגבר וכניסה בגבול r_0 → ∞',t:'A_d\\Big|_{r_0\\to\\infty}=-\\frac{g_mR_C}{1+\\frac{R_E}{r_e}}=-\\alpha\\frac{R_C}{r_e+R_E};\\quad R_{id}\\Big|_{r_0\\to\\infty}=2\\big(r_\\pi+(\\beta+1)R_E\\big)'},
+  {id:'4.32',l:'הגבר חד-צדדי',t:'A_{d\\_Single\\_ended}\\equiv\\frac{v_{O2}}{v_{id}}=-\\frac{v_{O1}}{v_{id}}=\\frac12\\cdot\\frac{g_mR_C}{1+\\frac{R_E}{r_e}}=\\frac12\\cdot\\alpha\\frac{R_C}{r_e+R_E}'}]},
+ {h:'מחלק זרם Current divider',items:[
+  {id:'4.33',l:'שני נגדים במקביל',t:'I_{R1}=\\frac{R_2}{R_1+R_2}\\cdot I_{TOT};\\qquad I_{R2}=\\frac{R_1}{R_1+R_2}\\cdot I_{TOT}'},
+  {id:'4.34',l:'שלושה נגדים במקביל',t:'R_{eq}=R_1\\parallel R_2\\parallel R_3;\\quad I_{R1}=I_{TOT}\\cdot\\frac{R_{eq}}{R_1};\\ I_{R2}=I_{TOT}\\cdot\\frac{R_{eq}}{R_2};\\ I_{R3}=I_{TOT}\\cdot\\frac{R_{eq}}{R_3}'}]}
+]},
+{p:5,title:'חיבורי CS, CD, CG, CE, CB, CC ומחלק מתח',secs:[
+ {h:'חיבור CS',items:[
+  {id:'5.1',l:'CS: התנגדות כניסה',t:'R_{in}\\to\\infty'},
+  {id:'5.2',l:'CS: הגבר מתח',t:'A_V=\\frac{v_o}{v_i}=-\\frac{g_mR\'_L}{(1+g_mR_S)+\\frac{R_S+R\'_L}{r_o}}\\Big|_{r_o\\to\\infty}=-\\frac{g_mR\'_L}{(1+g_mR_S)}'},
+  {id:'5.3',l:'CS: התנגדות מוצא',t:'R_o=(g_mR_S+1)r_0+R_S\\Big|_{r_o\\to\\infty}=\\infty'}]},
+ {h:'חיבור CD',items:[
+  {id:'5.4',l:'CD: התנגדות כניסה',t:'R_{in}\\to\\infty'},
+  {id:'5.5',l:'CD: הגבר מתח',t:'A_v\\equiv\\frac{v_o}{v_i}=\\frac{g_mR_L\\parallel r_o}{g_m(R_L\\parallel r_o)+1}\\Big|_{r_o\\to\\infty}=\\frac{g_mR\'_L}{1+g_mR\'_L}'},
+  {id:'5.6',l:'CD: התנגדות מוצא',t:'R_{out}=R_o=r_o\\parallel1/g_m\\Big|_{r_o\\to\\infty}=\\frac1{g_m}'}]},
+ {h:'חיבור CG',items:[
+  {id:'5.7',l:'CG: עומס אפקטיבי',t:'R\'_L=R_D\\parallel R_L'},
+  {id:'5.8',l:'CG: התנגדות כניסה',t:'R_{in}=\\frac{v_{gs}}{i_d}=\\frac{r_o+R_D\\parallel R_L}{1+g_mr_o}=\\frac{r_o+R\'_L}{1+g_mr_o}\\Big|_{r_o\\to\\infty}=\\frac1{g_m}'},
+  {id:'5.9',l:'CG: הגבר מתח',t:'A_V=\\frac{v_o}{v_{in}}=\\frac{(1+g_mr_o)R\'_L}{r_o+R\'_L}\\Big|_{r_o\\to\\infty}=g_mR\'_L'},
+  {id:'5.10',l:'CG: התנגדות מוצא',t:'R_o=(g_mr_o+1)R_{sig}\\parallel R_S+r_0\\Big|_{r_o\\to\\infty}\\to\\infty'}]},
+ {h:'מחלק מתח Voltage divider',items:[
+  {id:'5.11',l:'שני נגדים: מתח המוצא, ומתח המשוב V_f (השרטוט הימני)',t:'V_{out}=V_{R2}=V_{in}\\cdot\\frac{R_2}{R_1+R_2};\\qquad V_f=V_o\\cdot\\frac{R_1}{R_1+R_2}'},
+  {id:'5.12',l:'שלושה נגדים בטור',t:'V_{R1}=V_{in}\\cdot\\frac{R_1}{R_1+R_2+R_3};\\quad V_{R2}=V_{in}\\cdot\\frac{R_2}{R_1+R_2+R_3};\\quad V_{R3}=V_{in}\\cdot\\frac{R_3}{R_1+R_2+R_3}'}]},
+ {h:'חיבור CE',items:[
+  {id:'5.13',l:'CE: הגדרת D',t:'D\\equiv(\\beta+1)(r_e+R_E)r_o+r_\\pi\\left(R_E+R\'_L\\right)+R_ER\'_L'},
+  {id:'5.14',l:'CE: הגבר זרם',t:'\\frac{i_O}{i_i}=-\\frac{\\beta r_o-R_E}{r_o+R_E+R\'_L}\\Big|_{r_o\\to\\infty}=-\\beta'},
+  {id:'5.15',l:'CE: הגבר מתח',t:'\\frac{v_O}{v_i}=-\\frac{R\'_L(\\beta r_o-R_E)}{D}\\Big|_{r_o\\to\\infty}=-\\frac{\\beta R\'_L}{r_\\pi+(\\beta+1)R_E}\\Big|_{R_E=0}=-g_mR\'_L'},
+  {id:'5.16',l:'CE: התנגדות כניסה',t:'R_{in}=\\frac{D}{r_o+R_E+R\'_L}\\Big|_{r_o\\to\\infty}=r_\\pi+(\\beta+1)R_E=(\\beta+1)(r_e+R_E)'},
+  {id:'5.17',l:'CE: התנגדות מוצא',t:'R_O=\\frac{(\\beta+1)(r_e+R_E)}{r_\\pi+R_E}r_o+(R_E\\parallel r_\\pi)\\Big|_{r_o\\to\\infty}=\\infty'}]},
+ {h:'חיבור CB',items:[
+  {id:'5.18',l:'CB: התנגדות כניסה',t:'R_{in}=\\frac{(r_\\pi+R_B)\\left(r_o+R\'_L\\right)}{(\\beta+1)r_o+r_\\pi+R_B+R\'_L}\\Big|_{r_o\\to\\infty}=\\frac{(r_\\pi+R_B)}{(\\beta+1)}\\Big|_{R_B\\to0}=\\frac{r_\\pi}{\\beta+1}=r_e=\\frac1{g_m}'},
+  {id:'5.19',l:'CB: הגבר זרם',t:'\\frac{i_O}{i_i}=\\frac{\\beta r_o+r_\\pi+R_B}{(\\beta+1)r_o+r_\\pi+R_B+R\'_L}\\Big|_{r_o\\to\\infty}=\\frac{\\beta}{(\\beta+1)}=\\alpha'},
+  {id:'5.20',l:'CB: הגבר מתח',t:'\\frac{v_O}{v_i}=\\frac{(\\beta r_o+r_\\pi+R_B)R\'_L}{(r_\\pi+R_B)\\left(r_o+R\'_L\\right)}\\Big|_{r_o\\to\\infty}=\\frac{\\beta R\'_L}{r_\\pi+R_B}\\Big|_{R_B\\to0}=\\frac{\\beta R\'_L}{r_\\pi}=g_mR\'_L'},
+  {id:'5.21',l:'CB: התנגדות מוצא',t:'R_O=r_o\\Big|_{r_o\\to\\infty}=\\infty'}]},
+ {h:'חיבור CC',items:[
+  {id:'5.22',l:'CC: הגדרת N',t:'N\\equiv(\\beta+1)R\'_Lr_o+r_\\pi\\left(R\'_L+r_o\\right)+R_C\\left(R\'_L+r_\\pi\\right)'},
+  {id:'5.23',l:'CC: הגבר זרם',t:'\\frac{i_O}{i_b}=\\frac{(\\beta+1)r_o+R_C}{r_o+R_C+R\'_L}\\Big|_{r_o\\to\\infty}=\\beta+1'},
+  {id:'5.24',l:'CC: הגבר מתח',t:'\\frac{v_O}{v_i}=\\frac{R\'_L[(\\beta+1)r_o+R_C]}{N}\\Big|_{r_o\\to\\infty}=\\frac{(\\beta+1)R\'_L}{r_\\pi+(\\beta+1)R\'_L}=\\frac{R\'_L}{R\'_L+r_e}'},
+  {id:'5.25',l:'CC: התנגדות כניסה',t:'R_{in}=\\frac{N}{r_o+R_C+R\'_L}\\Big|_{r_o\\to\\infty}=r_\\pi+(\\beta+1)R\'_L=(\\beta+1)\\left(r_e+R\'_L\\right)'},
+  {id:'5.26',l:'CC: התנגדות מוצא',t:'R_O=\\frac{(r_\\pi+R_B)(r_o+R_C)}{(\\beta+1)r_o+r_\\pi+R_B+R_C}\\Big|_{r_o\\to\\infty}=\\frac{R_B+r_\\pi}{(\\beta+1)}=\\frac{R_B}{(\\beta+1)}+r_e'}]},
+ {h:'קשרים בין β, r_e, α (שורה תחתונה)',items:[
+  {id:'5.27',l:'β, r_e, α',t:'\\beta=g_mr_\\pi;\\qquad r_e=\\frac{r_\\pi}{\\beta+1}=\\frac{\\alpha}{g_m};\\qquad \\alpha=\\frac{\\beta}{\\beta+1}'}]}
+]},
+{p:6,title:'משוב: ארבע הטופולוגיות — β, R11, R22, D, התנגדויות כוללות ומעברים',secs:[
+ {h:'1. Series–Shunt: טורי--מקבילי | השוואת מתח, דגימת מתח',items:[
+  {id:'6.1',l:'מציאת R22 (פורט 1 בנתק) — בדוגמה',t:'R_{22}=R_1+R_2'},
+  {id:'6.2',l:'מציאת R11 (פורט 2 בקצר) — בדוגמה',t:'R_{11}=R_1\\parallel R_2'},
+  {id:'6.3',l:'מציאת β (I_1 = 0) — בדוגמה: מגבר לא-מהפך',t:'\\beta=\\frac{V_f}{V_o}\\Big|_{I_1=0}=\\frac{R_1}{R_1+R_2}'},
+  {id:'6.4',l:'ההגבר המוגדר; מעגל המגבר A\'_V כולל העמסות רשת המשוב (R11, R22)',t:'A_v=\\frac{V_o}{V_s};\\qquad A\'_V'},
+  {id:'6.5',l:'D, הגבר והתנגדויות עם משוב (זיהוי: בכניסה — אין צומת (טורי); במוצא — יש צומת; β_f — ה-β שחישבנו לרשת המשוב)',t:'D=1+\\beta_fA\'_V;\\quad A_{Vf}=\\frac{A\'_V}{D}=\\frac{V_o}{V_s};\\quad R_{if}=R_{in}D;\\quad R_{Of}=\\frac{R_O}{D}'},
+  {id:'6.6',l:'התנגדויות כניסה ויציאה כולל משוב',t:'R_{\\inf(TOT)}=R_S+\\left(R_{in(Q)}+R_{11}\\right)\\cdot D;\\qquad R_{Of(TOT)}=\\frac{R_{O(Q)}\\parallel R_{22}}{D}',n:'בגזירה המלאה המקור R_s נמצא בתוך החוג, כך ש-(R_s+R_in+R_11)·D היא ההתנגדות הנראית מהמקור; הצורה המודפסת R_s+(R_in(Q)+R_11)·D אינה כופלת את R_s ב-D. מועתק כפי שמודפס.'},
+  {id:'6.7',l:'מעברים',t:'A_{Zf}=A_{Vf}R_s;\\quad A_{if}=A_{Vf}\\frac{R_s}{R_L};\\quad A_{Yf}=\\frac{A_{Vf}}{R_L}'}]},
+ {h:'2. Shunt–Shunt: מקבילי--מקבילי | השוואת זרם, דגימת מתח',items:[
+  {id:'6.8',l:'מציאת R22 (פורט 1 בקצר) — בדוגמה',t:'R_{22}=R_F'},
+  {id:'6.9',l:'מציאת R11 (פורט 2 בקצר) — בדוגמה',t:'R_{11}=R_F'},
+  {id:'6.10',l:'מציאת β (V_1 = 0) — בדוגמה: טרנס-אימפדנס',t:'\\beta=\\frac{I_f}{V_o}\\Big|_{V_1=0}=-\\frac1{R_F}'},
+  {id:'6.11',l:'ההגבר המוגדר; מעגל המגבר A\'_Z כולל העמסות רשת המשוב',t:'A_z=\\frac{V_o}{I_s};\\qquad A\'_Z'},
+  {id:'6.12',l:'D, הגבר והתנגדויות עם משוב (זיהוי: בכניסה — יש צומת; במוצא — יש צומת)',t:'D=1+\\beta_fA\'_Z;\\quad A_{Zf}=\\frac{A\'_Z}{D}=\\frac{V_o}{I_s};\\quad R_{if}=\\frac{R_{in}}{D};\\quad R_{Of}=\\frac{R_O}{D};\\qquad I_o=\\frac{V_o}{R_L},\\ V_s=I_sR_s'},
+  {id:'6.13',l:'התנגדויות כניסה ויציאה כולל משוב',t:'R_{\\inf(TOT)}=R_s+\\left(\\frac{D}{R_s\\parallel R_1\\parallel R_{in}(Q)}-\\frac1{R_s}\\right)^{-1};\\qquad R_{of(TOT)}=\\frac{R_o(Q)\\parallel R_{22}}{D}',n:'מודפס R_1 בתוך המקביל (R_s‖R_1‖R_in(Q)); ככל הנראה הכוונה ל-R_11 (העמסת רשת המשוב בכניסה). מועתק כפי שמודפס.'},
+  {id:'6.14',l:'מעברים',t:'A_{Vf}=\\frac{A_{Zf}}{R_s};\\quad A_{if}=\\frac{A_{Zf}}{R_L};\\quad A_{Yf}=\\frac{A_{Zf}}{R_sR_L}'}]},
+ {h:'3. Shunt–Series: מקבילי--טורי | השוואת זרם, דגימת זרם',items:[
+  {id:'6.15',l:'מציאת R22 (פורט 1 בקצר) — בדוגמה',t:'R_{22}=R_E\\parallel R_F'},
+  {id:'6.16',l:'מציאת R11 (פורט 2 בנתק) — בדוגמה',t:'R_{11}=R_F+R_E'},
+  {id:'6.17',l:'מציאת β (V_1 = 0) — בדוגמה: מגבר זרם',t:'\\beta=\\frac{I_f}{I_o}\\Big|_{V_1=0}=-\\frac{R_E}{R_E+R_F}'},
+  {id:'6.18',l:'ההגבר המוגדר; מעגל המגבר A\'_i כולל העמסות רשת המשוב',t:'A_i=\\frac{I_o}{I_s};\\qquad A\'_i'},
+  {id:'6.19',l:'D, הגבר והתנגדויות עם משוב (זיהוי: בכניסה — יש צומת; במוצא — אין צומת (טורי לעומס); V_s,I_s בכניסה, V_o,I_o במוצא)',t:'D=1+\\beta_fA\'_i;\\quad A_{if}=\\frac{A\'_i}{D}=\\frac{I_o}{I_s};\\quad R_{if}=\\frac{R_{in}}{D};\\quad R_{Of}=R_OD'},
+  {id:'6.20',l:'התנגדויות כניסה ויציאה כולל משוב',t:'R_{\\inf(TOT)}=R_s+\\left(\\frac{D}{R_s\\parallel R_1\\parallel R_{in}(Q)}-\\frac1{R_s}\\right)^{-1};\\qquad R_{Of(TOT)}=(R_O(Q)+R_{22})\\cdot D',n:'מודפס R_1 בתוך המקביל (R_s‖R_1‖R_in(Q)); ככל הנראה הכוונה ל-R_11 (העמסת רשת המשוב בכניסה). מועתק כפי שמודפס.'},
+  {id:'6.21',l:'מעברים',t:'A_{Zf}=A_{if}R_L;\\quad A_{Vf}=A_{if}\\frac{R_L}{R_s};\\quad A_{Yf}=\\frac{A_{if}}{R_s}'}]},
+ {h:'4. Series–Series: טורי--טורי | השוואת מתח, דגימת זרם',items:[
+  {id:'6.22',l:'מציאת R22 (פורט 1 בנתק) — בדוגמה',t:'R_{22}=R_E'},
+  {id:'6.23',l:'מציאת R11 (פורט 2 בנתק) — בדוגמה',t:'R_{11}=R_E'},
+  {id:'6.24',l:'מציאת β (I_1 = 0) — בדוגמה: טרנס-אדמיטנס',t:'\\beta=\\frac{V_f}{I_o}\\Big|_{I_1=0}=R_E'},
+  {id:'6.25',l:'ההגבר המוגדר; מעגל המגבר A\'_Y כולל העמסות רשת המשוב',t:'A_y=\\frac{I_o}{V_s};\\qquad A\'_Y'},
+  {id:'6.26',l:'D, הגבר והתנגדויות עם משוב (זיהוי: בכניסה — אין צומת (טורי); במוצא — אין צומת (טורי לעומס); β_f אינה β של הטרנזיסטור)',t:'D=1+\\beta_fA\'_Y;\\quad A_{Yf}=\\frac{A\'_Y}{D}=\\frac{I_o}{V_s};\\quad R_{if}=R_{in}D;\\quad R_{Of}=R_OD'},
+  {id:'6.27',l:'התנגדויות כניסה ויציאה כולל משוב',t:'R_{\\inf(TOT)}=R_s+\\left(R_{in(Q)}+R_{11}\\right)\\cdot D;\\qquad R_{outf}(TOT)=\\left(R_{o(Q)}+R_{22}\\right)\\cdot D',n:'בגזירה המלאה המקור R_s נמצא בתוך החוג, כך ש-(R_s+R_in+R_11)·D היא ההתנגדות הנראית מהמקור; הצורה המודפסת R_s+(R_in(Q)+R_11)·D אינה כופלת את R_s ב-D. מועתק כפי שמודפס.'},
+  {id:'6.28',l:'מעברים',t:'A_{Zf}=A_{Yf}R_sR_L;\\quad A_{Vf}=A_{Yf}R_L;\\quad A_{if}=A_{Yf}R_s'}]}
+]},
+{p:7,title:'מגברי שרת אידאליים, מסננים, מקורות זרם, כללי (סדר מעגל, dB, Slew Rate, ברקהאוזן)',secs:[
+ {h:'מגברי שרת אידאליים · מסננים מסדר שני (פס עליון)',items:[
+  {id:'7.1',l:'Low-Pass (מעביר נמוכים): במונה יש רק מספר קבוע (ללא s בכלל)',t:'H_1(s)=\\frac{K}{s^2+\\frac{\\omega_0}{Q}s+\\omega_0^2}'},
+  {id:'7.2',l:'Band-Stop / Notch (חוסם סרט): במונה יש s² ועוד מספר קבוע (אבל בלי s בודד)',t:'H_1(s)=\\frac{K(s^2+\\omega_z^2)}{s^2+\\frac{\\omega_0}{Q}s+\\omega_0^2}'},
+  {id:'7.3',l:'High-Pass (מעביר גבוהים): במונה יש s²',t:'H_1(s)=\\frac{K\\cdot s^2}{s^2+\\frac{\\omega_0}{Q}s+\\omega_0^2}'},
+  {id:'7.4',l:'Band-Pass (מעביר סרט): במונה יש s בלבד (בחזקת 1)',t:'H_1(s)=\\frac{K\\cdot s}{s^2+\\frac{\\omega_0}{Q}s+\\omega_0^2}'},
+  {id:'7.5',l:'איפה מותר KCL (ציור בפינה השמאלית העליונה): אין KCL בצומת המוצא (הזרם לא ידוע); יש KCL רק בצומת הכניסה ההופכת — אדמה וירטואלית',t:'i_{out}=\\ ?\\ \\ \\text{(no KCL at output)};\\qquad V^-=0\\,V\\ \\ \\text{(virtual ground)}'}]},
+ {h:'מעגל אקספוננציאלי',items:[
+  {id:'7.6',l:'מעגל אקספוננציאלי (דיודה בכניסה)',t:'V_o=-R\\cdot I_s\\cdot e^{\\frac{V_{in}}{nV_T}}'}]},
+ {h:'חוצץ / מגבר עוקב',items:[
+  {id:'7.7',l:'מגבר עוקב',t:'V_0=V_{in}'}]},
+ {h:'משווה (Comparator)',items:[
+  {id:'7.8',l:'משווה — חוג פתוח (ללא משוב, A_OL → ∞; סינוס בכניסה ⇐ ריבועי במוצא)',t:'V_{out}=\\begin{cases}+V_{CC} & V_+-V_-\\gt0\\\\ -V_{CC} & V_+-V_-\\lt0\\end{cases}'}]},
+ {h:'מגבר מכשור (Instrumentation)',items:[
+  {id:'7.9',l:'מוצא ראשון ומוצא שני',t:'v_{O1}=\\left(1+\\frac{R_3}{R_G}\\right)v_1-\\frac{R_3}{R_G}v_2;\\qquad v_{O2}=\\left(1+\\frac{R_3}{R_G}\\right)v_2-\\frac{R_3}{R_G}v_1'},
+  {id:'7.10',l:'הגבר הפרשי',t:'v_{O1}-v_{O2}=\\left(1+\\frac{2R_3}{R_G}\\right)(v_1-v_2)'},
+  {id:'7.11',l:'כיוון הפוך',t:'v_{O2}-v_{O1}=\\left(1+\\frac{2R_3}{R_G}\\right)(v_2-v_1)'}]},
+ {h:'הערות KCL',items:[
+  {id:'7.12',l:'אין KCL בצומת המוצא של המגבר (הזרם מהמגבר אינו ידוע); יש KCL רק בצומת הכניסה ההופכת — שם מתקיימת אדמה וירטואלית (0V)',t:'V^-=0\\,V'}]},
+ {h:'מסכם הופך (Summing)',items:[
+  {id:'7.13',l:'מסכם הופך',t:'V_o=-\\left(\\frac{R_f}{R_1}V_1+\\frac{R_f}{R_2}V_2+\\dots+\\frac{R_f}{R_n}V_n\\right)'}]},
+ {h:'מגבר הפרש',items:[
+  {id:'7.14',l:'מגבר הפרש',t:'V_O=\\left(1+\\frac{R_2}{R_1}\\right)\\frac{R_4}{R_3+R_4}V_2-\\frac{R_2}{R_1}V_1'},
+  {id:'7.15',l:'תנאי איזון',t:'\\text{if }\\frac{R_4}{R_3}=\\frac{R_2}{R_1}\\Rightarrow V_o=(V_2-V_1)\\frac{R_2}{R_1}'}]},
+ {h:'מעגל גוזר (Differentiator)',items:[
+  {id:'7.16',l:'גוזר',t:'V_0(t)=-RC\\cdot\\frac{dV_{in}(t)}{dt}'}]},
+ {h:'מעגל אינטגרטור',items:[
+  {id:'7.17',l:'אינטגרטור',t:'v_0(t)=-\\frac1{RC}\\int_0^tv_{in}(\\tau)\\,d\\tau+v_0(0)'}]},
+ {h:'מעגל לוגריתמי',items:[
+  {id:'7.18',l:'לוגריתמי (דיודה במשוב)',t:'V_o=-n\\cdot V_T\\cdot\\ln\\left(\\frac{V_{in}}{I_s\\cdot R}\\right)'}]},
+ {h:'חיבור מהפך (Inverting) -- A → ∞',items:[
+  {id:'7.19',l:'הגבר מהפך',t:'V_O=-\\frac{R_2}{R_1}V_{in}=-\\frac{\\bar Z_2}{\\bar Z_1}V_{in}'},
+  {id:'7.20',l:'התנגדות כניסה',t:'R_{in}=\\frac{V_i}{i_i}=R_1'}]},
+ {h:'חיבור לא מהפך -- A → ∞',items:[
+  {id:'7.21',l:'הגבר לא-מהפך',t:'A_V=\\frac{V_O}{V_{in}}=\\left(1+\\frac{R_2}{R_1}\\right)'}]},
+ {h:'הגבר סופי -- A ↛ ∞',items:[
+  {id:'7.22',l:'מהפך, A סופי',t:'G\\Big|_{A\\ne\\infty}=-\\frac{R_2}{R_1}\\left(\\frac{1}{1+\\frac1A\\left(1+\\frac{R_2}{R_1}\\right)}\\right)'},
+  {id:'7.23',l:'חילוץ A (מהפך)',t:'A=\\frac{1+\\frac{R_2}{R_1}}{\\frac{-\\frac{R_2}{R_1}}{G}-1}'},
+  {id:'7.24',l:'לא-מהפך, A סופי',t:'G\\Big|_{A\\ne\\infty}=\\left(1+\\frac{R_2}{R_1}\\right)\\left(\\frac{1}{1+\\frac1A\\left(1+\\frac{R_2}{R_1}\\right)}\\right)'},
+  {id:'7.25',l:'חילוץ A (לא-מהפך)',t:'A=\\frac{1+\\frac{R_2}{R_1}}{\\frac{1+\\frac{R_2}{R_1}}{G}-1}'}]},
+ {h:'מקורות זרם ומקורות זרם ראי · נקודת עבודה של מקור הזרם',items:[
+  {id:'7.26',l:'משוואת הנגד',t:'I=\\frac{-V_x-V_{GS}}{R}'},
+  {id:'7.27',l:'משוואת הטרנזיסטור (פתרון שתי המשוואות נותן את (V_GS, I) — נקודת העבודה של שני הטרנזיסטורים)',t:'I=\\frac12K\'_n\\left(\\frac{W}{L}\\right)V_{ov}^2;\\quad V_{ov}=V_{GS}-V_t'}]},
+ {h:'מקור זרם למיקרואמפרים (Widlar)',items:[
+  {id:'7.28',l:'משוואת Widlar',t:'I_OR_E=V_T\\ln\\left(\\frac{I_{REF}}{I_O}\\right)'},
+  {id:'7.29',l:'התנגדות מוצא',t:'R_O=\\frac{V\'}{i\'}\\cong r_{O2}\\left[1+g_m(R_E\\parallel r_\\pi)\\right]'}]},
+ {h:'מקור זרם ראי -- FET (AC: נתק)',items:[
+  {id:'7.30',l:'עם מודולציה',t:'I_O\\cong I_{REF}\\frac{(W/L)_2}{(W/L)_1}\\big(1+\\lambda(V_O-V_{GS})\\big)'},
+  {id:'7.31',l:'התנגדות מוצא',t:'R_O=r_{O2}=\\frac{V_A}{I_O}=\\frac1{\\lambda I_O}'},
+  {id:'7.32',l:'יחס אידיאלי',t:'\\frac{I_O}{I_{REF}}=\\frac{(W/L)_2}{(W/L)_1}'}]},
+ {h:'מקור זרם ראי -- BJT (AC: נתק)',items:[
+  {id:'7.33',l:'זרם ייחוס',t:'I_{REF}\\Big|_{I_{S1}=I_{S2}}=I_O=\\frac{\\beta}{\\beta+2}\\cdot\\frac{V_{cc}-V_{be}}{R}\\approx\\frac{V_{cc}-V_{be}}{R}'},
+  {id:'7.34',l:'יחס שטחים',t:'I_O\\Big|_{I_{S2}=mI_{S1},\\ V_A\\ne\\infty}=I_{REF}\\frac{m}{1+\\frac{m+1}{\\beta}}\\left(1+\\frac{V_O-V_{BE}}{V_{A2}}\\right)'},
+  {id:'7.35',l:'התנגדות מוצא (מודל AC: I_O במקביל ל-r_O2)',t:'R_O=r_{O2}=\\frac{V_A}{I_O}'}]},
+ {h:'קבל עקיפה (Bypass)',items:[
+  {id:'7.36',l:'קבל עקיפה במקביל ל-R: ב-DC נתק (לא פוגע בנקודת העבודה); ב-ac קצר — מבטל את R ומוריד את ההתנגדות לאפס',t:'\\text{DC: }Z_C\\to\\infty;\\qquad \\text{ac: }Z_C\\to0\\Rightarrow R\\parallel C\\to0'}]},
+ {h:'טרנספורמציית מקור (תבנין ↔ נורטון)',items:[
+  {id:'7.37',l:'המרת מקורות',t:'V_S=i_S\\cdot R;\\qquad i_S=\\frac{V_S}{R}'}]},
+ {h:'הגבר בדציבלים',items:[
+  {id:'7.38',l:'המרות dB',t:'A=10^{\\frac{A_{dB}}{20}};\\qquad A_{dB}=20\\log_{10}(A)'}]},
  {h:'Slew Rate',items:[
-  {id:'6.2',l:'קצב שינוי מקסימלי ורוחב סרט להספק מלא',t:'V\\cdot\\omega_t\\le SR;\\quad \\omega_MV_{O\\max}=SR;\\quad f_M=\\frac{SR}{2\\pi V_{O\\max}}'}]},
- {h:'השוואת מתח – דגימת מתח (מתח, מתח)',items:[
-  {id:'6.3',l:'משוב טורי-מקבילי: D, הגבר והתנגדויות',t:'D=1+\\beta A_V\';\\quad A_{Vf}=\\frac{A_V\'}{D};\\quad R_{if}=R_{in}D;\\quad R_{Of}=\\frac{R_O}{D}'},
-  {id:'6.4',l:'השיטה: העמסות רשת המשוב וחישוב β',t:'A_V\'=\\frac{V_o}{V_i}\\ \\text{(המגבר כולל }R_{11},R_{22}\\text{)};\\qquad \\beta=\\frac{V_f}{V_o}\\Big|_{I_i=0}',note:'R₁₁ נמדד בהדקי הכניסה של רשת המשוב (צד 1) כשהצד השני פתוח; R₂₂ נמדד בהדקי המוצא (צד 2) כשצד 1 פתוח. את שניהם מוסיפים למגבר הבסיסי לפני חישוב A\'.'}]},
- {h:'השוואת זרם – דגימת מתח (זרם, מתח)',items:[
-  {id:'6.5',l:'משוב מקבילי-מקבילי: D, הגבר והתנגדויות',t:'D=1+\\beta A_Z\';\\quad A_{Zf}=\\frac{A_Z\'}{D};\\quad R_{if}=\\frac{R_{in}}{D};\\quad R_{Of}=\\frac{R_O}{D}'},
-  {id:'6.6',l:'השיטה: העמסות רשת המשוב וחישוב β',t:'A_Z\'=\\frac{V_o}{I_i}\\ \\text{(המגבר כולל }R_{11},R_{22}\\text{)};\\qquad \\beta=\\frac{I_f}{V_o}\\Big|_{V_i=0}',note:'R₁₁: הדקי צד 1 של רשת המשוב כשצד 2 מקוצר (דגימת מתח); R₂₂: הדקי צד 2 כשצד 1 מקוצר (השוואת זרם). המקור הוא מקור זרם I_i במקביל ל-R_s.'}]}]},
-{p:7,title:'משוב: דגימת זרם, קריטריון ברקהאוזן, מגבר כללי',secs:[
- {h:'השוואת מתח – דגימת זרם (מתח, זרם)',items:[
-  {id:'7.1',l:'משוב טורי-טורי',t:'D=1+\\beta A_Y\';\\quad A_{Yf}=\\frac{A_Y\'}{D};\\quad R_{if}=R_{in}D;\\quad R_{Of}=R_OD;\\qquad \\beta=\\frac{V_f}{I_o}\\Big|_{I_i=0}'}]},
- {h:'השוואת זרם – דגימת זרם (זרם, זרם)',items:[
-  {id:'7.2',l:'משוב מקבילי-טורי',t:'D=1+\\beta A_I\';\\quad A_{If}=\\frac{A_I\'}{D};\\quad R_{if}=\\frac{R_{in}}{D};\\quad R_{Of}=R_OD;\\qquad \\beta=\\frac{I_f}{I_o}\\Big|_{V_i=0}'}]},
- {h:'משוב חיובי: קריטריון ברקהאוזן',items:[
-  {id:'7.3',l:'הגבר חוג ותנאי תנודה',t:'L(j\\omega)=A(j\\omega)\\beta(j\\omega);\\quad |L(j\\omega)|=1,\\ \\angle L(j\\omega)=0\\pm2\\pi k,\\ k=1,2,3,\\dots'}]},
- {h:'מגבר כללי: ללא עומס ועם עומס',items:[
-  {id:'7.4',l:'הגבר ללא עומס והתנגדות מוצא',t:'A_{VO}=\\frac{v_O}{v_{in}}\\Big|_{R_L\\to\\infty}=G_mR_O;\\qquad R_O\\big|_{R_L\\to\\infty}'},
-  {id:'7.5',l:'הגבר עם עומס והתנגדות מוצא כוללת',t:'G_V=A_V=\\frac{v_O}{v_{in}}\\Big|_{R_L}=A_{VO}\\frac{R_L}{R_O+R_L}=G_m(R_O\\parallel R_L);\\qquad R_{Out}\\big|_{R_L}=R_O\\parallel R_L'}]}]}
+  {id:'7.39',l:'קצב הסחרור',t:'V\\cdot\\omega_t\\le SR;\\qquad \\omega_MV_{O\\max}=SR'},
+  {id:'7.40',l:'f_M — full power bandwidth',t:'f_M=\\frac{SR}{2\\pi V_{O\\max}}'}]},
+ {h:'תנאי לתנודות (Barkhausen)',items:[
+  {id:'7.41',l:'תנאי ברקהאוזן',t:'\\beta(j\\omega_0)A_v=1\\iff\\text{Re}[\\beta(j\\omega)]A_v=1'},
+  {id:'7.42',l:'הפרדה לחלקים',t:'\\beta(j\\omega)=\\frac1{\\text{Re}+j\\,\\text{Im}};\\qquad \\frac1{j\\omega}=-j\\frac1\\omega'},
+  {id:'7.43',l:'תדר התנודות',t:'\\text{Im}=0\\Rightarrow\\omega_0=\\dots;\\qquad f_0=\\frac{\\omega_0}{2\\pi}'}]},
+ {h:'סוגי מעגלים (המשך) · זיהוי סוג הכניסה והיציאה (עמודה אמצעית)',items:[
+  {id:'7.44',l:'אינטגרטור / גוזר',t:'\\text{integrator: }H\\propto\\frac1s;\\qquad \\text{differentiator: }H\\propto s'},
+  {id:'7.45',l:'אות משותף (Common mode): רצוי → 0; איכות הדחייה נמדדת ב-CMRR',t:'A_{cm}=\\frac{v_o}{v_{cm}}\\to0'},
+  {id:'7.46',l:'אות הפרשי (Differential): זה האות שרוצים להגביר',t:'A_d=\\frac{v_o}{v_{id}}'},
+  {id:'7.47',l:'משווה (Comparator): ללא משוב שלילי; המוצא בינארי ולא ליניארי',t:'v_O=\\pm V_{CC}'},
+  {id:'7.48',l:'זיהוי סוג הכניסה (בסיסים/שערים של T1,T2): חד-צדדית — מקור AC רק בכניסה אחת והשנייה לאדמה; דו-צדדית/הפרשית — מקור בין שתי הכניסות או שני מקורות AC נפרדים (למשל חצי וחצי)',t:'\\text{Single-Ended}\\ /\\ \\text{Differential}'},
+  {id:'7.49',l:'זיהוי סוג היציאה (קולקטורים/נקזים): חד-צדדית — v_o בין מוצא אחד לאדמה; דו-צדדית/הפרשית — v_o בין שני המוצאים (חץ מאחד לשני)',t:'v_o:\\ \\text{output}\\to\\text{ground}\\ \\ /\\ \\ v_o:\\ \\text{output 1}\\to\\text{output 2}'}]},
+ {h:'מסגרת ורודה: תהודה מסדר 2 ותנאי ברקהאוזן (שלבי עבודה)',items:[
+  {id:'7.50',l:'מציאת ביטוי כתלות ב-jω, נגיע למצב של 1 חלקי; משווים את החלק המדומה ל-0 למציאת ω0, ומחלקים ב-2π למציאת f0',t:'\\beta(j\\omega)=\\frac1{Re+j\\cdot I_m};\\quad \\frac1{j\\omega}=-j\\cdot\\frac1\\omega;\\quad I_m=0\\to w_0=\\dots;\\quad f_0=\\frac{w_0}{2\\pi}'},
+  {id:'7.51',l:'תמסורת מעגל תהודה מסדר 2 — נפשט ונגיע לצורה הבאה; גורם הטיב ותדירות מרכזית',t:'\\frac{(K/KS/KS^2\\dots)}{(jw)^2+jwb+c};\\quad Q=\\frac{\\omega_0}{b}=\\frac{\\sqrt c}{b};\\quad c=w_0^2\\Rightarrow f_0=\\frac1{2\\pi}\\sqrt c;\\quad \\omega_0=\\sqrt c'}]},
+ {h:'כללי · סדר המעגל מתוך פונקציית התמסורת',items:[
+  {id:'7.52',l:'הגדרת הסדר: החזקה הגבוהה ביותר של s (או jω) במכנה של H(s); זהה למספר רכיבי האגירה הבלתי-תלויים (קבלים + סלילים)',t:'H(s)=\\frac{N(s)}{D(s)};\\qquad \\text{order}=\\deg D(s)'},
+  {id:'7.53',l:'סדר ראשון: קוטב אחד, שיפוע ±20dB/dec, שינוי פאזה עד 90°',t:'H(s)=\\frac{a_1s+a_0}{s+\\omega_0}'},
+  {id:'7.54',l:'סדר שני: שני קטבים, שיפוע ±40dB/dec, שינוי פאזה עד 180°; מספר האפסים = החזקה הגבוהה ביותר במונה',t:'H(s)=\\frac{b_2s^2+b_1s+b_0}{s^2+\\frac{\\omega_0}{Q}s+\\omega_0^2}'},
+  {id:'7.55',l:'תהודה מסדר 2 (כלל אצבע: סופרים קבלים וסלילים שאינם ניתנים לאיחוד — זה הסדר)',t:'Q=\\frac{\\omega_0}{b}=\\frac{\\sqrt c}{b};\\quad \\omega_0=\\sqrt c;\\quad f_0=\\frac{\\omega_0}{2\\pi}'}]},
+ {h:'סוגי מעגלים -- איך מזהים',items:[
+  {id:'7.56',l:'הגבר · ניחות · אופסט (תוספת שגיאה) · רוויה (חיתוך) · סינון אות משותף',t:'V_o/V_{in}\\gt1\\to\\text{Gain};\\quad V_o/V_{in}\\lt1\\to\\text{Attenuation};\\quad V_o=(A\\cdot V_{in})+X\\to\\text{Offset};\\quad V_o=V_{limit}\\to\\text{Saturation};\\quad A_d/A_c\\to\\text{CMRR}'}]}
+]},
+{p:8,title:'סיכום בכתב יד: MOSFET, BJT, מגברי הפרש FET ו-BJT',secs:[
+ {h:'BJT',items:[
+  {id:'8.1',l:'לנקודת עבודה',t:'I_{BQ},\\ I_{CQ},\\ V_{CE}'},
+  {id:'8.2',l:'זרמים (NPN / PNP)',t:'i_c=\\beta\\cdot i_b;\\qquad i_e=(\\beta+1)\\,i_b\\approx i_c'},
+  {id:'8.3',l:'עבור הולכה; V_CEsat — מתחת לערך זה הטרנזיסטור ברוויה (בדר"כ)',t:'V_{BE}\\gt V_{BE_{Activc}}=0.7;\\qquad V_{CEsat}=0.2'},
+  {id:'8.4',l:'r_π ו-V_T',t:'r_\\pi=\\frac{\\beta}{g_m}=\\frac{V_T}{I_B}=\\frac{\\beta\\cdot V_T}{I_C};\\qquad V_T=25mV'},
+  {id:'8.5',l:'מוליכות הדדית',t:'g_m=\\frac{I_C}{V_T}=\\frac{I_C}{25mV}'},
+  {id:'8.6',l:'התנגדות מוצא',t:'r_0=\\frac{V_A}{I_C}'},
+  {id:'8.7',l:'ב-BJT הנגד r_o מחובר בין הקולקטור לאמיטר, ולכן הזרם שזורם עליו',t:'i_{r_o}=\\frac{v_{ce}}{r_o}'}]},
+ {h:'MosFET',items:[
+  {id:'8.8',l:'למציאת נק\' עבודה (DC): נחפש באמצעות המעגל (לרוב שקול תבנין) את הערכים',t:'V_{GSQ},\\ I_{DQ},\\ V_{DSQ}'},
+  {id:'8.9',l:'NMOS: הולכה',t:'V_{GS}\\gt V_t'},
+  {id:'8.10',l:'NMOS: טריודי',t:'V_{GS}-V_t\\gt V_{DS}:\\quad I_D=k\'_n\\frac{W}{L}\\left[(V_{GS}-V_t)V_{DS}-\\frac{V_{DS}^2}{2}\\right]'},
+  {id:'8.11',l:'NMOS: רוויה',t:'V_{GS}-V_t\\lt V_{DS}:\\quad I_D=\\frac12k\'_n\\frac{W}{L}(V_{GS}-V_t)^2;\\qquad (V_{GS}-V_t)=\\sqrt{\\frac{2I_D}{k\'\\frac{W}{L}}}'},
+  {id:'8.12',l:'NMOS: g_m (AC; עם I_D → I_DQ, V_GS → V_GSQ)',t:'g_m=k\'\\frac{W}{L}(V_{GS}-V_t)=\\frac{2I_D}{(V_{GS}-V_t)};\\qquad g_m=\\sqrt{2k_n\\frac{W}{L}\\cdot|I_D|}'},
+  {id:'8.13',l:'PMOS: הולכה',t:'V_{SG}\\gt|V_t|'},
+  {id:'8.14',l:'PMOS: טריודי',t:'V_{SG}-|V_t|\\gt V_{SD}:\\quad I_D=k_p\\frac{W}{L}\\left[(V_{SG}-|V_t|)\\cdot V_{SD}-\\frac{V_{SD}^2}{2}\\right]'},
+  {id:'8.15',l:'PMOS: רוויה',t:'V_{SG}-|V_t|\\le V_{SD}:\\quad I_D=\\frac12k_p\\frac{W}{L}(V_{SG}-|V_t|)^2;\\qquad (V_{SG}-|V_t|)=\\sqrt{\\frac{2I_D}{K\'_p\\frac{W}{L}}}',n:'בכתב היד ל-PMOS מופיע k_p (בלי תג) בנוסחאות הזרם וה-g_m, אבל K\'_p בתוך השורש — כנראה אותו פרמטר תהליך k\'_p.'},
+  {id:'8.16',l:'PMOS: g_m (AC; עם I_D → I_DQ, V_SG → V_SGQ)',t:'g_m=k_p\\frac{W}{L}\\cdot(V_{SG}-|V_t|)=\\frac{2I_D}{(V_{SG}-|V_t|)};\\qquad g_m=\\sqrt{2k_p\\frac{W}{L}\\cdot|I_D|}'}]},
+ {h:'מגברי הפרש; BJT',items:[
+  {id:'8.17',l:'חלוקת הזרמים לפי מתחי הבסיסים',t:'I_{C1}+I_{C2}=I;\\quad V_{b1}=V_{b2}\\to I_{C1}=I_{C2}=\\frac I2;\\quad V_{b1}\\gt V_{b2}\\to I_{C1}\\gt I_{C2};\\quad V_{b1}\\lt V_{b2}\\to I_{C1}\\lt I_{C2}'},
+  {id:'8.18',l:'מימוש מקור הזרם (מסגרת מקווקוות)',t:'V_{ss}+V_{be}+I\\cdot R=0'},
+  {id:'8.19',l:'טבלת A_d: מוצא חד-צדדי / מוצא דו-צדדי (הופך מופע / לא הופך מופע)',t:'\\text{single: }A_d=\\frac{V_{c1}}{V_{b1}-V_{b2}}\\ (\\text{inv.}),\\ A_d=\\frac{V_{c2}}{V_{b1}-V_{b2}}\\ (\\text{non-inv.});\\quad \\text{double: }A_d=\\frac{V_{c1}-V_{c2}}{V_{b1}-V_{b2}}\\ (\\text{inv.}),\\ A_d=\\frac{V_{c2}-V_{c1}}{V_{b1}-V_{b2}}\\ (\\text{non-inv.})'},
+  {id:'8.20',l:'CM (common-mode): מצב אופטימלי, וזרמי הקולקטור',t:'V_{b1}=V_{b2}\\ \\to\\ \\text{optimal }(V_{b1}=V_{b2}=0);\\quad I_{C1}=I_{C2}=\\frac I2\\to r_{\\pi1}=r_{\\pi2}=\\frac{\\beta\\cdot V_T}{I_{c(1/2)}}'},
+  {id:'8.21',l:'V_CM-max / V_CM-min ל-BJT (קבועים, לא משתנים: V_be, V_c)',t:'V_{CM}\\uparrow\\to V_e\\uparrow\\to V_{ce}\\downarrow\\to V_{cs}\\uparrow;\\quad V_{CM-\\max}\\Leftrightarrow V_{ce}=0.2V;\\qquad V_{CM}\\downarrow\\to V_e\\downarrow\\to V_{cs}\\downarrow\\to V_{ce}\\uparrow;\\quad V_{CM-\\min}\\Leftrightarrow V_{cs}=0.2V'}]},
+ {h:'מגברי הפרש; FET',items:[
+  {id:'8.22',l:'ב-AC (מסגרת עליונה משמאל): מקורות ה-DC מאופסים',t:'AC:\\ V_{CC}=V_{G1}=V_{G2}=V_s=0\\,[V]'},
+  {id:'8.23',l:'אם נתון V_A → ∞',t:'V_A\\to\\infty\\Rightarrow r_o\\to\\infty\\ (A_{cm}\\to0)\\Rightarrow CMRR=\\left|\\frac{A_d}{A_{cm}}\\right|\\to\\infty'},
+  {id:'8.24',l:'אחוז שגיאה: הגבר אות משותף דו-צדדי (שונה מ-0 כתוצאה משגיאת הנגדים) והגבר הפרשי דו-צדדי',t:'A_{cm}=\\frac{\\Delta R_D}{2R_{ss}}=\\frac{R_D\\cdot[\\%e]}{2R_{ss}};\\quad A_d=g_m\\cdot R_D;\\quad \\Rightarrow CMRR=\\frac{A_d}{A_{cm}}=\\frac{g_n\\cdot R_D}{\\frac{R_D\\cdot[\\%e]}{2\\cdot R_{ss}}}',n:'במונה כתוב g_n — ככל הנראה g_m (A_d = g_m·R_D).'},
+  {id:'8.25',l:'יחס דחיית האות המשותף — רלוונטי להגבר חד-צדדי בלבד!',t:'CMRR=\\left|\\frac{A_{id}}{A_{cm}}\\right|;\\qquad CMRR_{dB}=20\\log(CMRR);\\qquad A_{V\\to\\infty}\\Rightarrow r_o\\to\\infty\\Rightarrow CMRR\\to\\infty',n:'בשרשרת כתוב A_{V→∞}; ככל הנראה הכוונה ל-V_A → ∞ (כמו במסגרת "אם נתון").'},
+  {id:'8.26',l:'V_CM-max / V_CM-min ל-FET (קבועים, לא משתנים: V_GS, V_D)',t:'V_{CM}\\uparrow\\to V_S\\uparrow\\to V_{DS}\\downarrow;\\quad V_{CM(\\max)}\\Leftrightarrow V_{DS}=V_{GS}-V_t;\\qquad V_{CM}\\downarrow\\to V_S\\downarrow\\to V_{DS(cs)}\\downarrow;\\quad V_{CM(\\min)}\\Leftrightarrow V_{DS(cs)}=V_{GS(cs)}-V_t'},
+  {id:'8.27',l:'מתח הכניסה (Differential-Mode)',t:'V_{in}=V_{g1}-V_{g2}'},
+  {id:'8.28',l:'טבלת A_d: מוצא חד-צדדי / דו-צדדי (נעבוד ב-AC; למציאת A_d מספיק לשרטט חצי מעגל, בתנאי שהוא סימטרי)',t:'\\text{single: }A_d=\\frac{V_{d1}}{V_{g1}-V_{g2}}\\ (\\text{inv.}),\\ A_d=\\frac{V_{d2}}{V_{g1}-V_{g2}}\\ (\\text{non-inv.});\\quad \\text{double: }A_d=\\frac{V_{d1}-V_{d2}}{V_{g1}-V_{g2}}\\ (\\text{inv.}),\\ A_d=\\frac{V_{d2}-V_{d1}}{V_{g1}-V_{g2}}\\ (\\text{non-inv.})'},
+  {id:'8.29',l:'CM — Common-Mode',t:'V_{CM\\min}=V_{SS}+V_{CS}+V_{GSQ};\\qquad V_2=V_1=V'}]}
+]}
 ];
+// Old sheet id -> new sheet id (null = no equivalent on the new sheet)
+const OLD2NEW={'1.1':'1.2','1.2':'1.3','1.3':'1.4','1.4':'1.8','1.5':'1.9','1.6':'1.10','1.7':'1.6','1.8':'1.14','1.9':'1.16','1.10':'1.12','1.11':'1.15','1.12':'1.19','1.13':'1.20','1.14':'1.22','2.1':'3.13','2.2':'3.16','2.3':'3.17','2.4':'3.15','2.5':'3.18','2.6':'3.19','2.7':'3.26','2.8':'3.27','2.9':'3.25','2.10':'3.29','2.11':'3.28','2.12':'5.2','2.13':'5.5','3.1':'5.9','3.2':'3.2','3.3':'3.4','3.4':'5.27','3.5':'3.8','3.6':'3.10','3.7':'5.15','4.1':'5.24','4.2':'5.20','4.3':'7.33','4.4':'7.28','4.5':'7.32','4.6':'3.32','4.7':'3.34','5.1':'3.37','5.2':'3.41','5.3':'3.43','5.4':'3.47','5.5':'3.50','5.6':'3.54','5.7':'7.19','5.8':'7.21','5.9':'7.22','5.10':'7.13','5.11':'7.14','6.1':'7.10','6.2':'7.39','6.3':'6.5','6.4':'6.3','6.5':'6.12','6.6':'6.10','7.1':'6.26','7.2':'6.19','7.3':'7.41','7.4':null,'7.5':null};
 const SHEET_IX={};SHEET.forEach(P=>P.secs.forEach(S=>S.items.forEach(i=>{SHEET_IX[i.id]={p:P.p,sec:S.h,l:i.l,t:i.t};})));
 /* ציטוט של נוסחה מהדף: כתובת מלאה + קישור */
-function sref(id,extra){const f=SHEET_IX[id];if(!f)return '';return '<a class="sref" href="#/sheet/'+id+'">📄 דף נוסחאות · עמוד '+f.p+' · '+f.sec+' · נוסחה '+id+(extra?' ('+extra+')':'')+'</a>';}
+function srefN(id,extra){const f=SHEET_IX[id];if(!f)return '';return '<a class="sref" href="#/sheet/'+id+'">📄 דף נוסחאות · עמוד '+f.p+' · '+f.sec+' · נוסחה '+id+(extra?' ('+extra+')':'')+'</a>';}
+/* עמודים ישנים מצטטים מזהים של הדף הקודם (7 עמודים): ממפים אותם לדף החדש */
+function sref(id,extra){if(Object.prototype.hasOwnProperty.call(OLD2NEW,id)){const n=OLD2NEW[id];if(n==null)return '<span class="sref warnref">⚠ נוסחה '+id+' מהדף הקודם לא מופיעה בדף החדש'+(extra?' ('+extra+')':'')+'</span>';return srefN(n,extra);}return srefN(id,extra);}
 /* קופסת "הנוסחאות שבהן השתמשנו" בסוף צעד */
 function used(rows){return '<div class="used"><b>🧾 הדרך והנוסחאות מהדף</b><ul>'+rows.map(r=>'<li>'+r+'</li>').join('')+'</ul></div>';}
 const basic=(what)=>'<span class="sref basic">📐 '+what+' — לא מהדף: יסוד מחשמל 1 (מותר תמיד)</span>';
 
 function buildSheet(d){
-  d.innerHTML='<div class="lhead"><div class="kicker">דף הנוסחאות הרשמי · 7 עמודים · מותר להכניס למבחן</div><h1>דף הנוסחאות של המבחן</h1><p class="sub">זה הדף בדיוק כפי שהוא, עמוד אחר עמוד, ולידו כל נוסחה מוקלדת עם מספר. בפתרון מבחן 2026 כל צעד מצטט "עמוד · סעיף · מספר נוסחה", והקישור מביא לכאן. <a class="btn line" href="sheet/formulas-exam.pdf" target="_blank" rel="noopener">⬇️ ה-PDF המקורי</a></p>'+
+  d.innerHTML='<div class="lhead"><div class="kicker">דף הנוסחאות החדש · 8 עמודים · מותר להכניס למבחן</div><h1>דף הנוסחאות של המבחן</h1><p class="sub">זה הדף בדיוק כפי שהוא, עמוד אחר עמוד, ולידו כל נוסחה מוקלדת עם מספר. בפתרון מבחן 2026 כל צעד מצטט "עמוד · סעיף · מספר נוסחה", והקישור מביא לכאן. <a class="btn line" href="sheet/formulas-exam.pdf" target="_blank" rel="noopener">⬇️ ה-PDF המקורי</a></p>'+
     '<input class="search" id="ssearch" type="search" placeholder="חיפוש: CE, g_m, זנר, משוב…" aria-label="חיפוש בדף הנוסחאות"><div class="chips" id="schips"></div></div>'+
     SHEET.map(P=>'<section class="spage" id="sp-'+P.p+'"><h2 class="xh">עמוד '+P.p+' · '+P.title+'</h2><div class="spgrid"><a class="simg" href="sheet/p-'+P.p+'.png" target="_blank" rel="noopener" title="פתח את העמוד בגודל מלא"><img src="sheet/p-'+P.p+'.png" alt="דף נוסחאות, עמוד '+P.p+'" loading="lazy"></a><div class="slist">'+
-      P.secs.map(S=>'<h3 class="fh">'+S.h+'</h3>'+S.items.map(i=>'<div class="frow2 srow" id="sf-'+i.id+'" data-t="'+(S.h+' '+i.l+' '+i.t+' '+i.id).replace(/<[^>]+>/g,'').replace(/"/g,'').toLowerCase()+'"><div class="fn"><span class="sid">'+i.id+'</span> '+i.l+'</div><div class="fmath" dir="ltr">\\['+i.t.replace(/</g,'&lt;')+'\\]</div><div class="fbar"><button type="button" class="btn fcopy" data-t="'+esc(i.t)+'">העתק LaTeX</button></div>'+(i.note?'<div class="snote">'+i.note+'</div>':'')+'</div>').join('')).join('')+
+      P.secs.map(S=>'<h3 class="fh">'+S.h+'</h3>'+S.items.map(i=>'<div class="frow2 srow" id="sf-'+i.id+'" data-t="'+(S.h+' '+i.l+' '+i.t+' '+i.id).replace(/<[^>]+>/g,'').replace(/"/g,'').toLowerCase()+'"><div class="fn"><span class="sid">'+i.id+'</span> '+i.l+'</div><div class="fmath" dir="ltr">\\['+i.t.replace(/</g,'&lt;')+'\\]</div><div class="fbar"><button type="button" class="btn fcopy" data-t="'+esc(i.t)+'">העתק LaTeX</button></div>'+((i.note||i.n)?'<div class="snote">'+(i.note||i.n)+'</div>':'')+'</div>').join('')).join('')+
       '</div></div></section>').join('');
   d.querySelectorAll('.fcopy').forEach(b=>b.onclick=()=>copyText(b.dataset.t,b));
   const ch=d.querySelector('#schips');SHEET.forEach(P=>{const b=document.createElement('button');b.type='button';b.textContent='עמוד '+P.p;b.onclick=()=>document.getElementById('sp-'+P.p).scrollIntoView({behavior:reduced?'auto':'smooth'});ch.appendChild(b);});
@@ -12224,6 +12544,888 @@ function build(d){
 return {build};
 })();
 
+/* ---------- מבחן 2026 מועד א׳ סמסטר ג (#/m26a): לומדים את הנושא דרך השאלה ---------- */
+const M26A=(function(){
+const RX=String.raw;
+/* המיקום של כל נוסחה בדף הנוסחאות החדש (8 עמודים, מזהה = עמוד.מספר) */
+const K={diode:'1.2',diodeT:'1.3',diodeDiff:'1.4',rd:'1.6',P:'1.7',
+  kcl:'7.12',noninv:'7.21',diffamp:'7.14',diffBal:'7.15',instr:'7.10',
+  bjtDC:'3.1',bjtRel:'3.1',bjtIb:'3.4',bjtActive:'3.3',bjtAC:'3.10',early:'3.12',roInf:'4.1',mirrorAC:'7.35',vcesat:'8.3',vdiv:'5.11',idiv:'4.33',par:'2.36',att:'7.56',
+  split:'3.59',vin:'8.27',vs0:'3.46',sign:'3.53',AdTable:'8.28',cmrr:'3.55',cmrrDb:'3.58',cmrrNote:'8.25',vaInf:'4.1',vcmMin:'3.48',vcmMax:'3.49',vcmChain:'8.26',
+  mosSat:'3.16',vov:'3.45',fetQ:'3.24',satCond:'3.15',gmDiff:'3.50',gmAC:'3.25',smallModel:'3.28',Ad:'4.6',AdS:'3.52',Acm:'3.54',
+  ssD:'6.19',ssA:'6.18',ssBeta:'6.17',ssR11:'6.16',ssR22:'6.15',ssRinf:'6.20',ssConv:'6.21',ceRin:'5.16',rel8:'8.2',srcTf:'7.37',rb:'3.2',beta_re:'5.27',dB:'7.38'};
+const R=(k,x)=>srefN(K[k],x);
+const NB=t=>'<span class="sref warnref">⚠ לא בדף: '+t+'</span>';
+const BK=(n,p,t)=>'<span class="bref">📓 חוברת שיעור '+n+' · עמ׳ '+p+(t?' · '+t:'')+'</span>';
+const tb=(head,rows)=>'<div class="tbl"><table><thead><tr>'+head.map(h=>'<th>'+h+'</th>').join('')+'</tr></thead><tbody>'+rows.map(r=>'<tr>'+r.map(c=>'<td>'+c+'</td>').join('')+'</tr>').join('')+'</tbody></table></div>';
+const src=list=>'<ul class="m26src">'+list.map(([u,t])=>'<li><a href="'+u+'" target="_blank" rel="noopener">'+t+'</a></li>').join('')+'</ul>';
+/* ================= שאלה 1 · דיודה כנגד משתנה + BJT כמקור זרם ================= */
+function q1Full(C){
+  C.V([40,200],[40,120],'v_{sig}',{kind:'ac',side:1});C.G(40,200);C.w([40,120],[40,60],[60,60]);
+  C.R([60,60],[125,60],'R_{sig} 15Ω',{side:-1});C.Cap([125,60],[155,60],'',{});C.w([155,60],[560,60]);
+  const q=C.npn(280,130,{label:'npn'});C.w(q.c,[290,60]);C.nd(290,60);C.T(290,48,'X','big','middle');
+  C.R(q.b,[195,130],'R_B 1kΩ',{side:-1});C.w([195,130],[160,130],[160,150]);C.bat([160,195],[160,150],'V_{BB} 3V',{side:-1});C.G(160,195);
+  C.R(q.e,[290,215],'R_E 2kΩ',{side:1});C.G(290,215);
+  C.nd(380,60);C.w([380,60],[380,105]);C.D([380,165],[380,105],'D',{side:1});C.w([380,165],[380,175]);C.bat([380,215],[380,175],'V_{CC} 8V',{side:1});C.G(380,215);
+  C.arrow(365,92,0,-1);C.T(358,100,'I_D','val','end');
+  C.Cap([420,60],[450,60],'',{});C.nd(500,60);C.R([500,60],[500,200],'R_L 60Ω',{side:1});C.G(500,200);C.term(560,60);C.T(560,48,'v_o','hi','middle');
+  return C;
+}
+function q1DC(C){
+  C.nd(170,50);C.T(170,38,'X: 7.320V','val','middle');
+  const q=C.npn(160,120,{});C.w(q.c,[170,50]);
+  C.R(q.b,[80,120],'R_B 1kΩ',{side:-1});C.w([80,120],[50,120],[50,140]);C.bat([50,190],[50,140],'3V',{side:-1});C.G(50,190);
+  C.R(q.e,[170,210],'R_E 2kΩ',{side:1,off:20});C.G(170,210);
+  C.w([170,50],[300,50],[300,80]);C.D([300,140],[300,80],'D',{side:1});C.w([300,140],[300,160]);C.bat([300,205],[300,160],'8V',{side:1});C.G(300,205);
+  C.arrow(286,100,0,-1);C.T(280,112,'I_D=1.133mA','val','end');C.T(318,126,'V_D=0.680V','val2','start');
+  C.T(95,105,'I_B=11.330µA','val','middle');C.T(186,172,'I_E=1.144mA','val','start');C.T(186,152,'V_E=2.289V','val2','start');C.T(105,158,'V_B=2.989V','val2','middle');
+  C.T(186,84,'V_CE=5.031V','val2','start');C.T(186,68,'I_C=1.133mA','val','start');
+  return C;
+}
+function q1AC(C){
+  C.V([40,190],[40,110],'v_{sig}',{kind:'ac',side:1});C.G(40,190);C.w([40,110],[40,60],[70,60]);
+  C.R([70,60],[150,60],'R_{sig} 15Ω',{side:-1});C.w([150,60],[400,60]);C.nd(220,60);C.T(220,46,'X','big','middle');
+  C.R([220,60],[220,170],'r_D 44.130Ω',{side:1,off:14});C.G(220,170);
+  C.nd(320,60);C.R([320,60],[320,170],'R_L 60Ω',{side:-1});C.G(320,170);C.term(400,60);C.T(400,48,'v_o','hi','middle');
+  C.w([150,60],[150,60]);
+  mk('path',{d:'M 270 60 L 270 100',stroke:'var(--muted)','stroke-width':1.6,'stroke-dasharray':'4 3',fill:'none'},C.svg);
+  C.T(270,212,'collector: open','val2','middle');C.T(270,228,'(i_b=0, r_o→∞)','val2','middle');
+  return C;
+}
+function q1Calc(VBB){const b=100,IB=(VBB-0.7)/(1e3+(b+1)*2e3),IC=b*IB,IE=(b+1)*IB,VD=0.05*Math.log(IC/1.41e-9),rD=0.05/IC,p=rD*60/(rD+60),dl=p/(15+p),VCE=(8-VD)-IE*2e3;
+  return {IB,IC,IE,VD,rD,p,dl,VCE,id:0.042*dl/rD};}
+function mountQ1(host,px){
+  host.innerHTML='<div class="lab"><div class="controls"><div class="sliders" id="'+px+'-ctl"></div><div class="presets"><button type="button" data-preset="'+px+'-a">V_BB = 1V</button><button type="button" data-preset="'+px+'-b">3V (השאלה)</button><button type="button" data-preset="'+px+'-c">6V</button></div></div>'+
+    '<div class="scopes">'+scope(px+'-t','short',lg('t2','v_{sig}(t) ×20 [mA-scale]','dash')+lg('t1','i_D(t)')+lg('axis','I_D (DC)','dash'),'זרם הדיודה בזמן')+scope(px+'-d','short',lg('t1','δ(V_BB)')+lg('t3','הנקודה הנוכחית','dot'),'ההנחתה מול V_BB')+'</div><div class="readouts" id="'+px+'-r"></div></div>';
+  const cv=reg(px+'-t'),cv2=reg(px+'-d');
+  const st=sliders(px+'-ctl',[{key:'V',id:px+'-v',label:'V<sub>BB</sub> (קובע את זרם הטרנזיסטור)',min:1,max:6,step:0.1,value:3,fmt:v=>v.toFixed(1)+' V'}],upd);
+  const dcur=[];for(let v=1;v<=6.001;v+=0.05)dcur.push([v,q1Calc(v).dl]);
+  function upd(){const s=q1Calc(st.V),I=s.IC*1e3,a=s.id*1e3,pts=[],sg=[];
+    for(let i=0;i<=200;i++){const t=2*i/200;pts.push([t,I-a*Math.sin(2*Math.PI*t)]);sg.push([t,I+0.042*20*Math.sin(2*Math.PI*t)*0]);}
+    const sig=[];for(let i=0;i<=200;i++){const t=2*i/200;sig.push([t,I+0.6*Math.sin(2*Math.PI*t)]);}
+    draw(cv,{x0:0,x1:2,y0:0,y1:Math.max(3,I+a+0.3),xl:'t [ms]',yl:'[mA]',series:[{c:'t2',w:1.4,dash:[5,4],pts:sig},{c:'axis',w:1,dash:[4,4],pts:[[0,I],[2,I]]},{c:'t1',w:2.6,pts}]});
+    draw(cv2,{x0:1,x1:6,y0:0.4,y1:0.85,xl:'V_BB [V]',yl:'δ',series:[{c:'t1',w:2.6,pts:dcur}],points:[{x:st.V,y:s.dl,c:'t3',label:s.dl.toFixed(3)}]});
+    readouts(px+'-r',[['I<sub>C</sub> = I<sub>D</sub>',(s.IC*1e3).toFixed(3)+' mA'],['V<sub>D</sub>',s.VD.toFixed(3)+' V'],['r<sub>D</sub> = nV<sub>T</sub>/I<sub>D</sub>',s.rD.toFixed(2)+' Ω'],['δ = v<sub>o</sub>/v<sub>sig</sub>',s.dl.toFixed(3)],['משרעת i<sub>d</sub>',(s.id*1e3).toFixed(3)+' mA'],['V<sub>CE</sub>',s.VCE.toFixed(3)+' V'+(s.VCE<0.2?' ⚠ רוויה':'')]]);}
+  presets({[px+'-a']:{[px+'-v']:1},[px+'-b']:{[px+'-v']:3},[px+'-c']:{[px+'-v']:6}});
+  upd();
+}
+function q1Figs(){
+  if(document.getElementById('m26-q1-dc'))q1DC(Circuit('m26-q1-dc',420,240));
+  if(document.getElementById('m26-q1-ac'))q1AC(Circuit('m26-q1-ac',440,240));
+  const cv=document.getElementById('m26-q1-id');if(cv){reg('m26-q1-id');const P=[],S=[];
+    for(let i=0;i<=400;i++){const t=2*i/400;P.push([t,1.133-0.599*Math.sin(2*Math.PI*t)]);S.push([t,1.133+0.042*14*Math.sin(2*Math.PI*t)]);}
+    draw(cv,{x0:0,x1:2,y0:0,y1:2,xl:'t [ms]',yl:'i_D [mA]',series:[{c:'t2',w:1.3,dash:[5,4],pts:S},{c:'axis',w:1,dash:[4,4],pts:[[0,1.133],[2,1.133]]},{c:'t1',w:2.6,pts:P}],points:[{x:0.25,y:0.534,c:'t3',label:'0.534'},{x:0.75,y:1.732,c:'t3',label:'1.732'}]});}
+  const cr=document.getElementById('m26-q1-exp');if(cr){reg('m26-q1-exp');const E=[],Tn=[];
+    for(let v=0.55;v<=0.75;v+=0.002)E.push([v,1.41e-6*Math.exp(v/0.05)]);
+    const VQ=0.680,IQ=1.133;for(let v=0.6;v<=0.75;v+=0.01)Tn.push([v,IQ+(v-VQ)/0.04413]);
+    draw(cr,{x0:0.55,x1:0.75,y0:0,y1:3,xl:'V_D [V]',yl:'I_D [mA]',series:[{c:'t1',w:2.6,pts:E},{c:'t2',w:1.6,dash:[6,4],pts:Tn}],points:[{x:VQ,y:IQ,c:'t3',label:'Q'}]});}
+}
+
+const Q1={n:1,id:'m26-q1',pts:25,title:'דיודה כנגד שנשלט בזרם, וטרנזיסטור שמזין אותה',
+topic:'נקודת עבודה של BJT · דיודה לאות קטן · הפרדה ל-DC ול-AC',
+primer:[
+{t:'המעגל במילים: מי עושה מה',h:RX`
+<p>לפני נוסחה אחת, קוראים את המעגל כמו סיפור. יש בו <b>שני עולמות</b>: עולם ה-DC (הספקים 3V ו-8V, שקובעים "איפה הכול יושב") ועולם ה-AC (האות הקטן של 42mV, שעובר מהמקור לעומס). הקבלים הם הגבול בין העולמות.</p>
+${tb(['רכיב','מה הוא עושה'],[
+['\\(v_{sig}\\), \\(R_{sig}=15\\Omega\\)','מקור האות הקטן (42mV, 1kHz) וההתנגדות שלו. "הנגד העליון" של מחלק מתח'],
+['קבלי הצימוד','מעבירים את האות, חוסמים DC. כך המקור והעומס לא "מקלקלים" את נקודת העבודה'],
+['\\(V_{CC}=8V\\) והדיודה','הספק דוחף זרם דרך הדיודה. ב-AC הדיודה היא נגד \\(r_D\\) לאדמה: "הנגד התחתון" של המחלק'],
+['npn עם \\(R_B\\), \\(R_E\\), \\(V_{BB}\\)','<b>מקור זרם DC</b> שמושך את זרם הדיודה וקובע אותו. הוא <b>לא מגביר</b> שום דבר: אין אות בבסיס'],
+['\\(R_L=60\\Omega\\)','העומס. ב-AC במקביל ל-\\(r_D\\)']])}
+`+co('key','💡','הרעיון של כל השאלה בשורה אחת',RX`<p>הטרנזיסטור קובע זרם DC בדיודה, הזרם קובע את ההתנגדות הדינמית שלה \(r_D=nV_T/I_D\), וההתנגדות הזו קובעת כמה מהאות מגיע לעומס. זה <b>מנחת שנשלט בזרם</b> (כמו כפתור ווליום חשמלי).</p>`)},
+{t:'דיודה אמיתית: חוק אקספוננציאלי ונקודת עבודה',h:RX`
+<p>דיודה מעשית היא רכיב <b>לא ליניארי</b>: הזרם גדל אקספוננציאלית עם המתח.</p>
+\[I_D=I_S\,e^{V_D/nV_T}\quad\Longleftrightarrow\quad V_D=nV_T\ln\!\left(\frac{I_D}{I_S}\right)\]
+<p>${R('diode')}</p>
+<p>המשמעות המעשית: אם <b>הזרם</b> ידוע (כמו אצלנו, שבו הטרנזיסטור "כופה" אותו), המתח על הדיודה יוצא ישר מה-ln, <b>בלי לנחש 0.7V</b>. בשביל זה נתנו לך \(I_S\) ו-\(n\). \(n\) הוא "מקדם האידיאליות" (כאן 2) ו-\(V_T=25mV\) הוא המתח התרמי.</p>
+<p><b>נקודת העבודה</b> \((V_{DQ},I_{DQ})\) היא הזוג שהדיודה יושבת עליו כשמכבים את האות הקטן. ${BK(1,7,'הדיודה המעשית')}</p>`},
+{t:'מודל אות קטן של דיודה: למה r_D = nV_T / I_D',h:RX`
+<p>כשמוסיפים לנקודת העבודה אות קטן, נשארים קרוב מאוד לנקודה Q על העקומה. שם העקומה כמעט ישרה: זה <b>קו המשיק</b>. השיפוע של המשיק הוא \(dI_D/dV_D\), וההופכי שלו הוא <b>ההתנגדות הדינמית</b>:</p>
+\[\frac{dI_D}{dV_D}=\frac{I_S e^{V_D/nV_T}}{nV_T}=\frac{I_{DQ}}{nV_T}\quad\Rightarrow\quad r_D=\frac{nV_T}{I_{DQ}}\]
+<p>${R('rd')}</p>
+${scope('m26-q1-exp','short',lg('t1','I_D(V_D): העקומה האקספוננציאלית')+lg('t2','המשיק בנקודה Q: השיפוע שלו = 1/r_D','dash'),'הדיודה והמשיק')}
+<p><b>האינטואיציה החשובה:</b> ככל שזרם ה-DC גדול יותר, העקומה תלולה יותר, ולכן \(r_D\) <b>קטן</b> יותר. זה מה שהופך את הדיודה לנגד שאפשר לשלוט בו בעזרת זרם.</p>
+<p><b>מתי מותר?</b> הקירוב \(e^x\approx1+x\) תקף רק כש-\(|v_d|\ll nV_T\) (כאן \(nV_T=50mV\)). ${NB('התנאי \\(|v_d|\\ll nV_T\\)')} ${BK(1,9,'ההתנגדות הדינמית')}</p>`},
+{t:'DC ו-AC בנפרד: איך בונים כל מעגל שקול',h:RX`
+<p>מעגל עם דיודה או טרנזיסטור ואות קטן פותרים <b>בשני שלבים</b> ואז מחברים: \(x(t)=X_{DC}+x_{ac}(t)\).</p>
+${tb(['רכיב','במעגל DC','במעגל AC','למה'],[
+['קבל צימוד','נתק','קצר','\\(Z_C=\\frac{1}{2\\pi fC}\\): אינסופי ב-f=0, קטן מאוד בתדר האות'],
+['מקור מתח AC (\\(v_{sig}\\))','קצר (מכובה)','נשאר','בשלב ה-DC מסתכלים רק על הספקים'],
+['מקור מתח DC (\\(V_{CC},V_{BB}\\))','נשאר','<b>קצר לאדמה</b>','המתח שלו לא משתנה, אז השינוי עליו 0'],
+['מקור זרם DC','נשאר','<b>נתק</b>','הזרם שלו לא משתנה, אז שינוי הזרם 0'],
+['דיודה','\\(V_D=nV_T\\ln(I_D/I_S)\\)','נגד \\(r_D\\)','הקו המשיק'],
+['טרנזיסטור','\\(I_C=\\beta I_B\\)','מודל אות קטן','כאן: אין אות בבסיס, אז הוא נתק']])}
+<p>${R('bjtDC')} ${R('bjtAC')} ${BK(1,8,'"מקור מתח = מקצרים, מקור זרם = מנתקים"')}</p>`},
+{t:'טרנזיסטור באזור הפעיל = מקור זרם',h:RX`
+<p>באזור הפעיל \(I_C=\beta I_B\), והזרם \(I_C\) <b>כמעט לא תלוי</b> במתח \(V_{CE}\). זו בדיוק ההגדרה של מקור זרם. מה קובע את הזרם? <b>חוג הבסיס</b>:</p>
+\[V_{BB}=I_BR_B+V_{BE}+I_ER_E,\qquad I_E=(\beta+1)I_B\]
+\[\Rightarrow\ I_{BQ}=\frac{V_{BB}-V_{BE}}{R_B+(\beta+1)R_E}\]
+<p>${R('bjtIb')} ${R('bjtRel')}</p>
+<p>\(R_B\) <b>נשאר בנוסחה</b>. מי ששוכח אותו מקבל זרם קצת גדול מדי. ${BK(5,4,'דוגמה למציאת נקודת עבודה')}</p>
+<p><b>ב-AC:</b> אין שום מקור AC בחוג הבסיס, ולכן \(i_b=0\). \(V_A\) לא נתון, ולכן \(r_o\to\infty\). יחד: הקולקטור הוא מקור זרם DC אידיאלי, וב-AC הוא <b>נתק</b>. ${R('roInf')}</p>`},
+{t:'הספק פיזור',h:RX`<p>הספק שרכיב "שורף" = המתח עליו כפול הזרם דרכו. לדיודה \(P_D=V_DI_D\) ${R('P')}. לטרנזיסטור כמעט כל ההספק נשרף בין הקולקטור לפולט:</p>
+\[P_Q=V_{CE}I_C+V_{BE}I_B\approx V_{CE}I_C\]
+<p>האיבר של הבסיס זניח, כי \(I_B\) קטן פי \(\beta\). ${NB('\\(P_Q=V_{CE}I_C\\) לטרנזיסטור')}</p>`}
+],
+prob:{t:'שאלה 1 · BJT שמזין דיודה, והדיודה כנגד משתנה לאות',pts:25,lvl:'25 נק\'',tags:['dc','ac'],w:600,h:240,
+fig(C){q1Full(C);},
+st:RX`עבור המעגל באיור, נתוני הדיודה: \(n=2\), \(V_T=25mV\), \(I_S=1.41nA\). נתוני הטרנזיסטור (npn): \(\beta=100\), \(V_{BE}=0.7V\), \(V_T=25mV\). מתח המקור הוא אות קטן ונתון: \(v_{sig}(t)=42\sin(2000\pi t)\,[mV]\). <b>(א · 9 נק')</b> שרטטו מעגל שקול לניתוח DC וחשבו את \(V_D\) ו-\(I_D\) ואת הספק הפיזור של הטרנזיסטור. <b>(ב · 8 נק')</b> שרטטו מעגל שקול לניתוח AC וחשבו את יחס המתחים \(\delta=v_o/v_{sig}\). <b>(ג · 4 נק')</b> חשבו ורשמו את הביטוי הכולל AC+DC של הזרם דרך הדיודה. <b>(ד · 4 נק')</b> הסבירו במשפט קצר את תפקיד המעגל ואת תפקיד הטרנזיסטור.`,
+given:RX`\(R_{sig}=15\Omega\), \(R_B=1k\Omega\), \(V_{BB}=3V\), \(R_E=2k\Omega\), \(V_{CC}=8V\) (אנודת הדיודה על +8V, הקתודה בצומת X), \(R_L=60\Omega\). הקולקטור מחובר ישר לצומת X. שני קבלי צימוד.`,
+ask:RX`\(V_D,\ I_D,\ P_Q\) · \(\delta\) · \(i_D(t)\) · תפקיד המעגל והטרנזיסטור`,
+live:(host,px)=>mountQ1(host,px),
+steps:[
+{t:'סעיף א · שלב 1: בונים את מעגל ה-DC',b:RX`<p>מכבים את \(v_{sig}\) (קצר) ושני הקבלים הופכים ל<b>נתק</b>. לכן \(R_{sig}\), המקור ו-\(R_L\) מתנתקים מהמעגל, ואין בהם זרם DC. נשאר:</p>
+<p>\(V_{CC}\) → דיודה → צומת X → קולקטור. בסיס ← \(R_B\) ← \(V_{BB}\). פולט → \(R_E\) → אדמה.</p>
+${circ('m26-q1-dc',lg('t1','מעגל שקול DC עם כל הערכים')+' · הקבלים נתק, המקור והעומס נעלמו')}
+`+used([R('bjtDC','ניתוח DC: קבל נתק, מקורות AC מקוצרים')])},
+{t:'סעיף א · שלב 2: זרם הבסיס מחוג הבסיס',b:RX`<p>מניחים אזור פעיל (נבדוק בסוף). KVL בחוג \(V_{BB}\to R_B\to BE\to R_E\to\) אדמה:</p>
+\[I_{BQ}=\frac{V_{BB}-V_{BE}}{R_B+(\beta+1)R_E}=\frac{3-0.7}{1000+101\cdot2000}=\frac{2.3}{203000}=11.330\ \mu A\]
+`+used([R('bjtIb','זרם בסיס'),BK(5,4,'אותו חוג בדיוק')])},
+{t:'סעיף א · שלב 3: זרמי הקולקטור והפולט',b:RX`
+\[I_C=\beta I_B=100\cdot11.330\,\mu A=1.133\ mA\]
+\[I_E=(\beta+1)I_B=101\cdot11.330\,\mu A=1.144\ mA\]
+`+used([R('bjtRel','קשרי זרמים')])},
+{t:'סעיף א · שלב 4: זרם הדיודה = I_C (לא I_E!)',b:RX`<p>ב-DC הקבלים נתק, אז לצומת X מתחברים רק שני ענפים: הדיודה (הזרם \(I_D\) <b>נכנס</b> ל-X) והקולקטור (\(I_C\) <b>יוצא</b> מ-X). KCL:</p>
+\[I_D=I_C=1.133\ mA\]
+<p><b>לא \(I_E\)!</b> \(I_E\) זורם ב-\(R_E\) והוא כולל גם את \(I_B\) שמגיע מ-\(V_{BB}\), לא מהדיודה.</p>
+`+used([basic('KCL בצומת X')])},
+{t:'סעיף א · שלב 5: המתח על הדיודה',b:RX`
+\[V_D=nV_T\ln\!\left(\frac{I_D}{I_S}\right)=2\cdot0.025\cdot\ln\!\left(\frac{1.133\cdot10^{-3}}{1.41\cdot10^{-9}}\right)=0.05\cdot13.597=0.680\ V\]
+<p>זה בדיוק השימוש של הנתון \(I_S\): לא מניחים 0.7V, מחשבים.</p>
+`+used([R('diode','משוואת הדיודה')])},
+{t:'סעיף א · שלב 6: מתחי הצמתים ובדיקת אזור פעיל',b:RX`
+\[V_X=V_C=V_{CC}-V_D=8-0.680=7.320\ V\]
+\[V_E=I_ER_E=1.144m\cdot2k=2.289\ V,\qquad V_B=V_{BB}-I_BR_B=2.989\ V\]
+\[V_{CE}=V_C-V_E=7.320-2.289=5.031\ V\]
+<p><b>בדיקה:</b> \(V_{CB}=7.320-2.989=4.331V>0\) ו-\(V_{CE}=5.031V>V_{CE,sat}=0.2V\). לכן <b>פעיל ✓</b>, וההנחה \(I_C=\beta I_B\) הייתה מוצדקת.</p>
+`+co('warn','⚠️','מלכודת בדף',RX`<p>בדף יש \(V_{ceQ}=V_{cc}-I_c(R_c+R_e)\). היא נכתבה למעגל עם נגד \(R_C\) בקולקטור. כאן "העומס" בקולקטור הוא דיודה, ומי שמציב בה בעיוורון מקבל 5.734V, וזה שגוי כי חסר מפל הדיודה. כותבים \(V_{CE}=V_C-V_E\).</p>`)+used([R('bjtActive','הנחת פעילות ובדיקתה'),R('vcesat'),NB('\\(V_{CE}=V_C-V_E\\) הכללי')])},
+{t:'סעיף א · שלב 7: הספק הפיזור של הטרנזיסטור',b:RX`
+\[P_Q=V_{CE}I_C=5.031\cdot1.133\,mA=5.701\ mW\]
+<p>עם האיבר של הבסיס: \(5.701+0.7\cdot0.0113=5.709\ mW\) (הבדל של פחות מ-0.2%). בונוס: הדיודה עצמה מפזרת \(P_D=V_DI_D=0.770\ mW\).</p>
+`+used([R('P','P = V·I (בדף לדיודה)'),NB('\\(P_Q=V_{CE}I_C\\)')])},
+{t:'סעיף ב · שלב 1: מה הופך כל רכיב ב-AC',b:RX`<ol><li>קבלי הצימוד הופכים ל<b>קצר</b>.</li>
+<li>\(V_{CC}\) ו-\(V_{BB}\) (מקורות מתח DC) הופכים ל<b>קצר לאדמה</b>. לכן האנודה של הדיודה באדמת AC.</li>
+<li>הדיודה הופכת לנגד \(r_D\) בין X לאדמה.</li>
+<li><b>הטרנזיסטור הופך לנתק בקולקטור.</b> הנימוק המלא (שווה נקודות): אין מקור AC בחוג הבסיס, ולכן \(i_b=0\) ו-\(\beta i_b=0\). \(V_A\) לא נתון, ולכן \(r_o\to\infty\). יחד: מקור זרם DC אידיאלי, שהוא נתק ב-AC.</li></ol>
+`+used([R('bjtAC','ניתוח AC: קבל קצר, מקורות DC מקוצרים'),R('roInf','\\(V_A\\to\\infty\\Rightarrow r_o\\to\\infty\\)'),R('mirrorAC','מקור זרם ב-AC: נתק')])},
+{t:'סעיף ב · שלב 2: ההתנגדות הדינמית של הדיודה',b:RX`
+\[r_D=\frac{nV_T}{I_{DQ}}=\frac{2\cdot25\,mV}{1.133\,mA}=44.130\ \Omega\]
+`+used([R('rd','דיודה לאות קטן')])},
+{t:'סעיף ב · שלב 3: המעגל השקול ל-AC',b:RX`<p>\(v_{sig}\) → \(R_{sig}\) → צומת X. מ-X לאדמה: \(r_D\) ו-\(R_L\) <b>במקביל</b>. \(v_o=v_x\) (הקבל הימני קצר).</p>
+${circ('m26-q1-ac',lg('t1','המעגל השקול ל-AC')+' · הקולקטור נתק, הדיודה הפכה ל-r_D')}
+\[r_D\parallel R_L=\frac{44.130\cdot60}{44.130+60}=25.428\ \Omega\]
+`+used([R('par','נגדים במקביל')])},
+{t:'סעיף ב · שלב 4: מחלק מתח, δ',b:RX`
+\[\delta=\frac{v_o}{v_{sig}}=\frac{r_D\parallel R_L}{R_{sig}+r_D\parallel R_L}=\frac{25.428}{15+25.428}=\boxed{0.629}\]
+<p>לכן \(v_o(t)=26.417\sin(2000\pi t)\,[mV]\).</p>
+<p><b>בדיקת שפיות:</b> בלי הדיודה היה \(\frac{60}{75}=0.800\). הדיודה (נגד של 44Ω לאדמה) "גונבת" חלק מהאות, ולכן δ קטן יותר. δ קטן מ-1 אומר שזה <b>מנחת</b>, לא מגבר.</p>
+`+used([R('vdiv','מחלק מתח'),R('att','סוגי מעגלים: ניחות')])},
+{t:'סעיף ג · שלב 1: מבנה התשובה והסימן (הכי קל לטעות)',b:RX`<p>הזרם הכולל הוא DC ועוד AC: \(i_D(t)=I_D+i_d(t)\).</p>
+<p><b>הסימן:</b> הכיוון החיובי של \(i_D\) נקבע בשרטוט, מהאנודה (\(V_{CC}\)) לקתודה (X). המתח על הדיודה \(v_D=V_{CC}-v_X\). ב-AC \(V_{CC}\) הוא אדמה, ולכן:</p>
+\[v_d=-v_x\qquad\Rightarrow\qquad i_d=\frac{v_d}{r_D}=-\frac{v_x}{r_D}\]
+<p><b>במילים:</b> כש-\(v_{sig}\) עולה, הצומת X (הקתודה) עולה, המתח על הדיודה <b>קטן</b>, ולכן הזרם דרכה <b>קטן</b>.</p>
+`+used([NB('\\(i_D(t)=I_{DQ}+i_d\\) וכלל הסימן \\(v_d=v_{anode}-v_{cathode}\\)'),BK(1,9)])},
+{t:'סעיף ג · שלב 2: המשרעת, בשתי דרכים',b:RX`<p><b>דרך א (מתח):</b></p>
+\[|v_x|=\delta\cdot42\,mV=26.417\,mV\quad\Rightarrow\quad|i_d|=\frac{26.417\,mV}{44.130\,\Omega}=0.599\ mA\]
+<p><b>דרך ב (מחלק זרם, בדיקה):</b> הזרם מהמקור \(i_{sig}=\frac{42\,mV}{40.428\,\Omega}=1.039\,mA\), והחלק שעובר ב-\(r_D\):</p>
+\[i_{r_D}=i_{sig}\frac{R_L}{R_L+r_D}=1.039\cdot\frac{60}{104.130}=0.599\ mA\]
+<p>בדיקת KCL ב-X: \(1.039=0.440+0.599\) ✓.</p>
+`+used([R('idiv','מחלק זרם')])},
+{t:'סעיף ג · שלב 3: התשובה, וגרף',b:RX`
+\[\boxed{i_D(t)=1.133-0.599\sin(2000\pi t)\ \ [mA]}\]
+<p>מקסימום 1.732mA (ב-t=0.75ms), מינימום 0.534mA (ב-t=0.25ms). הזרם תמיד חיובי, אז הדיודה לא נכבית אף פעם ✓.</p>
+${scope('m26-q1-id','short',lg('t1','i_D(t)')+lg('t2','v_{sig}(t) (קנה מידה יחסי)','dash')+lg('axis','I_D = 1.133mA','dash'),'זרם הדיודה בזמן')}
+<p>שים לב: \(i_D\) ו-\(v_{sig}\) <b>בפאזה הפוכה</b>.</p>`},
+{t:'סעיף ג · בונוס: האם מותר בכלל מודל אות קטן כאן?',b:RX`<p>התנאי \(|v_d|\ll nV_T\): כאן \(26.4mV\) מול \(50mV\), יחס 0.53. זה <b>לא באמת</b> "הרבה יותר קטן". השאלה קבעה "אות קטן ונתון", אז במבחן משתמשים במודל. אבל כדאי לדעת מה קורה באמת: פתרון מלא של המעגל הלא-ליניארי נותן מקסימום 1.775mA ומינימום 0.612mA (במקום 1.732 ו-0.534), כלומר צורת גל לא סימטרית, ו-δ של 0.635 במקום 0.629. המודל טוב לכ-3%.</p>`},
+{t:'סעיף ד · תפקיד המעגל והטרנזיסטור (משפט אחד)',b:RX`<p><b>תשובה:</b> המעגל הוא <b>מנחת (מחלק מתח) שנשלט בזרם</b>: הדיודה מתפקדת ב-AC כנגד משתנה \(r_D=nV_T/I_D\), שיחד עם \(R_{sig}\) ו-\(R_L\) קובע את ההנחתה δ. <b>הטרנזיסטור משמש מקור זרם DC קבוע</b> שקובע את זרם הדיודה, ולכן את \(r_D\) ואת ההנחתה. הוא לא מגביר את האות.</p>
+${tb(['\\(V_{BB}\\)','\\(I_C\\)','\\(r_D\\)','δ'],[['1.0V','0.148mA','338.3Ω','0.773'],['2.0V','0.640mA','78.1Ω','0.693'],['<b>3.0V</b>','<b>1.133mA</b>','<b>44.1Ω</b>','<b>0.629</b>'],['4.0V','1.626mA','30.8Ω','0.575'],['6.0V','2.611mA','19.2Ω','0.492']])}
+<p>משנים את \(V_{BB}\), משתנה \(I_C\), משתנה \(r_D\), משתנה δ: כפתור ווליום חשמלי. נסה במעבדה החיה למעלה.</p>
+`+used([R('att','סוגי מעגלים: \\(V_o/V_{in}\\lt1\\) ניחות')])}
+],
+ans:RX`<b>א:</b> \(I_B=11.330\mu A\), \(I_D=I_C=1.133mA\), \(V_D=0.680V\), \(V_{CE}=5.031V\) (פעיל), \(P_Q=5.701mW\) · <b>ב:</b> \(r_D=44.130\Omega\), \(\delta=0.629\) · <b>ג:</b> \(i_D(t)=1.133-0.599\sin(2000\pi t)\,[mA]\) · <b>ד:</b> מנחת שנשלט בזרם; הטרנזיסטור הוא מקור זרם DC שקובע את \(r_D\).`},
+after:[
+{t:'מה הבודק סימן, והטעויות שכדאי להכיר',h:RX`<p>❓ האדום ליד תחתית \(R_E\). בלי מחברת התשובות זו פרשנות. ההשערות לפי סבירות: <b>(1)</b> בלבול בין \(I_E\) (הזרם ב-\(R_E\)) לבין \(I_D\), או \(I_E=(V_{BB}-V_{BE})/R_E\) שמשמיט את \(I_BR_B\). <b>(2)</b> טיפול ב-\(R_E\) כאילו זה מגבר CE ב-AC. <b>(3)</b> חיבור שגוי של \(R_E\) במעגל השקול. המסר: <b>\(R_E\) משתתף רק ב-DC, רק בקביעת \(I_C\), והזרם שבו הוא לא זרם הדיודה.</b></p>
+<ol><li>לשכוח את \(I_BR_B\): \(I_E=1.150mA\), \(r_D=43.478\Omega\).</li>
+<li>\(I_D=I_E\) במקום \(I_D=I_C\).</li>
+<li>\(V_T\) במקום \(nV_T\): \(V_D=0.340V\), \(r_D=22.065\Omega\). שני סעיפים נהרסים.</li>
+<li>להניח \(V_D=0.7V\) במקום להשתמש ב-\(I_S\) הנתון.</li>
+<li>הספק שגוי: \(V_{CC}I_C=9.064mW\) או \(V_{CE}I_E\). הנכון \(V_{CE}I_C\).</li>
+<li>להתייחס לטרנזיסטור כמגבר (לחשב \(g_m\), הגבר). אין אות בבסיס.</li>
+<li>לשכוח את \(R_L\) במקביל (δ=0.746), או את \(R_{sig}\) (δ=1).</li>
+<li>סימן \(i_d\): לכתוב \(1.133+0.599\sin\). שגוי.</li>
+<li>\(i_d=v_{sig}/r_D=0.952mA\): שוכח את מחלק המתח.</li></ol>`},
+{t:'מה חסר בדף הנוסחאות לשאלה הזו, ואיפה להוסיף',h:RX`${tb(['מה להוסיף','למה','איפה בדף'],[
+['\\(P_Q=V_{CE}I_C+V_{BE}I_B\\approx V_{CE}I_C\\)','סעיף א','עמוד 3 · BJT "ניתוח DC", מתחת ל"מתח קולקטור-פולט"'],
+['\\(V_{CE}=V_C-V_E\\) (כשאין \\(R_C\\) בקולקטור)','בדיקת פעילות','עמוד 3, ליד \\(V_{ceQ}\\)'],
+['\\(i_D(t)=I_{DQ}+i_d\\), \\(i_d=v_d/r_D\\), \\(v_d=v_{anode}-v_{cathode}\\)','סעיף ג והסימן','עמוד 1 · תיבת "דיודה לאות קטן"'],
+['תנאי אות קטן \\(|v_d|\\ll nV_T\\)','בדיקת תקפות','עמוד 1 · אותה תיבה'],
+['"מקור מתח DC: קצר · מקור זרם DC: נתק" (שורה כללית)','בניית מעגל AC','עמוד 3 · כותרת "ניתוח AC"'],
+['מנחת עם דיודה: \\(\\delta=\\frac{r_D\\parallel R_L}{R_{sig}+r_D\\parallel R_L}\\)','סעיפים ב ו-ד','עמוד 1 ליד "דיודה לאות קטן"']])}`},
+{t:'מקורות',h:RX`<p><b>מהחוברות:</b> ${BK(1,3)} ${BK(1,7,'הדיודה המעשית')} ${BK(1,8,'כללי הניתוח DC/AC')} ${BK(1,9,'גזירת r_d')} ${BK(1,10,'שאלת מבחן 2022 דומה מאוד')} ${BK(5,4,'KVL עם I_BR_B')} ${BK(5,6,'תנאי אזור פעיל')} ${BK(5,8,'r_o→∞ = נתק')}</p>
+${src([['https://www.ece.mcmaster.ca/~mbakr/ece2ei4/Lecture19_Web.pdf','McMaster ECE 2EI4, Lecture 19: מודל אות קטן של דיודה, ושקף "The Current-Controlled Attenuator", כמעט המעגל שלנו'],
+['https://www.ee.bilkent.edu.tr/~eee313/labs0708/exp2.pdf','Bilkent EEE 313, ניסוי 2: r_d=nV_T/I_DQ, התנאי v_d≪nV_T והעיוות כשהוא נשבר'],
+['http://www.electronics-notes.com/articles/analogue_circuits/transistor/active-constant-current-source.php','Electronics Notes: טרנזיסטור עם נגד פולט כמקור זרם קבוע']])}`}
+],
+figs:q1Figs,
+recs:[['1','תיבת "דיודה לאות קטן"','\\(i_D=I_{DQ}+i_d\\), כלל הסימן, \\(|v_d|\\ll nV_T\\), נוסחת המנחת',1],['3','BJT "ניתוח DC"','\\(P_Q=V_{CE}I_C\\) ו-\\(V_{CE}=V_C-V_E\\)',1],['3','כותרת "ניתוח AC"','מקור מתח DC קצר, מקור זרם DC נתק',1]]
+};
+/* ================= שאלה 2 · מגבר הפרש NMOS ================= */
+function q2Circuit(C,o){o=o||{};
+  const q1=C.mos(200,150,{label:'Q_1'}),q2=C.mos(320,150,{label:'Q_2',flip:-1});
+  C.rail(210,25,'+10V');C.R([210,25],[210,88],'R_{D1} 5kΩ',{side:1});C.w([210,88],q1.d);C.nd(210,96);C.w([210,96],[175,96]);C.term(175,96);C.T(171,84,'v_{O1}','hi','end');
+  C.rail(310,25,'+10V');C.R([310,25],[310,88],'R_{D2} 5kΩ',{side:-1});C.w([310,88],q2.d);C.nd(310,96);C.w([310,96],[345,96]);C.term(345,96);C.T(349,84,'v_{O2}','hi','start');
+  C.w(q1.s,[210,200],[310,200],q2.s);C.nd(260,200);C.w([260,200],[260,225]);C.nd(260,225);
+  C.w([260,225],[260,240]);C.V([260,240],[260,290],'I_{CS} 1mA',{kind:'i',side:1,off:24});C.w([260,290],[260,300]);
+  C.w([260,225],[330,225],[330,240]);C.R([330,240],[330,290],'R_{SS} 1MΩ',{side:-1});C.w([330,290],[330,300],[260,300]);C.nd(260,300);C.w([260,300],[260,306]);C.rail(260,306,'−10V',true);
+  C.R(q1.g,[110,150],'R_{G1} 100kΩ',{side:-1});C.w([110,150],[60,150],[60,170]);C.V([60,230],[60,170],'v_{id}',{kind:'ac',side:-1});C.G(60,230);
+  C.R(q2.g,[410,150],'R_{G2} 100kΩ',{side:-1});C.w([410,150],[440,150],[440,170]);C.G(440,170);
+  if(o.dc){C.T(218,112,'7.5V','val','start');C.T(302,112,'7.5V','val','end');C.T(268,214,'V_S=−2V','val','start');C.T(165,140,'0V','val2','end');C.T(355,170,'0V','val2','start');
+    C.T(260,191,'0.5mA + 0.5mA','val2','middle');C.T(342,312,'8µA in R_SS','val2','start');}
+  return C;
+}
+function q2Half(C){
+  // חצי הפרשי
+  C.T(130,14,'differential half','big','middle');
+  const a=C.mos(120,134,{label:'Q_1'});C.rail(130,44,'AC gnd');C.R([130,44],[130,96],'R_D 5kΩ',{side:-1});C.w([130,96],a.d);C.nd(130,100);C.w([130,100],[190,100]);C.term(190,100);C.T(194,88,'v_{o1}=−2.5·v_{id}','val','start');
+  C.w(a.g,[50,134],[50,149]);C.V([50,204],[50,149],'+v_{id}/2',{kind:'ac',side:1});C.G(50,204);
+  C.w(a.s,[130,184]);C.G(130,184);C.T(146,196,'v_s=0','val2','start');
+  // חצי משותף
+  C.T(410,14,'common-mode half','big','middle');
+  const b=C.mos(400,124,{label:'Q_1'});C.rail(410,44,'AC gnd');C.R([410,44],[410,88],'R_D 5kΩ',{side:-1});C.w([410,88],b.d);C.nd(410,90);C.w([410,90],[470,90]);C.term(470,90);C.T(474,78,'v_{o1}≈−0.0025·v_{CM}','val','start');
+  C.w(b.g,[330,124],[330,140]);C.V([330,195],[330,140],'v_{CM}',{kind:'ac',side:-1});C.G(330,195);
+  C.R(b.s,[410,210],'2R_{SS} 2MΩ',{side:-1});C.G(410,210);
+  return C;
+}
+function q2Ladder(C){
+  const Y=v=>150-12.5*v;C.w([160,Y(10)],[160,Y(-10)]);
+  mk('rect',{x:150,y:Y(8.5),width:20,height:Y(-6)-Y(8.5),fill:'var(--t1)',opacity:0.22},C.svg);
+  const mark=(v,t,cls,side)=>{C.w([152,Y(v)],[168,Y(v)]);C.T(side?176:144,Y(v)+4,t,cls||'hi',side?'start':'end');};
+  mark(10,'+10V = V_DD');mark(7.5,'V_D = 7.5V','val2');mark(8.5,'V_CM,max = 8.5V','val',true);mark(0,'V_CM = 0 (now)','hi',true);mark(-2,'V_S = −2V','val2');mark(-6,'V_CM,min = −6V','val',true);mark(-8,'V_S,min = −8V','val2');mark(-10,'−10V = V_SS');
+  C.T(330,Y(9.25)+4,'top: V_DS = V_OV  (V_CM ≤ V_D + V_t)','val2','start');C.T(330,Y(-7)+4,'bottom: V_CS = 2V  (V_CM ≥ V_SS + 2 + V_GS)','val2','start');
+  C.T(330,Y(3)+4,'allowed range','val','start');
+  return C;
+}
+function q2Calc(VCM){const VS=VCM-2,VCS=VS+10,VDS=7.5-VS;return {VS,VCS,VDS,ok1:VCS>=2,ok2:VDS>=1};}
+function mountQ2(host,px){
+  host.innerHTML='<div class="lab"><div class="controls"><div class="sliders" id="'+px+'-ctl"></div><div class="presets"><button type="button" data-preset="'+px+'-a">V_CM = −6V</button><button type="button" data-preset="'+px+'-b">0V</button><button type="button" data-preset="'+px+'-c">8.5V</button></div></div>'+
+    '<div class="scopes">'+scope(px+'-p','short',lg('t1','V_S (הזנב עוקב אחרי V_CM)')+lg('t2','V_D = 7.5V')+lg('t3','V_G = V_CM','dash'),'מתחי הזוג מול V_CM')+'</div><div class="readouts" id="'+px+'-r"></div></div>';
+  const cv=reg(px+'-p');
+  const st=sliders(px+'-ctl',[{key:'V',id:px+'-v',label:'מתח משותף V<sub>CM</sub> (על שני השערים)',min:-10,max:10,step:0.1,value:0,fmt:v=>v.toFixed(1)+' V'}],upd);
+  function upd(){const s=q2Calc(st.V);
+    draw(cv,{x0:-10,x1:10,y0:-12,y1:12,xl:'V_CM [V]',yl:'[V]',bands:[{x0:-6,x1:8.5,c:'t1',a:.10,label:'תחום תקין'}],series:[{c:'t3',w:1.2,dash:[5,4],pts:[[-10,-10],[10,10]]},{c:'t2',w:2,pts:[[-10,7.5],[10,7.5]]},{c:'t1',w:2.6,pts:[[-10,-12],[10,8]]}],points:[{x:st.V,y:s.VS,c:'t3',label:'V_S'}]});
+    const msg=!s.ok1?pill('מקור הזרם נחנק (פחות מ-2V)','bad'):!s.ok2?pill('Q₁,Q₂ יצאו מרוויה','bad'):pill('תקין: כולם עובדים','ok');
+    readouts(px+'-r',[['מצב',msg,'html'],['V<sub>S</sub> = V<sub>CM</sub> − V<sub>GS</sub>',fx(s.VS,2)+' V'],['V<sub>CS</sub> = V<sub>S</sub> − V<sub>SS</sub>',fx(s.VCS,2)+' V (צריך ≥ 2)'],['V<sub>DS</sub> = V<sub>D</sub> − V<sub>S</sub>',fx(s.VDS,2)+' V (צריך ≥ 1)'],['I<sub>D</sub>','0.5 mA (קבוע)']]);}
+  presets({[px+'-a']:{[px+'-v']:-6},[px+'-b']:{[px+'-v']:0},[px+'-c']:{[px+'-v']:8.5}});
+  upd();
+}
+function q2Figs(){
+  if(document.getElementById('m26-q2-dc'))q2Circuit(Circuit('m26-q2-dc',480,325),{dc:true});
+  if(document.getElementById('m26-q2-half'))q2Half(Circuit('m26-q2-half',600,232));
+  if(document.getElementById('m26-q2-lad'))q2Ladder(Circuit('m26-q2-lad',600,290));
+}
+
+const Q2={n:2,id:'m26-q2',pts:20,title:'מגבר הפרש NMOS: נקודת עבודה, הגברים, CMRR ותחום המתח המשותף',
+topic:'זוג הפרש · חצי מעגל · אות הפרשי ואות משותף · CMRR · תחום V_CM',
+primer:[
+{t:'למה בכלל צריך מגבר הפרש',h:RX`<p>מגבר רגיל מגביר כל מה שנכנס אליו, כולל רעש. ברוב המקרים הרעש (זמזום של 50Hz, הפרעות על הכבל) מגיע <b>באותה מידה לשני החוטים</b>. מגבר הפרש מגביר רק את <b>ההפרש</b> בין שתי הכניסות ומתעלם (כמעט) ממה שמשותף להן. המדד לכמה טוב הוא "מתעלם" נקרא <b>CMRR</b>.</p>
+<p><b>המבנה:</b> שני טרנזיסטורים זהים, לכל אחד \(R_D\) לספק החיובי, והמקורות (S) של שניהם מחוברים לנקודה אחת, <b>הזנב</b>. מהזנב יוצא מקור זרם \(I\) למתח השלילי.</p>
+`+co('key','⚖️','הרעיון המרכזי: סימטריה, ולכן חצי-חצי',RX`<p>מקור הזרם קובע את <b>סך</b> הזרם: \(I_{D1}+I_{D2}=I\). כשהטרנזיסטורים זהים ושני השערים באותו מתח, אין סיבה שאחד ייקח יותר מהשני, ולכן \(I_{D1}=I_{D2}=I/2\). זה נכון <b>גם אם</b> נגדי ה-\(R_D\) שונים: הזרם נקבע ע״י \(V_{GS}\), לא ע״י \(R_D\).</p><p>${R('split')} ${BK(7,3)}</p>`)},
+{t:'כל זוג כניסות = הפרש + ממוצע',h:RX`<p>כל זוג מתחים \(v_{G1},v_{G2}\) אפשר לפרק לשני חלקים:</p>
+\[v_{id}=v_{G1}-v_{G2},\qquad v_{CM}=\frac{v_{G1}+v_{G2}}{2}\]
+\[v_{G1}=v_{CM}+\frac{v_{id}}{2},\qquad v_{G2}=v_{CM}-\frac{v_{id}}{2}\]
+<ul><li><b>אות הפרשי:</b> השערים זזים <b>הפוך</b> זה לזה (\(+v_{id}/2\) ו-\(-v_{id}/2\)).</li>
+<li><b>אות משותף:</b> שני השערים זזים <b>יחד</b> באותו כיוון.</li></ul>
+<p>באות קטן מחשבים כל חלק לחוד ומחברים: \(v_o=A_dv_{id}+A_{CM}v_{CM}\). ${R('vin')} ${NB('הנוסחה \\(v_{CM}=(v_{G1}+v_{G2})/2\\)')} ${BK(7,2)}</p>
+<p><b>אצלנו:</b> \(v_{id}\) מחובר רק לשער של \(Q_1\), ושער \(Q_2\) לאדמה. בפועל זה גם הפרש \(v_{id}\) וגם משותף \(v_{id}/2\). זה לא משנה את \(A_d\), כי בהפרש \(v_{o1}-v_{o2}\) החלק המשותף מתבטל.</p>`},
+{t:'חצי מעגל: הטריק שחוסך את כל העבודה',h:RX`<p>בגלל הסימטריה מספיק לנתח <b>חצי</b> מעגל.</p>
+<p><b>מצב הפרשי:</b> הזרם של טרנזיסטור אחד עולה ב-\(i_d\) ושל השני יורד ב-\(i_d\). <b>סך הזרם בזנב לא משתנה</b>, ולכן על \(R_{SS}\) אין שינוי מתח, והזנב <b>לא זז</b>: \(v_s=0\), "אדמה וירטואלית". כל חצי הוא מגבר CS פשוט:</p>
+\[v_{o1}=-g_mR_D\frac{v_{id}}{2},\qquad v_{o2}=+g_mR_D\frac{v_{id}}{2}\]
+<p><b>מצב משותף:</b> שני הזרמים עולים <b>יחד</b>, אז דרך \(R_{SS}\) עובר \(2i_d\). אם "חותכים" את המעגל באמצע, כל חצי צריך לראות את אותו מתח זנב עם חצי מהזרם. כלומר נגד <b>\(2R_{SS}\)</b> בסורס שלו.</p>
+${circ('m26-q2-half',lg('t1','משמאל: חצי הפרשי, הסורס באדמה')+lg('t2','מימין: חצי משותף, 2R_SS בסורס'))}
+<p>${R('vs0')} ${BK(7,7,'הגבר הפרשי')} ${BK(7,8,'הגבר משותף')}</p>`},
+{t:'מוצא חד-צדדי מול דו-צדדי, והסימן',h:RX`<ul><li><b>חד-צדדי:</b> מודדים רק \(v_{o1}\) (או רק \(v_{o2}\)). ההגבר ההפרשי הוא <b>חצי</b>: \(\pm\frac12g_mR_D\). ההגבר המשותף <b>לא אפס</b>: \(-\frac{R_D}{2R_{SS}}\).</li>
+<li><b>דו-צדדי:</b> מודדים \(v_{o1}-v_{o2}\). ההגבר ההפרשי <b>מלא</b>: \(g_mR_D\) בגודל. ההגבר המשותף <b>אפס</b> (במעגל מותאם), ולכן \(CMRR\to\infty\).</li></ul>
+<p><b>הסימן לפי ההגדרה:</b> עלייה ב-\(G_1\) נותנת יותר זרם ב-\(Q_1\), יותר נפילה על \(R_{D1}\), ולכן \(v_{o1}\) <b>יורד</b>. לכן \(\frac{v_{o1}-v_{o2}}{v_{id}}\) שלילי.</p>
+<p>${R('sign')} ${R('AdTable')}</p>`},
+{t:'CMRR: ולמה R_SS כל כך חשוב',h:RX`
+\[CMRR=\left|\frac{A_{d,single}}{A_{CM,single}}\right|=\frac{\frac12g_mR_D}{R_D/(2R_{SS})}=g_mR_{SS},\qquad CMRR_{dB}=20\log_{10}(CMRR)\]
+<p><b>האינטואיציה:</b> במצב משותף \(R_{SS}\) פועל כמו נגד ענק בסורס (משוב שלילי). הזנב "עולה" כמעט יחד עם \(v_{CM}\), ולכן \(v_{GS}\) כמעט לא משתנה והזרם כמעט לא זז. ככל ש-\(R_{SS}\) גדול יותר (מקור זרם "אמיתי" יותר), \(A_{CM}\) קטן יותר.</p>
+<p>${R('cmrr')} ${R('cmrrDb')} ${R('cmrrNote','רלוונטי לחד-צדדי')}</p>
+`+co('warn','⚠️','מלכודת בדף',RX`<p>בעמוד 4 ובעמוד 8 יש תיבה "אם נתון \(V_A\to\infty\) אז \(A_{cm}\to0\)". היא מדברת על \(r_o\) של <b>מקור הזרם</b> (כשהוא טרנזיסטור). כאן \(R_{SS}=1M\Omega\) <b>נתון במפורש</b>, ולכן \(A_{CM}\ne0\) גם בלי λ. ${R('vaInf')}</p>`)},
+{t:'תחום המתח המשותף: מה מגביל מלמטה ומלמעלה',h:RX`<p>\(V_{CM}\) הוא מתח ה-DC ששני השערים יושבים עליו. מקור הזרם מחזיק את \(I\) קבוע, ולכן \(V_{GS}\) קבוע, ו<b>הזנב עוקב אחרי \(V_{CM}\)</b>: \(V_S=V_{CM}-V_{GS}\).</p>
+<ul><li><b>הגבול התחתון: מקור הזרם "נחנק".</b> כש-\(V_{CM}\) יורד, גם \(V_S\) יורד, והמתח על מקור הזרם קטן. מקור זרם אמיתי צריך מתח מינימלי כדי לעבוד:
+\[V_{CM,min}=V_{SS}+V_{CS,min}+V_{GS}\]</li>
+<li><b>הגבול העליון: הזוג יוצא מרוויה.</b> כש-\(V_{CM}\) עולה, \(V_S\) עולה, אבל \(V_D=V_{DD}-\frac I2R_D\) לא זז. \(V_{DS}\) קטן עד \(V_{DS}=V_{OV}\), כלומר \(V_D=V_G-V_t\):
+\[V_{CM,max}=V_{DD}-\frac{I}{2}R_D+V_t\]</li></ul>
+<p>${R('vcmMin')} ${R('vcmMax')} ${R('vcmChain')} ${BK(7,4,'אילוץ תחתון ועליון')}</p>
+`+co('warn','⚠️','עוד מלכודת בדף',RX`<p>בדף כתוב גם \(V_{CS,min}=V_{GS}-V_t\). זה ה-\(V_{OV}\) של <b>טרנזיסטור מקור הזרם</b> (כשמקור הזרם בנוי מ-MOSFET), לא של הזוג. בשאלה שלנו \(V_{CS,min}=2V\) נתון ישירות.</p>`)}
+],
+prob:{t:'שאלה 2 · מגבר הפרש NMOS עם מקור זרם לא אידיאלי',pts:20,lvl:'20 נק\'',tags:['dc','ac'],w:480,h:325,
+fig(C){q2Circuit(C);},
+st:RX`נתוני הטרנזיסטורים: \(V_t=1V\), \(k'_n(W/L)=1\,mA/V^2\). <b>(א · 5 נק')</b> ניתוח DC: חשב נקודת עבודה של כל טרנזיסטור. <b>(ב · 5 נק')</b> חשב את \(g_m\) ואת הגבר מתח ההפרש \(A_d=\frac{v_{o1}-v_{o2}}{v_{id}}\). <b>(ג · 5 נק')</b> חשב הגבר משותף חד-צדדי \(A_{CM}=\frac{v_{o1}}{v_{CM}}=\frac{v_{o2}}{v_{CM}}\) ואת יחס דחיית האות המשותף CMRR. <b>(ד · 5 נק')</b> חשב מתח \(V_{CM}\) מינימלי ומרבי, בהנחה שנדרש מפל מתח מינימלי של 2V על מקור הזרם.`,
+given:RX`\(R_{D1}=R_{D2}=5k\Omega\) ל-+10V. \(R_{G1}=R_{G2}=100k\Omega\). מקור זרם \(I_{CS}=1mA\) (החץ למטה) במקביל ל-\(R_{SS}=1M\Omega\), אל −10V. \(\lambda\) לא נתון, ולכן \(r_o\to\infty\). בשאלה המקורית הקו התחתון של \(v_{id}\) ו-\(R_{G2}\) חוצה את קו הזנב <b>בלי נקודה</b>: זה קו האדמה, לא חיבור.`,
+ask:RX`נקודת עבודה · \(g_m\), \(A_d\) · \(A_{CM}\), CMRR · \(V_{CM,min}\), \(V_{CM,max}\)`,
+live:(host,px)=>mountQ2(host,px),
+steps:[
+{t:'סעיף א · שלב 1: השערים ב-0V (R_G לא עושים כלום)',b:RX`<p>זרם השער של MOSFET הוא אפס. לכן אין נפילת מתח על \(R_{G1},R_{G2}\), וב-DC המקור \(v_{id}\) כבוי:</p>
+\[V_{G1}=V_{G2}=0\,V\]
+<p>\(R_{G1},R_{G2}\) לא משתתפים באף חישוב בשאלה, לא ב-DC ולא ב-AC.</p>
+`+used([basic('זרם שער של MOSFET = 0'),BK(3,4)])},
+{t:'סעיף א · שלב 2: חלוקת הזרם (סימטריה)',b:RX`
+\[I_{D1}=I_{D2}=\frac{I_{CS}}{2}=\frac{1}{2}=0.500\ mA\]
+<p><b>ומה עם \(R_{SS}\)?</b> ב-DC עובר בו \(\frac{V_S-(-10)}{1M\Omega}=8\mu A\). זניח (0.8%). המבחן מצפה ל-0.5mA. בחישוב מדויק יוצא \(I_D=0.504mA\).</p>
+`+used([R('split','ב-DC הזרמים מתחלקים ל-2')])},
+{t:'סעיף א · שלב 3: מתח היתר מנוסחת הרוויה',b:RX`
+\[I_D=\frac12k'_n\frac{W}{L}V_{OV}^2\ \Rightarrow\ V_{OV}=\sqrt{\frac{2I_D}{k'_n(W/L)}}=\sqrt{\frac{2\cdot0.5}{1}}=1.000\ V\]
+`+co('warn','⚠️','שים לב ל-½',RX`<p>הנתון הוא \(k'_n(W/L)\), והנוסחה כוללת \(\frac12\). מי ששוכח מקבל \(V_{OV}=0.707V\) ו-\(g_m=1.414\), והכול שגוי.</p>`)+used([R('mosSat','רוויה ללא אפקט')])},
+{t:'סעיף א · שלב 4: V_GS ומתח הזנב',b:RX`
+\[V_{GS}=V_t+V_{OV}=1+1=2.000\ V,\qquad V_S=V_G-V_{GS}=0-2=-2.000\ V\]
+`+used([R('vov','\\(V_{OV}=V_{GS}-V_t\\)')])},
+{t:'סעיף א · שלב 5: מתח הדריין',b:RX`
+\[V_D=V_{DD}-I_DR_D=10-0.5\cdot5=7.500\ V\]
+`+used([R('fetQ','נקודת עבודה ב-FET')])},
+{t:'סעיף א · שלב 6: V_DS ובדיקת רוויה',b:RX`
+\[V_{DS}=V_D-V_S=7.5-(-2)=9.500\ V\ \ge\ V_{OV}=1\ V\ \checkmark\]
+<p>גם \(V_{GS}=2>V_t=1\), ולכן הטרנזיסטור דולק. <b>שניהם ברוויה.</b> ומקור הזרם: \(V_{CS}=V_S-V_{SS}=-2+10=8V\ge2V\) ✓.</p>
+${circ('m26-q2-dc',lg('t1','כל ערכי ה-DC על המעגל'))}
+<p><b>נקודת העבודה של כל טרנזיסטור:</b> \(\boxed{(V_{DS},I_D)=(9.500\,V,\ 0.500\,mA)}\), עם \(V_{GS}=2.000V\).</p>
+`+used([R('satCond','תנאי רוויה')])},
+{t:'סעיף ב · שלב 1: g_m (שלוש דרכים, אותה תשובה)',b:RX`
+\[g_m=\frac{2I_D}{V_{OV}}=\frac{2\cdot0.5}{1}=1.000\ mA/V\]
+<p>בדיקה: \(\frac{I}{V_{OV}}=\frac11=1\), \(k'_n\frac WLV_{OV}=1\), \(\sqrt{2k'_n\frac WLI_D}=1\) ✓. ב-\(\frac{I}{V_{OV}}\) ה-\(I\) הוא <b>זרם הזנב כולו</b> (1mA).</p>
+`+used([R('gmDiff','מוליכות הדדית במגבר הפרש'),R('gmAC')])},
+{t:'סעיף ב · שלב 2: r_o, וחצי המעגל ההפרשי',b:RX`<p>λ לא נתון, ולכן \(r_o\to\infty\) ו-\(r_o\parallel R_D=R_D\). בחצי ההפרשי הזנב הוא אדמה וירטואלית:</p>
+\[v_{o1}=-g_mR_D\frac{v_{id}}{2}=-2.5\,v_{id},\qquad v_{o2}=+2.5\,v_{id}\]
+`+used([R('vs0','\\(V_s=0\\) תמיד באות קטן'),R('smallModel','ללא התקצרות תעלה: \\(r_o\\to\\infty\\)')])},
+{t:'סעיף ב · שלב 3: A_d לפי ההגדרה (שים לב לסימן)',b:RX`
+\[A_d=\frac{v_{o1}-v_{o2}}{v_{id}}=-g_mR_D=-1\cdot5=\boxed{-5.000\ V/V}\]
+<p>הגודל 5. <b>הסימן שלילי</b>, כי במונה \(v_{o1}\) ראשון ו-\(v_{id}\) חיובי בשער של \(Q_1\). (בהגברים חד-צדדיים: \(\frac{v_{o1}}{v_{id}}=-2.5\), \(\frac{v_{o2}}{v_{id}}=+2.5\).)</p>
+<p>אומת בניתוח צמתים מלא (עם \(R_G\), \(R_{SS}\)): גם במעגל כפי שהוא, עם \(v_{id}\) רק בצד אחד, \(v_{o1}-v_{o2}=-5.000\,v_{id}\) בדיוק.</p>
+`+used([R('Ad','\\(A_d=-g_m\\,r_0\\parallel R_D\\)'),R('AdS'),R('sign')])},
+{t:'סעיף ג · שלב 1: חצי המעגל המשותף, A_CM',b:RX`<p>שני השערים ב-\(v_{CM}\). כל חצי רואה בסורס \(2R_{SS}\). זה CS עם נגד בסורס:</p>
+\[A_{CM}=-\frac{g_mR_D}{1+2g_mR_{SS}}\approx-\frac{R_D}{2R_{SS}}=-\frac{5\,k\Omega}{2\cdot1000\,k\Omega}=\boxed{-0.0025\ V/V}\]
+<p>מדויק: \(-\frac{5}{2001}=-0.0024988\). זהה ל-3 ספרות.</p>
+`+used([R('Acm','הגבר משותף חד-צדדי'),NB('הצורה המלאה עם \\(1+2g_mR_{SS}\\)')])},
+{t:'סעיף ג · שלב 2: CMRR',b:RX`
+\[CMRR=\left|\frac{A_{d,single}}{A_{CM}}\right|=g_mR_{SS}=1\,\frac{mA}{V}\cdot1000\,k\Omega=\boxed{1000}\]
+\[CMRR_{dB}=20\log_{10}(1000)=\boxed{60.000\ dB}\]
+<p><b>במוצא דו-צדדי</b> (\(v_{o1}-v_{o2}\)): \(A_{CM}=0\) במעגל מותאם, ולכן \(CMRR\to\infty\).</p>
+`+co('warn','⚠️','אל תערבב',RX`<p>\(|A_d|=5\) (הפרשי מלא) חלקי \(0.0025\) (משותף חד-צדדי) נותן 2000 (66dB). זו <b>לא</b> ההגדרה. המונה והמכנה חייבים להיות מאותו סוג מוצא.</p>`)+used([R('cmrr'),R('cmrrDb')])},
+{t:'סעיף ד · שלב 1: הגבול התחתון (מקור הזרם צריך 2V)',b:RX`
+\[V_S\ge V_{SS}+V_{CS,min}=-10+2=-8\ V\]
+<p>\(V_{GS}=2V\) קבוע (הזרם קבוע), ולכן:</p>
+\[V_{CM,min}=V_{SS}+V_{CS,min}+V_{GSQ}=-10+2+2=\boxed{-6.000\ V}\]
+`+used([R('vcmMin')])},
+{t:'סעיף ד · שלב 2: הגבול העליון (הזוג חייב להישאר ברוויה)',b:RX`<p>\(V_{DS}\ge V_{OV}\iff V_D\ge V_G-V_t\). כאן \(V_G=V_{CM}\) ו-\(V_D=7.5V\) קבוע:</p>
+\[V_{CM,max}=V_{DD}-\frac{I}{2}R_D+V_t=10-\frac{1\cdot5}{2}+1=\boxed{8.500\ V}\]
+<p>ה-\(I\) בנוסחה הוא זרם הזנב כולו (1mA).</p>
+${circ('m26-q2-lad',lg('t1','התחום המותר')+' · סולם מתחים מ-−10V עד +10V')}
+<p><b>בדיקה בקצוות:</b> ב-\(V_{CM}=-6\): \(V_S=-8\), \(V_{CS}=2.000V\) ✓. ב-\(V_{CM}=8.5\): \(V_S=6.5\), \(V_{DS}=1.000=V_{OV}\) ✓ (בדיוק על הגבול).</p>
+<p><b>תשובה:</b> \(\boxed{-6.000\,V\le V_{CM}\le8.500\,V}\). עם \(R_{SS}\) מדויק: −5.999V עד 8.459V. המבחן מצפה ל-−6 ו-8.5.</p>
+`+used([R('vcmMax'),R('vcmChain')])}
+],
+ans:RX`<b>א:</b> \(I_D=0.500mA\), \(V_{GS}=2.000V\), \(V_S=-2.000V\), \(V_D=7.500V\), \(V_{DS}=9.500V\) (רוויה) · <b>ב:</b> \(g_m=1.000\,mA/V\), \(A_d=-5.000\) · <b>ג:</b> \(A_{CM}=-0.0025\), \(CMRR=1000=60.000dB\) · <b>ד:</b> \(-6.000V\le V_{CM}\le8.500V\).`},
+after:[
+{t:'מה הבודק סימן, והטעויות שכדאי להכיר',h:RX`<p>ליד מקור הזרם יש <b>חץ כחול מעוקל כלפי מעלה</b> ו-<b>❓ אדום</b>. החץ הכחול הפוך לחץ של מקור הזרם (שמצביע למטה). שתי קריאות:</p>
+<ul><li><b>החץ ככיוון זרם (שגוי):</b> מקור הזרם <b>מושך</b> 1mA מהזנב <b>אל</b> −10V. אם הזרם היה נדחף למעלה, ה-KCL היה מחייב \(V_S=+990V\) ושני הטרנזיסטורים כבויים. שגיאה כזו מפילה את כל סעיפים א עד ד.</li>
+<li><b>החץ כמתח \(V_{CS}\) (לגיטימי):</b> בעמוד 8 מסמנים את המתח על מקור הזרם בחץ כלפי מעלה. אבל אז צריך לכתוב \(V_{CS}\), לא \(I_{CS}\), ולחשב אותו: 8V בנקודת העבודה, 2V בגבול.</li></ul>
+<p><b>המסר:</b> הזרם הולך לפי החץ <b>שבתוך</b> סמל המקור. מתח מסמנים בחץ נפרד עם תווית. לא מערבבים.</p>
+`+co('warn','⚠️','הדף מבלבל כאן',RX`<p>בשרטוט "מגבר הפרש FET" בעמוד 3 מקור הזרם מצויר עם חץ <b>למעלה</b> ו-\(R_{SS}\) <b>בטור</b> אליו. זה שרטוט מטעה. בעמוד 4 ובעמוד 8 השרטוט נכון: חץ למטה, \(R_{SS}\) במקביל. ייתכן שמשם הגיע החץ.</p>`)+
+RX`<ol><li>לשכוח את ה-½ ב-\(I_D\): \(V_{OV}=0.707\), \(g_m=1.414\), \(A_d=-7.07\).</li>
+<li>להציב \(I_D=1mA\) במקום 0.5.</li><li>לחשוב שהקו התחתון מחובר לזנב: \(V_{GS}=0\), כבוי.</li>
+<li>סימן \(A_d\): לכתוב +5.</li><li>\(A_{CM}\) עם \(R_{SS}\) במקום \(2R_{SS}\): −0.005, CMRR=500.</li>
+<li>"לא נתון λ ולכן \(A_{CM}=0\)": שגוי, \(R_{SS}\) נתון.</li>
+<li>\(V_{CM,min}\) בלי \(V_{GS}\) (−8) או עם \(V_t\) (−7).</li><li>\(V_{CM,max}\) עם \(IR_D\) (6V) במקום \(\frac I2R_D\), או בלי \(+V_t\) (7.5).</li>
+<li>לא לבדוק רוויה בסעיף א.</li></ol>`},
+{t:'מה חסר בדף הנוסחאות לשאלה הזו, ואיפה להוסיף',h:RX`${tb(['מה להוסיף','למה','איפה בדף'],[
+['\\(v_{CM}=\\frac{v_{G1}+v_{G2}}2\\), \\(v_{G1,2}=v_{CM}\\pm\\frac{v_{id}}2\\)','הפירוק הבסיסי','עמוד 3 · "מגבר הפרש FET", מתחת ל-\\(V_{OV}\\)'],
+['שרשרת DC: \\(I_D=\\frac I2\\), \\(V_S=V_{CM}-V_{GS}\\), \\(V_D=V_{DD}-\\frac I2R_D\\), \\(V_{CS}=V_S-V_{SS}\\)','שורה אחת לסעיף א','עמוד 3, לפני "תחום ליניארי"'],
+['\\(A_{CM}=-\\frac{g_mR_D}{1+2g_mR_{SS}}\\approx-\\frac{R_D}{2R_{SS}}\\) + "בחצי המשותף \\(2R_{SS}\\) בסורס"','מאיפה ה-2','עמוד 3 ליד \\(A_{CM}\\); עמוד 8 ליד "CM"'],
+['"CMRR: מונה ומכנה מאותו סוג מוצא"','למנוע 1000/2000','עמוד 3 ליד \\(CMRR_{dB}\\)'],
+['תיקון השרטוט: חץ למטה, \\(R_{SS}\\) במקביל','השרטוט בעמוד 3 מטעה','עמוד 3 · שרטוט "מגבר הפרש FET"'],
+['"\\(V_{CS,min}=V_{GS}-V_t\\) של טרנזיסטור מקור הזרם; אם נתון מספר, משתמשים בו"','בלבול בין שני V_GS','עמוד 3 בשורת \\(V_{CM,min}\\); עמוד 4'],
+['"\\(V_A\\to\\infty\\Rightarrow A_{cm}\\to0\\) רק אם \\(R_{SS}=r_o\\) של המקור"','איפוס שגוי של \\(A_{CM}\\)','עמוד 4 ועמוד 8, בתיבה']])}`},
+{t:'מקורות',h:RX`<p><b>מהחוברות:</b> ${BK(7,2,'הגדרות')} ${BK(7,3,'I/2')} ${BK(7,4,'תחום CM')} ${BK(7,6,'g_m')} ${BK(7,7,'הגבר הפרשי והסימן')} ${BK(7,8,'הגבר משותף, CMRR')} ${BK(3,8,'זרם רוויה')} ${BK(3,10,'r_o→∞ אם לא נתון')}</p>
+${src([['https://people.engr.tamu.edu/spalermo/ecen474/lecture09_ee474_diff_amps.pdf','Texas A&M ECEN474, הרצאה 9: זוג הפרש, אדמה וירטואלית, חצי מעגל, עכבת הזנב'],
+['https://en.wikipedia.org/wiki/Common-mode_rejection_ratio','Common-mode rejection ratio: הגדרה ולמה זה חשוב'],
+['https://en.wikipedia.org/wiki/Differential_amplifier','Differential amplifier, פרק Long-tailed pair: תפקיד הזנב ותחום המתח המשותף']])}`}
+],
+figs:q2Figs,
+recs:[['3','"מגבר הפרש FET"','פירוק \\(v_{CM}\\)/\\(v_{id}\\), שרשרת DC, \\(A_{CM}\\) המלא, כלל CMRR, תיקון השרטוט',2],['4 ו-8','תיבת \\(V_A\\to\\infty\\)','"רק אם \\(R_{SS}\\) לא נתון"',2]]
+};
+/* ================= שאלה 3 · חיישן טמפרטורה (הדגש של העמוד) ================= */
+function q3Circuit(C,o){o=o||{};
+  // ענף D1 (חדר)
+  C.rail(50,22,'15V');C.R([50,22],[50,170],'R_1 1kΩ',{side:-1});C.w([50,170],[50,198]);C.nd(50,188);C.T(40,183,'V_{D1}','hi','end');
+  C.D([50,198],[50,240],'D_1',{side:-1,id:'d1'});C.w([50,240],[50,252]);C.G(50,252);
+  // ענף D2 (בקופסה)
+  C.rail(130,22,'15V');C.R([130,22],[130,82],'R_1 1kΩ',{side:-1});C.w([130,82],[130,108]);C.nd(130,95);
+  C.D([130,108],[130,150],'D_2',{side:1,off:22,id:'d2'});C.w([130,150],[130,252]);C.G(130,252);
+  mk('rect',{x:112,y:101,width:36,height:57,rx:4,fill:'none',stroke:'var(--t3)','stroke-width':1.6,'stroke-dasharray':'4 3'},C.svg);
+  C.T(156,130,'T','val2','start');
+  // מגבר A (עליון): − למעלה, + למטה מקבל V_D2
+  const A=C.oa(300,83,{label:'A'});
+  C.w([130,95],[A.p[0],95]);C.w(A.m,[245,71]);C.nd(245,71);
+  C.R([245,71],[200,71],'R',{side:1,off:12});C.w([200,71],[200,74]);C.G(200,74);
+  C.w([245,71],[245,40],[270,40]);C.R([270,40],[330,40],'R',{side:-1,off:12});C.w([330,40],[355,40],[355,83]);C.w(A.o,[355,83]);C.nd(355,83);C.T(356,100,'V_1','hi','middle');
+  // מגבר B (תחתון): + למעלה מקבל V_D1, − למטה
+  const B=C.oa(300,200,{label:'B',plusTop:true});
+  C.w([50,188],B.p);C.w(B.m,[245,212]);C.nd(245,212);
+  C.R([245,212],[200,212],'R',{side:1,off:14});C.w([200,212],[200,216]);C.G(200,216);
+  C.w([245,212],[245,262],[270,262]);C.R([270,262],[330,262],'R',{side:1,off:13});C.w([330,262],[355,262],[355,200]);C.w(B.o,[355,200]);C.nd(355,200);C.T(356,186,'V_2','hi','middle');
+  // מגבר C (מחסר): V1 → R → −, משוב 50R ; V2 → R → +, 50R לאדמה
+  const Cc=C.oa(520,140,{label:'C'});
+  C.w([355,83],[380,83]);C.R([380,83],[440,83],'R',{side:-1,off:12});C.w([440,83],[462,83]);C.nd(462,83);C.w([462,83],[462,128],Cc.m);
+  C.w([462,83],[462,52],[480,52]);C.R([480,52],[550,52],'50R',{side:-1,off:12});C.w([550,52],[575,52],[575,140]);C.w(Cc.o,[575,140],[600,140]);C.nd(575,140);C.term(600,140);C.T(600,128,'V_o','hi','end');
+  C.w([355,200],[380,200]);C.R([380,200],[440,200],'R',{side:1,off:13});C.w([440,200],[462,200]);C.nd(462,200);C.w([462,200],[462,152],Cc.p);
+  C.R([462,200],[462,250],'50R',{side:1,off:14});C.G(462,250);
+  if(o.live){C.T(60,178,'','val','start',null,'vd1');C.T(154,112,'','val2','start',null,'vd2');C.T(356,113,'','val','middle',null,'v1');C.T(356,174,'','val','middle',null,'v2');C.T(600,158,'','val','end',null,'vo');C.T(156,148,'','val2','start',null,'tt');}
+  return C;
+}
+function q3Calc(T){const VD1=0.7,VD2=0.7-0.002*(T-25),dV=VD1-VD2;return {T,VD1,VD2,dV,V1:2*VD2,V2:2*VD1,Vo:100*dV};}
+function mountQ3(host,px){
+  host.innerHTML='<div class="lab"><div class="controls"><div class="sliders" id="'+px+'-ctl"></div><div class="presets"><button type="button" data-preset="'+px+'-a">0°C</button><button type="button" data-preset="'+px+'-b">25°C</button><button type="button" data-preset="'+px+'-c">50°C</button><button type="button" data-preset="'+px+'-d">−10°C</button></div></div>'+
+    '<div class="scopes">'+circ(px+'-cx',lg('t2','D₂ בקופסה: המתח שלה זז עם T')+lg('t1','כל השאר: מתחים שמתעדכנים חי'))+scope(px+'-pl','short',lg('t2','V_{D2}(T)')+lg('t1','V_{D1}=0.7V (חדר)')+lg('t3','הנקודה הנוכחית','dot'),'מתח הדיודות מול טמפרטורה')+scope(px+'-po','short',lg('t1','V_o(T)=0.2·(T−25)')+lg('t3','הנקודה הנוכחית','dot'),'מתח המוצא מול טמפרטורה')+'</div><div class="readouts" id="'+px+'-r"></div></div>';
+  const C=q3Circuit(Circuit(px+'-cx',620,290),{live:true}),cv=reg(px+'-pl'),cv2=reg(px+'-po');
+  const st=sliders(px+'-ctl',[{key:'T',id:px+'-t',label:'טמפרטורת הקופסה T',min:-20,max:70,step:1,value:50,fmt:v=>v.toFixed(0)+' °C'}],upd);
+  const line=[],lo=[];for(let T=-20;T<=70;T+=1){line.push([T,q3Calc(T).VD2]);lo.push([T,q3Calc(T).Vo]);}
+  function upd(){const s=q3Calc(st.T);
+    C.set('vd1','0.700V');C.set('vd2',s.VD2.toFixed(3)+'V');C.set('v1',s.V1.toFixed(3)+'V');C.set('v2',s.V2.toFixed(3)+'V');C.set('vo',fx(s.Vo,3)+'V');C.set('tt',st.T.toFixed(0)+'°C');
+    draw(cv,{x0:-20,x1:70,y0:0.58,y1:0.80,xl:'T [°C]',yl:'V_D [V]',series:[{c:'t1',w:2,dash:[6,4],pts:[[-20,0.7],[70,0.7]]},{c:'t2',w:2.6,pts:line}],points:[{x:s.T,y:s.VD2,c:'t3',label:(s.dV*1000).toFixed(0)+'mV'}]});
+    draw(cv2,{x0:-20,x1:70,y0:-10,y1:10,xl:'T [°C]',yl:'V_o [V]',series:[{c:'t1',w:2.6,pts:lo}],points:[{x:s.T,y:s.Vo,c:'t3',label:fx(s.Vo,2)+'V'}]});
+    readouts(px+'-r',[['T',st.T.toFixed(0)+' °C'],['V<sub>D2</sub> = 0.7 − 0.002(T−25)',s.VD2.toFixed(3)+' V'],['ΔV<sub>D</sub> = V<sub>D1</sub> − V<sub>D2</sub>',fx(s.dV*1000,1)+' mV'],['V<sub>1</sub> = 2V<sub>D2</sub>',s.V1.toFixed(3)+' V'],['V<sub>2</sub> = 2V<sub>D1</sub>',s.V2.toFixed(3)+' V'],['V<sub>o</sub> = 50(V<sub>2</sub> − V<sub>1</sub>)',fx(s.Vo,3)+' V']]);}
+  presets({[px+'-a']:{[px+'-t']:0},[px+'-b']:{[px+'-t']:25},[px+'-c']:{[px+'-t']:50},[px+'-d']:{[px+'-t']:-10}});
+  upd();
+}
+function q3Figs(){
+  if(document.getElementById('m26-q3-blk')){const C=Circuit('m26-q3-blk',620,190);
+    C.blk(85,50,140,44,'D_2  (sensor, T)');C.blk(85,140,140,44,'D_1  (25°C, ref)');
+    C.blk(285,50,110,44,'×2  (A)');C.blk(285,140,110,44,'×2  (B)');C.blk(470,95,130,54,'×50  (C)');
+    C.w([155,50],[230,50]);C.arrow(230,50,1,0);C.w([155,140],[230,140]);C.arrow(230,140,1,0);
+    C.w([340,50],[380,50],[380,80],[405,80]);C.arrow(405,80,1,0);C.w([340,140],[380,140],[380,110],[405,110]);C.arrow(405,110,1,0);
+    C.w([535,95],[600,95]);C.arrow(600,95,1,0);
+    C.T(192,40,'V_{D2}','hi','middle');C.T(192,130,'V_{D1}','hi','middle');C.T(360,40,'V_1','hi','middle');C.T(360,160,'V_2','hi','middle');C.T(568,85,'V_o','hi','middle');
+    C.T(395,74,'−','big','middle');C.T(395,126,'+','big','middle');
+    C.T(85,88,'0.650V @50°C','val2','middle');C.T(85,178,'0.700V','val','middle');C.T(285,88,'1.300V','val2','middle');C.T(285,178,'1.400V','val','middle');C.T(470,140,'+5V @50°C','val','middle');}
+  const cvd=document.getElementById('m26-q3-vdT');if(cvd){reg('m26-q3-vdT');const L=[];for(let T=0;T<=50;T++)L.push([T,0.7-0.002*(T-25)]);
+    draw(cvd,{x0:0,x1:50,y0:0.62,y1:0.78,xl:'T [°C]',yl:'V_D [V]',series:[{c:'t1',w:2,dash:[6,4],pts:[[0,0.7],[50,0.7]]},{c:'t2',w:2.6,pts:L}],points:[{x:0,y:0.75,c:'t3',label:'ΔV=−50mV'},{x:25,y:0.7,c:'t3',label:'0'},{x:50,y:0.65,c:'t3',label:'ΔV=+50mV'}]});}
+  const cvo=document.getElementById('m26-q3-voT');if(cvo){reg('m26-q3-voT');
+    draw(cvo,{x0:-10,x1:60,y0:-8,y1:8,xl:'T [°C]',yl:'V_o [V]',series:[{c:'t1',w:2.6,pts:[[-10,-7],[60,7]]}],points:[{x:0,y:-5,c:'t3',label:'−5V'},{x:25,y:0,c:'t3',label:'0'},{x:50,y:5,c:'t3',label:'+5V'}]});}
+  if(document.getElementById('m26-q3-knobs')){const C=Circuit('m26-q3-knobs',600,230),Z=105,k=18;
+    C.w([30,Z],[580,Z]);C.T(26,Z+4,'0','hi','end');
+    [[70,2.35,'var(--t1)','V_T = kT/q ↑','+2.35'],[205,-3.56,'var(--t2)','I_S ↑ (×2 / 5°C)','−3.56'],[340,-1.21,'var(--t3)','sum (sheet rule)','−1.21'],[475,-1.97,'var(--t3)','real silicon','−1.97']].forEach(([x,v,c,lab,val])=>{
+      const h=Math.abs(v)*k,y=v>0?Z-h:Z;mk('rect',{x,y,width:80,height:h,rx:4,fill:c,opacity:0.85},C.svg);
+      C.T(x+40,v>0?y-8:y+h+16,val+' mV/°C','hi','middle');C.T(x+40,v>0?Z+18:Z-10,lab,'val2','middle');});
+    C.T(300,222,'at constant current, every °C warmer: V_D drops ≈ 2 mV','big','middle');}
+}
+
+const Q3={n:3,id:'m26-q3',pts:25,got:'0 מתוך 25',title:'חיישן טמפרטורה: שתי דיודות ושלושה מגברי שרת',
+topic:'תלות מתח הדיודה בטמפרטורה · מגבר לא-מהפך · מגבר הפרש',
+primer:[
+{t:'על מה השאלה בכלל (במשפט אחד)',h:RX`
+<p>המעגל הוא <b>מדחום אלקטרוני</b>. דיודה אחת (\(D_2\)) יושבת בקופסה שהטמפרטורה שלה משתנה, והמתח עליה זז קצת עם החום. דיודה שנייה (\(D_1\)) יושבת בחדר, ב-25°C, ומשמשת "סרגל אפס". מגברי השרת לוקחים את ההפרש הקטנטן ביניהן (עשרות מיליוולטים) ומגדילים אותו פי 100, כדי לקבל מתח מוצא נוח למדידה (כמה וולטים).</p>
+<p>זה הכול. כל ארבעת הסעיפים הם רק "לעקוב אחרי האות" מהדיודות עד \(V_o\): סעיף א מסלול המגברים, סעיף ב מה הטמפרטורה עושה לדיודה, סעיף ג הצבת מספרים, סעיף ד שמות החיבורים.</p>
+${circ('m26-q3-blk',lg('t2','החיישן: D₂ בקופסה')+lg('t1','הייחוס: D₁ בחדר')+' · מספרי הדוגמה ב-50°C')}
+`+co('key','🎯','למה קיבלת 0 ואיך זה לא יקרה שוב',RX`<p>כשלא ברור "על מה מדובר", קשה להתחיל לכתוב. אבל השאלה הזו בנויה משני רעיונות קטנים בלבד: <b>(1)</b> בזרם קבוע, דיודה חמה יותר = מתח נמוך יותר, 2mV לכל מעלה (וזה <b>נתון</b> בשאלה, לא צריך לגזור), <b>(2)</b> שני כללי זהב של מגבר שרת. אחרי שתבין אותם, השאלה הופכת ל-25 נקודות "קלות".</p>`)},
+{t:'למה המתח של דיודה תלוי בטמפרטורה: האינטואיציה',h:RX`
+<p>דמיין שהדיודה היא <b>גבעה</b> שהאלקטרונים צריכים לטפס עליה כדי לעבור. המתח \(V_D\) שאנחנו שמים על הדיודה <b>מנמיך את הגבעה</b>. הטמפרטורה קובעת כמה האלקטרונים "קופצניים" (כמה אנרגיה תרמית יש להם).</p>
+<ul><li><b>ביום קר</b> האלקטרונים עייפים. כדי שיעברו מספיק מהם (כלומר כדי לקבל זרם מסוים) צריך להנמיך את הגבעה הרבה, כלומר <b>מתח גדול</b>.</li>
+<li><b>ביום חם</b> האלקטרונים קופצניים, והרבה עוברים לבד. כדי לקבל <b>בדיוק את אותו זרם</b> מספיק להנמיך את הגבעה קצת פחות, כלומר <b>מתח קטן יותר</b>.</li></ul>
+<p><b>המסקנה החשובה: בזרם קבוע, כשהטמפרטורה עולה, \(V_D\) יורד.</b> בערך 2 מיליוולט לכל מעלה. זה בדיוק ה-\(\frac{dV_{D2}}{dT}=-2\,\frac{mV}{^\circ C}\) שנתון בשאלה.</p>
+`+co('analogy','🚪','אנלוגיה: שער של חנות בזמן מבצע',RX`<p>המתח הוא כמה פותחים את השער, והזרם הוא כמה אנשים נכנסים בדקה. כשהקהל "חם" ונלהב, מספיק לפתוח את השער קצת כדי שאותו מספר אנשים ייכנס בדקה. לכן אם מחזיקים את קצב הכניסה קבוע ומודדים כמה השער פתוח, יודעים כמה הקהל חם. זה בדיוק מה שהמעגל עושה עם \(D_2\).</p>`)},
+{t:'למה המתח של דיודה תלוי בטמפרטורה: עם הנוסחאות מהדף',h:RX`
+<p>בדף, עמוד 1, בתיבת "דיודה", יש את שלוש הנוסחאות שצריך:</p>
+\[V_D=nV_T\ln\!\left(\frac{I_D}{I_S}\right),\qquad V_T=\frac{kT}{q},\qquad I_S(T)=I_S(T_0)\cdot2^{\frac{T-T_0}{5}}\]
+<p>${R('diode')} ${R('diodeT')}</p>
+<p>שים לב: בנוסחה של \(V_D\) יש <b>שני</b> גדלים שתלויים בטמפרטורה, והם מושכים לכיוונים הפוכים:</p>
+${tb(['"כפתור"','מה קורה כש-T עולה','השפעה על V<sub>D</sub>','כמה (n=1, V<sub>D</sub>≈0.7V, 25°C)'],[
+['\\(V_T=kT/q\\) (המכפיל בחוץ)','גדל ליניארית עם T','דוחף <b>למעלה</b>','\\(\\approx+\\frac{V_D}{T}=\\frac{0.7}{298}\\approx+2.35\\ \\frac{mV}{^\\circ C}\\)'],
+['\\(I_S\\) (זרם הזליגה, בתוך ה-ln)','גדל מהר מאוד: פי 2 כל 5°C לפי הדף','\\(\\ln(I_D/I_S)\\) קטן, ולכן דוחף <b>למטה</b>','\\(\\approx-nV_T\\frac{\\ln2}{5}\\approx-3.56\\ \\frac{mV}{^\\circ C}\\)'],
+['<b>סך הכול</b>','','<b>יורד</b>','לפי כלל "פי 2 כל 5°C": ≈ −1.2. לפי הפיזיקה המלאה: ≈ −2']])}
+${circ('m26-q3-knobs',lg('t1','V_T מעלה את V_D')+lg('t2','I_S מוריד את V_D')+lg('t3','הסכום: יורד'))}
+<p><b>הגזירה בשלוש שורות</b> (לא צריך אותה במבחן, היא כאן כדי שתבין מאיפה בא המספר). גוזרים לפי T כשהזרם \(I_D\) קבוע:</p>
+\[\frac{dV_D}{dT}=\underbrace{\frac{V_D}{T}}_{V_T\propto T}\;-\;nV_T\,\underbrace{\frac{d\ln I_S}{dT}}_{I_S\ \uparrow}\]
+<p>לפי הדף \(\frac{d\ln I_S}{dT}=\frac{\ln2}{5}\approx0.139\) לכל מעלה (כלומר \(I_S\) גדל בכ-15% בכל מעלה!). בפיזיקה המדויקת \(I_S\) גדל קצת יותר מהר (פי 2 כל ~4°C), ואז יוצא:</p>
+\[\frac{dV_D}{dT}\approx-\frac{V_{G0}-V_D}{T}\approx-\frac{1.2-0.6}{300}=-2\ \frac{mV}{^\circ C}\]
+<p>כאשר \(V_{G0}\approx1.2\,V\) הוא "פער האנרגיה" של סיליקון. זה ה-"−2mV למעלה" המפורסם מכל ספרי הלימוד.</p>
+`+co('key','✅','המסר: לא צריך לגזור את זה במבחן',RX`<p>ה-\(-2\,mV/^\circ C\) <b>נתון בשאלה</b>. צריך רק להבין מה הוא אומר: "<b>על כל מעלה שהקופסה מתחממת, \(V_{D2}\) יורד ב-2 מיליוולט</b>". זה מספיק לכל סעיף ב.</p>`)},
+{t:'למה מותר לכתוב את זה כקו ישר',h:RX`
+<p>50 מעלות הן רק כ-17% מהטמפרטורה המוחלטת (298 קלווין), אז העקומה "לא מספיקה להתעקם". בסימולציה מלאה (בזרם קבוע) יצא \(V_D(0^\circ C)=0.749V\), \(V_D(25^\circ C)=0.700V\), \(V_D(50^\circ C)=0.651V\), והסטייה המקסימלית מקו ישר היא <b>0.18mV בלבד</b> מתוך שינוי של כ-100mV. לכן:</p>
+\[V_{D2}(T)=V_{D2}(25^\circ C)+\frac{dV_{D2}}{dT}\,(T-25^\circ C)\]
+<p>זה בדיוק כמו משוואת קו ישר \(y=y_0+m(x-x_0)\) מתיכון: נקודה ידועה (25°C) ושיפוע ידוע (−2mV/°C).</p>
+${scope('m26-q3-vdT','short',lg('t1','V_{D1}: בחדר, קבוע')+lg('t2','V_{D2}(T): יורד 2mV לכל מעלה'),'שתי הדיודות מול טמפרטורה')}
+<p>בגרף רואים את כל הסיפור: ב-25°C שני הקווים נפגשים (ההפרש 0). בקופסה חמה הקו של \(D_2\) מתחת לקו של \(D_1\), ובקופסה קרה הוא מעליו.</p>`},
+{t:'למה צריך שתי דיודות (D₁ היא "סרגל האפס")',h:RX`
+<p>השינוי הוא 2mV למעלה, על גבי מתח "בסיס" של כ-0.7V. בין 0°C ל-50°C הדיודה זזה רק ±50mV. אם היינו מגבירים את \(V_{D2}\) ישירות פי 100 היינו מקבלים 70V, וזה בלתי אפשרי. לכן <b>קודם מחסירים את ה-0.7V הקבוע, ורק את ההפרש מגבירים</b>.</p>
+<ul><li>\(D_1\) בחדר, ולכן \(V_{D1}\) קבוע. זו "נקודת האפס של הסרגל".</li>
+<li>\(D_2\) "מתואמת" ל-\(D_1\) (אותו רכיב בדיוק) ובאותו זרם. לכן ב-25°C בדיוק \(V_{D1}=V_{D2}\), וכשמחסירים, כל ה-0.7V (גם אם הוא בעצם 0.68 או 0.72) <b>מתבטל</b>. נשאר רק מה שהטמפרטורה עשתה.</li></ul>
+`+co('analogy','⚖️','כמו "טארה" במשקל מטבח',RX`<p>שמים קערה על המשקל, לוחצים "אפס", ושוקלים רק את מה שבתוכה. \(D_1\) היא הקערה.</p>`)+
+RX`<p><b>למה חשוב שהזרמים "זהים וקבועים"?</b> כי \(V_D\) תלוי גם בזרם. אצלנו \(I=\frac{15-V_D}{1k\Omega}\approx14.3\,mA\). כשהמתח על \(D_2\) זז ב-50mV, הזרם זז רק ב-50µA (0.35%), וזה משנה את \(V_{D2}\) בכ-0.09mV. זניח. ה-15V הגדול ביחס ל-0.7V הוא מה שהופך את הנגד ל"כמעט מקור זרם".</p>`+
+co('warn','⚠️','מלכודת בדף: הנוסחה של הפרש שתי דיודות לא מתאימה כאן',RX`<p>בעמוד 1 יש גם \(V_{D1}-V_{D2}=nV_T\ln(I_{D1}/I_{D2})\) ${R('diodeDiff')}. היא נכונה רק לשתי דיודות <b>באותה טמפרטורה</b> עם <b>זרמים שונים</b>. אצלנו הזרמים שווים, אז היא הייתה נותנת 0. ההפרש אצלנו נובע מהטמפרטורה (ה-\(I_S\) וה-\(V_T\) שונים), ולכן משתמשים ב-\(-2\,mV/^\circ C\) הנתון.</p>`)},
+{t:'מגבר שרת: שלושה כללים ושתי תבניות שצריך לזהות',h:RX`
+<p><b>שלושת כללי הזהב</b> (מגבר שרת אידיאלי עם משוב שלילי, כלומר נגד מהמוצא אל הכניסה <b>−</b>):</p>
+<ol><li>\(V_+=V_-\) (<b>קצר וירטואלי</b>): המגבר "דואג" ששתי הכניסות יהיו באותו מתח.</li>
+<li>לא נכנס זרם לכניסות: \(I_+=I_-=0\).</li>
+<li>לא כותבים KCL בצומת המוצא: המגבר מספק כל זרם שצריך.</li></ol>
+<p>${basic('כללי הזהב')} ${R('kcl')}</p>
+<div class="cols2"><div><p><b>תבנית 1: מגבר לא-מהפך.</b> האות נכנס ישר ל-<b>+</b>. מהכניסה <b>−</b> יש נגד \(R_1\) לאדמה ונגד משוב \(R_2\) מהמוצא.</p>
+\[A_V=\frac{V_O}{V_{in}}=1+\frac{R_2}{R_1}\]
+<p>${R('noninv')}</p>
+<p><b>למה?</b> \(V_-=V_+=V_{in}\). הנגדים \(R_1,R_2\) הם מחלק מתח מהמוצא: \(V_-=V_O\frac{R_1}{R_1+R_2}\), ולכן \(V_O=V_{in}(1+\frac{R_2}{R_1})\). אצלנו \(R_1=R_2=R\), כלומר <b>הגבר 2</b>.</p></div>
+<div><p><b>תבנית 2: מגבר הפרש (מחסר).</b> \(V_1\) דרך \(R_1\) ל-<b>−</b> עם משוב \(R_2\); \(V_2\) דרך \(R_3\) ל-<b>+</b> עם \(R_4\) לאדמה.</p>
+\[V_O=\left(1+\frac{R_2}{R_1}\right)\frac{R_4}{R_3+R_4}V_2-\frac{R_2}{R_1}V_1\]
+\[\text{if }\ \frac{R_4}{R_3}=\frac{R_2}{R_1}\ \Rightarrow\ V_O=\frac{R_2}{R_1}(V_2-V_1)\]
+<p>${R('diffamp')}</p>
+<p><b>למה?</b> בסופרפוזיציה: רק \(V_1\) (כש-\(V_2=0\)) זה מגבר מהפך, \(-\frac{R_2}{R_1}V_1\). רק \(V_2\): מחלק מתח לכניסה +, ואז מגבר לא-מהפך. מחברים את שתי התרומות.</p></div></div>`},
+{t:'איך קוראים מגבר שמצויר "הפוך" (כאן שם הבודק ❓)',h:RX`
+<p>במגבר <b>העליון</b> (A) הכניסה <b>−</b> מצוירת למעלה ו-<b>+</b> למטה. במגבר <b>התחתון</b> (B) זה <b>הפוך</b>: <b>+ למעלה</b> ו-<b>− למטה</b>. בדיוק שם, בין שתי הכניסות של המגבר התחתון, הבודק שם ❓.</p>
+`+co('key','🧭','כלל הזיהוי הבטוח: חוט המשוב תמיד נוחת על −',RX`<p>עקוב אחרי החוט שיוצא מהמוצא וחוזר לכניסה. איפה שהוא נוחת, שם ה-<b>−</b>. אם האות נכנס ישר לכניסה השנייה (בלי נגד בדרך), והכניסה עם המשוב הולכת לאדמה דרך נגד, זה <b>מגבר לא-מהפך</b>. במגבר B: \(V_{D1}\) נכנס ישר ל-+ (למעלה), והמשוב R ונגד R לאדמה יושבים על − (למטה). כלומר <b>בדיוק אותו חיבור כמו A</b>, רק מצויר במראה.</p>`)+
+RX`<p>אם קוראים את B כמגבר מהפך (למשל \(V_2=-V_{D1}\)), סעיפים א, ג ו-ד נופלים יחד. לכן הדבר הראשון במבחן: <b>לסמן + ו-− על כל מגבר לפני שמתחילים לחשב</b>.</p>`}
+],
+prob:{t:'שאלה 3 · חיישן טמפרטורה עם שתי דיודות ושלושה מגברי שרת',pts:25,lvl:'25 נק\' · קיבלת 0',tags:['dc'],w:620,h:290,
+fig(C){q3Circuit(C);},
+st:RX`עבור המעגל באיור, דיודה \(D_1\) נמצאת בטמפרטורת החדר (25°C), ודיודה \(D_2\), המתואמת לה, נמצאת בתא סגור שהטמפרטורה שלו משתנה. מתח דיודה \(D_2\) בתלות בטמפרטורה: \(\frac{dV_{D2}}{dT}=-2\,\frac{mV}{^\circ C}\). הנח שהזרמים בדיודות זהים וקבועים על פני כל טווח הטמפרטורות. <b>(א · 14 נק')</b> מצא ביטוי למתח המוצא \(V_o=f(\Delta V_D)\), כאשר \(\Delta V_D=V_{D1}-V_{D2}\). <b>(ב · 5 נק')</b> רשום ביטוי ל-\(\Delta V_D\) בתלות בטמפרטורה. <b>(ג · 3 נק')</b> חשב את \(V_o\) ב-0°C וב-50°C. <b>(ד · 3 נק')</b> ציין את סוג החיבור של כל אחד משלושת מגברי השרת.`,
+given:RX`15V → \(R_1=1k\Omega\) → \(D_1\) (חדר) ו-15V → \(R_1=1k\Omega\) → \(D_2\) (קופסה). מגבר A: \(V_{D2}\) ל-+, R לאדמה ו-R משוב. מגבר B: \(V_{D1}\) ל-+ (מצויר למעלה), R לאדמה ו-R משוב. מגבר C: \(V_1\)→R→−, משוב 50R; \(V_2\)→R→+, 50R לאדמה.`,
+ask:RX`\(V_o(\Delta V_D)\) · \(\Delta V_D(T)\) · \(V_o\) ב-0°C וב-50°C · סוג החיבור של כל מגבר`,
+live:(host,px)=>mountQ3(host,px),
+steps:[
+{t:'לפני הכול: מסמנים + ו-− בכל מגבר ובונים טבלה',b:RX`<p>לפני חישוב אחד, עוברים על המגברים אחד-אחד ושואלים שלוש שאלות: יש משוב שלילי? מה נכנס ל-+? מה מחובר ל-−?</p>
+${tb(['מגבר','יש משוב שלילי?','מה נכנס ל-+','מה על −','התבנית','תוצאה'],[
+['A (עליון)','כן: R מ-\\(V_1\\) ל-−','\\(V_{D2}\\) ישירות','R לאדמה + R משוב','לא-מהפך','\\(V_1=2V_{D2}\\)'],
+['B (תחתון, מצויר הפוך)','כן: R מ-\\(V_2\\) ל-−','\\(V_{D1}\\) ישירות','R לאדמה + R משוב','לא-מהפך','\\(V_2=2V_{D1}\\)'],
+['C (ימני)','כן: 50R מ-\\(V_o\\) ל-−','\\(V_2\\) דרך מחלק R/50R','\\(V_1\\) דרך R, משוב 50R','מגבר הפרש','\\(V_o=50(V_2-V_1)\\)']])}
+<p>כל שלושת המגברים עם משוב שלילי, לכן בכל אחד מהם מותר להשתמש בקצר הווירטואלי \(V_+=V_-\).</p>
+`+used([basic('כללי הזהב: \\(V_+=V_-\\), \\(I_\\pm=0\\)'),R('kcl','הערות KCL במגבר שרת')])},
+{t:'סעיף א · מגבר A (עליון): V₁ = 2V_D2',b:RX`<p>הכניסה + מחוברת ישר לצומת \(V_{D2}\). לא נכנס זרם למגבר, אז הוא "מקשיב" לדיודה בלי לשנות את הזרם שלה. בגלל הקצר הווירטואלי:</p>
+\[V_-=V_+=V_{D2}\]
+<p>מהכניסה −: נגד R לאדמה (\(R_1\) בתבנית) ונגד R מהמוצא (\(R_2\) בתבנית). זה מגבר לא-מהפך:</p>
+\[V_1=\left(1+\frac{R_2}{R_1}\right)V_{D2}=\left(1+\frac{R}{R}\right)V_{D2}=2V_{D2}\]
+<p><b>בדיקה בזרמים:</b> על הנגד לאדמה זורם \(V_{D2}/R\). אותו זרם (כי לא נכנס זרם למגבר) עובר בנגד המשוב, ולכן \(V_1=V_{D2}+R\cdot\frac{V_{D2}}{R}=2V_{D2}\) ✓.</p>
+`+used([R('noninv','חיבור לא מהפך, \\(A_V=1+R_2/R_1\\)'),basic('קצר וירטואלי ואפס זרם לכניסות')])},
+{t:'סעיף א · מגבר B (תחתון): זהירות בקריאה, V₂ = 2V_D1',b:RX`<p>כאן הבודק שם ❓. המגבר מצויר עם <b>+ למעלה</b>. הקו האופקי הארוך מצומת \(V_{D1}\) נכנס לכניסה העליונה, שהיא <b>+</b>. הכניסה התחתונה (<b>−</b>) מחוברת לנגד R לאדמה ולנגד המשוב R מהמוצא.</p>
+<p>כלל הזיהוי: <b>חוט המשוב נוחת על −</b>. הוא נוחת על הכניסה התחתונה, ולכן היא −, וזה מגבר לא-מהפך בדיוק כמו A:</p>
+\[V_2=\left(1+\frac{R}{R}\right)V_{D1}=2V_{D1}\]
+`+co('warn','⚠️','הטעות שכנראה עלתה לך בשאלה',RX`<p>מי שקורא את B כמגבר מהפך כותב \(V_2=-V_{D1}\) או \(-2V_{D1}\), וכל מה שבא אחר כך שגוי. הציור ההפוך הוא "מלכודת ויזואלית" בלבד, הוא לא משנה את הפונקציה.</p>`)+
+RX`<p><b>שים לב לקו שחוצה:</b> הקו של \(V_{D1}\) חוצה את הענף של \(D_2\) <b>בלי נקודה</b>. קו שחוצה בלי נקודה הוא <b>לא</b> חיבור.</p>`+used([R('noninv'),basic('קריאת שרטוט: חציה בלי נקודה = אין חיבור')])},
+{t:'סעיף א · מגבר C (ימני): מגבר הפרש, V_o = 50(V₂ − V₁)',b:RX`<p>מתאימים את המגבר לסימונים של הדף: \(V_1\) דרך \(R_1=R\) ל-−, משוב \(R_2=50R\); \(V_2\) דרך \(R_3=R\) ל-+, ו-\(R_4=50R\) לאדמה.</p>
+<p><b>בודקים את תנאי האיזון</b> (זה מה שמאפשר את הנוסחה הקצרה):</p>
+\[\frac{R_4}{R_3}=\frac{50R}{R}=50=\frac{R_2}{R_1}\ \checkmark\]
+\[V_o=\frac{R_2}{R_1}(V_2-V_1)=50\,(V_2-V_1)\]
+<p><b>בדיקה בנוסחה המלאה:</b> \(\left(1+50\right)\frac{50}{51}V_2-50V_1=50V_2-50V_1\). אותו דבר ✓.</p>
+<p><b>מי עם פלוס?</b> \(V_2\) מגיע לכניסה <b>+</b>, ולכן הוא עם הסימן החיובי. מי שמחליף כותב \(50(V_1-V_2)\) ומקבל סימן הפוך בכל השאלה.</p>
+`+used([R('diffamp','מגבר הפרש + תנאי איזון')])},
+{t:'סעיף א · מחברים: V_o = 100·ΔV_D',b:RX`<p>מציבים את \(V_1\) ו-\(V_2\) מהשלבים הקודמים:</p>
+\[V_o=50\,(2V_{D1}-2V_{D2})=100\,(V_{D1}-V_{D2})\]
+\[\boxed{V_o=100\,\Delta V_D}\]
+<p><b>יחידות:</b> ההגבר חסר יחידות, אז \(V_o\) בוולט כש-\(\Delta V_D\) בוולט (100 × 1mV = 0.1V).</p>
+<p><b>בדיקת שפיות:</b> ב-25°C שתי הדיודות זהות, \(\Delta V_D=0\), ולכן \(V_o=0\). המדחום "מכויל" לאפס בטמפרטורת החדר. הגיוני.</p>
+`+used([R('noninv'),R('diffamp')])},
+{t:'סעיף ב · ΔV_D כפונקציה של הטמפרטורה (לאט, בגלל הסימן)',b:RX`<p><b>צעד 1: מה קורה ל-\(D_2\).</b> קו ישר שעובר דרך נקודת הייחוס 25°C עם השיפוע הנתון:</p>
+\[V_{D2}(T)=V_{D2}(25^\circ C)-2\,\frac{mV}{^\circ C}\,(T-25^\circ C)\]
+<p><b>צעד 2: מה קורה ל-\(D_1\).</b> היא תמיד בחדר, ומתואמת ל-\(D_2\) עם אותו זרם:</p>
+\[V_{D1}=V_{D2}(25^\circ C)\quad\text{(constant)}\]
+<p><b>צעד 3: מחסירים בסדר שהשאלה הגדירה</b> (\(V_{D1}\) פחות \(V_{D2}\)):</p>
+\[\Delta V_D=V_{D2}(25)-\Big[V_{D2}(25)-2\,\tfrac{mV}{^\circ C}(T-25)\Big]\]
+\[\boxed{\Delta V_D(T)=+2\,\frac{mV}{^\circ C}\,(T-25^\circ C)}\]
+<p><b>הסימן במילים:</b></p>
+<ul><li>קופסה <b>חמה</b> (T > 25): \(V_{D2}\) <b>יורד</b>, \(V_{D1}\) לא זז, ולכן \(V_{D1}>V_{D2}\) וההפרש <b>חיובי</b>.</li>
+<li>קופסה <b>קרה</b> (T &lt; 25): \(V_{D2}\) <b>עולה</b> מעל \(V_{D1}\), וההפרש <b>שלילי</b>.</li>
+<li>הסימן מתהפך פעמיים: השיפוע שלילי (−2), וההגדרה <b>מחסירה</b> את \(V_{D2}\). מינוס כפול מינוס = פלוס.</li></ul>
+`+used([NB('\\(\\frac{dV_D}{dT}\\approx-2\\,mV/^\\circ C\\) (נתון בשאלה)'),R('diodeT','V_T=kT/q ו-I_S(T): הסיבה הפיזיקלית'),basic('משוואת קו ישר דרך נקודה')])},
+{t:'סעיף ג · מספרים: V_o ב-0°C וב-50°C',b:RX`<p>מחברים את סעיף א וסעיף ב:</p>
+\[V_o(T)=100\cdot2\,\frac{mV}{^\circ C}\,(T-25)=0.2\,\frac{V}{^\circ C}\,(T-25^\circ C)\]
+<ul><li>\(T=0^\circ C\): \(\Delta V_D=2mV\cdot(0-25)=-50\,mV\), ולכן \(V_o=100\cdot(-0.050)=\boxed{-5.000\,V}\)</li>
+<li>\(T=50^\circ C\): \(\Delta V_D=2mV\cdot(50-25)=+50\,mV\), ולכן \(V_o=100\cdot0.050=\boxed{+5.000\,V}\)</li></ul>
+${scope('m26-q3-voT','short',lg('t1','V_o(T): קו ישר, 0.2V לכל מעלה, אפס ב-25°C'),'מתח המוצא מול טמפרטורה')}
+<p><b>כל מתחי הצמתים</b> (בהנחה \(V_D(25^\circ C)\approx0.7V\). התשובה הסופית לא תלויה בהנחה הזו, כי היא מתבטלת בהפרש):</p>
+${tb(['גודל','0°C','25°C','50°C'],[
+['\\(V_{D1}\\)','0.700V','0.700V','0.700V'],['\\(V_{D2}\\)','0.750V','0.700V','0.650V'],['\\(\\Delta V_D\\)','−50mV','0','+50mV'],
+['\\(V_1=2V_{D2}\\)','1.500V','1.400V','1.300V'],['\\(V_2=2V_{D1}\\)','1.400V','1.400V','1.400V'],['\\(V_+=V_-\\) של C','1.3725V','1.3725V','1.3725V'],['<b>\\(V_o\\)</b>','<b>−5V</b>','<b>0V</b>','<b>+5V</b>']])}
+<p>שים לב: \(V_2\) וכניסות C <b>לא זזים בכלל</b>. רק \(V_1\) זז (כי רק \(D_2\) מרגישה את הטמפרטורה), והמוצא "מגיב" לזה.</p>
+<p><b>אספקה:</b> מתחי ההזנה של המגברים לא נתונים. עם ±15V טיפוסי, ±5V רחוק מרוויה.</p>
+`+used([basic('הצבה'),'הטעות הנפוצה: להציב T=50 במקום T−25=25 ולקבל 10V. נקודת האפס היא 25°C.'])},
+{t:'סעיף ד · סוג החיבור של כל מגבר',b:RX`${tb(['מגבר','סוג החיבור','הגבר','בדף'],[
+['A (עליון), מקבל \\(V_{D2}\\)','<b>מגבר לא-מהפך</b>','\\(1+R/R=2\\)',R('noninv')],
+['B (תחתון), מקבל \\(V_{D1}\\)','<b>מגבר לא-מהפך</b> (אותו דבר, רק מצויר הפוך)','2',R('noninv')],
+['C (ימני)','<b>מגבר הפרש (מחסר)</b>, מאוזן','50',R('diffamp')]])}
+<p><b>בונוס הבנה:</b> שלושתם יחד בונים את המבנה של <b>מגבר מכשור</b> (Instrumentation) עם 3 מגברים ${R('instr')}. בדף שני המגברים הראשונים מחוברים זה לזה דרך נגד אחד \(R_G\); כאן כל אחד הולך לאדמה דרך R משלו. מבחינת ההפרש זה שקול ל-\(R_G=2R\): \(1+\frac{2R}{2R}=2\) ✓.</p>
+<p>"משוב שלילי" הוא <b>לא</b> סוג חיבור. צריך שם: לא-מהפך / מהפך / הפרש / עוקב / סוכם.</p>
+`+used([R('noninv'),R('diffamp'),R('instr')])},
+{t:'בדיקה: האם ההנחות באמת מחזיקות? (אימות במחשב)',b:RX`${tb(['מה בדקנו','איך','תוצאה'],[
+['מגבר עם הגבר סופי במקום אידיאלי','ניתוח צמתים עם \\(A=10^5\\)','±4.9974V במקום ±5V (0.05%)'],
+['זרם הדיודה באמת קבוע?','\\(I=(15-V_D)/1k\\)','משתנה 0.35%, משנה את \\(V_{D2}\\) ב-0.09mV'],
+['מודל מדויק של הדיודה','משוואת הדיודה + הנגד 1k, פתרון נומרי','−4.961V / +5.014V (פחות מ-1% מהתשובה הליניארית)'],
+['קו ישר?','\\(V_D(T)\\) פיזיקלי מלא בין 0°C ל-50°C','סטייה מקסימלית 0.18mV']])}
+<p>מסקנה: התשובה של המבחן (±5V) נכונה עד פחות מ-1%.</p>`}
+],
+ans:RX`<b>א:</b> \(V_1=2V_{D2}\), \(V_2=2V_{D1}\), \(V_o=50(V_2-V_1)=100\,\Delta V_D\) · <b>ב:</b> \(\Delta V_D=+2\,\frac{mV}{^\circ C}(T-25^\circ C)\) · <b>ג:</b> \(V_o(0^\circ C)=-5.000V\), \(V_o(50^\circ C)=+5.000V\) (שיפוע 0.2V/°C) · <b>ד:</b> A ו-B מגברים לא-מהפכים (×2), C מגבר הפרש (×50); יחד, מבנה של מגבר מכשור.`},
+after:[
+{t:'מה הבודק סימן, והטעויות שכדאי להכיר',h:RX`<p>❓ האדום יושב בדיוק בין הכניסות של המגבר <b>התחתון</b>, שמצויר הפוך מהעליון. אין לנו את מחברת התשובות, אז זו פרשנות: הכי סביר שהחיבור של המגבר הזה זוהה לא נכון (למשל כמהפך), וזה מפיל את סעיפים א, ג ו-ד יחד.</p>
+<ol><li>לקרוא את B כמהפך: \(V_2=-V_{D1}\). נכון: \(+2V_{D1}\).</li>
+<li>לשכוח את ההגבר ×2 של השלב הראשון: \(V_o=50\Delta V_D\), ואז ±2.5V במקום ±5V.</li>
+<li>טעות סימן בסעיף ב: להעתיק את ה-"−2" בלי לשים לב ש-\(V_{D2}\) <b>מוחסר</b>.</li>
+<li>להציב T במקום \((T-25)\): "\(V_o=0.2\cdot50=10V\)" ב-50°C.</li>
+<li>להשתמש ב-\(V_{D1}-V_{D2}=nV_T\ln(I_{D1}/I_{D2})\): לא מתאים, הזרמים שווים וההפרש נובע מהטמפרטורה.</li>
+<li>להחליף את סדר ההחסרה ב-C: \(50(V_1-V_2)\). \(V_2\) מגיע ל-+, ולכן הוא עם הפלוס.</li>
+<li>לנסות לחשב \(V_{D1}\) במספרים ולהיתקע (לא נתון \(I_S\)). לא צריך: הכול מתבטל בהפרש.</li>
+<li>בסעיף ד לכתוב "משוב שלילי". זה לא שם של חיבור.</li></ol>`},
+{t:'מתכון ל-4 צעדים לכל שאלת טמפרטורה, ותרגול',h:RX`<ol><li><b>מי חם ומי קר?</b> סמן איזה רכיב משנה טמפרטורה ואיזה קבוע. כתוב לכל אחד \(V(T)=V(T_0)+\frac{dV}{dT}(T-T_0)\). לרכיב הקבוע השיפוע 0.</li>
+<li><b>הפרש:</b> כתוב את ההפרש <b>בסדר שהשאלה מגדירה</b>. הקבועים מתבטלים, ונשאר מקדם כפול \((T-T_0)\). בדוק את הסימן במילים ("חם, ולכן D₂ יורדת, ולכן ההפרש...").</li>
+<li><b>שרשרת ההגבר:</b> סמן +/− בכל מגבר (חוט המשוב נוחת על −), זהה את התבנית, כתוב הגבר, הכפל.</li>
+<li><b>הצבה ובדיקות:</b> הצב \(T-T_0\) (לא T!), בדוק ש-\(V_o(T_0)=0\), בדוק יחידות (mV × הגבר = V) ושאין רוויה.</li></ol>
+<details class="m26ex"><summary><b>תרגיל 1:</b> מחליפים את שני ה-50R ב-20R. מה \(V_o\) ב-50°C וב-0°C?</summary><p>\(V_o=20(V_2-V_1)=40\,\Delta V_D\). ב-50°C: \(40\cdot0.05=+2V\). ב-0°C: \(-2V\).</p></details>
+<details class="m26ex"><summary><b>תרגיל 2:</b> הקופסה מתקררת ל-−10°C. מה \(\Delta V_D\) ו-\(V_o\)?</summary><p>\(\Delta V_D=2mV\cdot(-10-25)=-70mV\), ולכן \(V_o=100\cdot(-0.07)=-7V\).</p></details>
+<details class="m26ex"><summary><b>תרגיל 3:</b> מחליפים בין הכניסות של C: \(V_1\) דרך R ל-+, ו-\(V_2\) דרך R ל-−. מה \(V_o\) ב-0°C וב-50°C?</summary><p>\(V_o=50(V_1-V_2)=-100\,\Delta V_D\): ב-0°C \(+5V\), ב-50°C \(-5V\). המדחום "הפוך".</p></details>
+<details class="m26ex"><summary><b>תרגיל 4 (הפוך):</b> המוצא מראה \(V_o=+3V\). מה הטמפרטורה בקופסה?</summary><p>\(T=25+\frac{3}{0.2}=40^\circ C\).</p></details>`},
+{t:'מה חסר בדף הנוסחאות לשאלה הזו, ואיפה להוסיף',h:RX`${tb(['מה להוסיף','למה','איפה בדף'],[
+['\\(\\frac{dV_D}{dT}\\approx-2\\,\\frac{mV}{^\\circ C}\\) (בזרם קבוע): "חם ⇒ \\(V_D\\) יורד"','זו ליבת השאלה. כאן היה נתון, בשאלה אחרת אולי לא','עמוד 1 · תיבת "דיודה", שורה מתחת ל-\\(V_T=kT/q;\\ I_S(T)\\)'],
+['\\(V_D(T)=V_D(T_0)+\\frac{dV_D}{dT}(T-T_0)\\)','סעיף ב','אותה תיבה בעמוד 1'],
+['הערה: "\\(V_{D1}-V_{D2}=nV_T\\ln(I_{D1}/I_{D2})\\) רק באותה טמפרטורה!"','למנוע את המלכודת','עמוד 1 · ליד הנוסחה הקיימת'],
+['כללי הזהב במפורש: \\(V_+=V_-\\) (רק עם משוב שלילי), \\(I_\\pm=0\\)','מופיע רק כהערות KCL','עמוד 7 · ליד הריבוע השמאלי-עליון'],
+['"חוט המשוב תמיד נוחת על −"','המלכודת של המגבר התחתון','עמוד 7 · מתחת ל"חיבור לא מהפך"'],
+['מגבר מכשור עם שני נגדים לאדמה במקום \\(R_G\\): כל ענף \\(1+R_f/R\\)','המבנה המדויק של השאלה','עמוד 7 · מתחת ל"מגבר מכשור"']])}`},
+{t:'מקורות',h:RX`<p><b>מהחוברות:</b> ${BK(9,3,'כללי הזהב')} ${BK(9,4,'לא-מהפך, מגבר הפרש')} ${BK(9,5,'מגבר מכשור')} ${BK(1,7,'משוואת הדיודה')}. חשוב לדעת: <b>חוברת שיעור 1 לא עוסקת בתלות בטמפרטורה בכלל</b> (אין שם −2mV/°C). זה פער בחומר, וזה מסביר למה הנושא הרגיש זר.</p>
+${src([['https://en.wikipedia.org/wiki/Silicon_bandgap_temperature_sensor','Silicon bandgap temperature sensor: צומת סיליקון כחיישן טמפרטורה, −2mV/°C בזרם קבוע, הפרש של שני צמתים'],
+['https://en.wikipedia.org/wiki/Bandgap_voltage_reference','Bandgap voltage reference: למה המתח על צומת יורד עם הטמפרטורה ומאיפה ה-1.2V'],
+['https://terpconnect.umd.edu/~lawson/Lab%206%20-%20Operational%20Amplifiers%20II.pdf','UMD ENEE 205: מעבדה עם חיישן טמפרטורה מדיודה ומגבר הפרש, כמעט אותו מעגל'],
+['https://www.analog.com/mt-063','Analog Devices MT-063: מגבר מכשור של 3 מגברי שרת'],
+['https://circuitdigest.com/electronic-circuits/differential-amplifier-or-voltage-subtractor-circuit','מגבר הפרש/מחסר: גזירה בסופרפוזיציה']])}`}
+],
+figs:q3Figs,
+recs:[['1','תיבת "דיודה"','\\(dV_D/dT\\approx-2\\,mV/^\\circ C\\) ו-\\(V_D(T)=V_D(T_0)+\\frac{dV_D}{dT}(T-T_0)\\)',3],['1','ליד \\(V_{D1}-V_{D2}=nV_T\\ln(\\dots)\\)','"רק באותה טמפרטורה"',3],['7','ליד "חיבור לא מהפך"','כללי הזהב + "המשוב נוחת על −"',3],['7','מתחת ל"מגבר מכשור"','גרסה עם שני נגדים לאדמה',3]]
+};
+/* ================= שאלה 4 · משוב מקבילי-טורי ================= */
+function q4Circuit(C){
+  C.term(28,150);C.T(24,138,'V_{sig}','hi','start');C.R([28,150],[95,150],'R_{sig} 10kΩ',{side:1});C.Cap([95,150],[125,150],'',{});C.w([125,150],[230,150]);C.nd(180,150);C.nd(205,150);
+  C.w([22,204],[40,204]);C.arrow(40,204,1,0);C.T(22,222,'R_{inf}','val','start');
+  C.rail(180,26,'V_{cc}');C.R([180,26],[180,150],'R_1 20kΩ',{side:1});C.R([180,150],[180,262],'R_2 20kΩ',{side:1});C.G(180,262);
+  const q1=C.npn(250,150,{label:'Q_1'});C.w(q1.e,[260,196]);C.G(260,196);
+  C.rail(260,26,'V_{cc}');C.R([260,26],[260,95],'R_{c1} 18kΩ',{side:-1});C.w([260,95],q1.c);C.nd(260,104);
+  const q2=C.npn(420,104,{label:'Q_2'});C.w([260,104],q2.b);
+  C.rail(430,26,'V_{cc}');C.R([430,26],[430,64],'R_{c2} 10kΩ',{side:1});C.w([430,64],q2.c);C.nd(430,70);C.w([430,70],[480,70]);C.Cap([480,70],[510,70],'',{});C.w([510,70],[560,70]);C.term(560,70);C.T(560,58,'V_o','hi','middle');
+  C.R(q2.e,[430,196],'R_{e2} 1kΩ',{side:1});C.w([430,196],[430,210]);C.nd(430,210);C.T(444,214,'F','big','start');
+  C.R([430,210],[430,280],'R_3 3kΩ',{side:1});C.G(430,280);
+  C.w([430,210],[430,230],[380,230]);C.R([380,230],[300,230],'R_f 27kΩ',{side:1,off:16});C.w([300,230],[205,230],[205,150]);
+  return C;
+}
+function q4Net(C){
+  const G=(x,y)=>{C.w([x,y],[x,y+4]);C.G(x,y+4);};
+  C.T(110,18,'β: V_1 = 0, inject I_o','big','middle');
+  C.w([30,60],[30,120]);G(30,120);C.T(38,132,'V_1=0','val2','start');
+  C.R([30,60],[120,60],'R_f 27k',{side:-1});C.nd(140,60);C.w([120,60],[195,60]);C.R([140,60],[140,130],'R_3 3k',{side:1});G(140,130);
+  C.w([195,60],[195,90]);C.V([195,140],[195,90],'',{kind:'i'});G(195,140);C.T(213,118,'I_o','val','start');
+  C.w([45,76],[75,76]);C.arrow(75,76,1,0);C.T(60,94,'I_f','val','middle');
+  C.T(110,176,'I_f = −I_o·3/30 ⇒ β = −0.1','val','middle');
+  C.T(320,18,'R_11: port 2 open','big','middle');
+  C.term(250,60);C.R([250,60],[330,60],'R_f 27k',{side:-1});C.nd(350,60);C.w([330,60],[350,60]);C.R([350,60],[350,130],'R_3 3k',{side:-1});G(350,130);
+  C.T(358,48,'open','val2','start');C.w([230,84],[250,84]);C.arrow(250,84,1,0);C.T(240,102,'R_11','val','middle');
+  C.T(310,176,'R_11 = 27k + 3k = 30k','val','middle');
+  C.T(515,18,'R_22: port 1 short','big','middle');
+  C.w([440,60],[440,120]);G(440,120);C.R([440,60],[525,60],'R_f 27k',{side:-1});C.nd(545,60);C.w([525,60],[585,60]);C.R([545,60],[545,130],'R_3 3k',{side:1});G(545,130);
+  C.term(585,60);C.w([605,84],[585,84]);C.arrow(585,84,-1,0);C.T(598,102,'R_22','val','middle');
+  C.T(515,176,'R_22 = 27k ∥ 3k = 2.7k','val','middle');
+  return C;
+}
+function q4A(C){
+  C.V([40,220],[40,120],'',{kind:'i'});C.T(58,166,'I_s','val','start');C.G(40,220);C.w([40,120],[40,100],[340,100]);
+  [[90,'R_{sig} 10k'],[170,'R_B 10k'],[250,'R_{11} 30k']].forEach(([x,t])=>{C.nd(x,100);C.R([x,100],[x,220],t,{side:-1,off:13});C.G(x,220);});
+  const a=C.npn(370,150,{label:'Q_1'});C.w([340,100],[340,150],a.b);C.w(a.e,[380,196]);C.G(380,196);
+  C.w(a.c,[380,90]);C.nd(380,90);C.w([380,90],[520,90]);C.nd(440,90);C.R([440,90],[440,220],'R_{c1} 18k',{side:-1,off:13});C.G(440,220);
+  const b=C.npn(540,90,{label:'Q_2'});C.w([520,90],b.b);
+  C.w(b.c,[550,40],[700,40]);C.nd(660,40);C.R([660,40],[660,220],'R_{c2} 10k',{side:-1,off:13});C.G(660,220);C.term(700,40);C.T(700,28,'V_o','hi','middle');
+  C.R(b.e,[550,170],'R_{e2} 1k',{side:-1});C.R([550,170],[550,230],'R_{22} 2.7k',{side:-1});C.G(550,230);
+  C.w([534,124],[534,142]);C.arrow(534,142,0,1);C.T(528,138,'I_o','val','end');
+  C.T(180,262,'R_i = R_sig ∥ R_B ∥ R_11 ∥ r_π1 = 0.811k','val2','middle');C.T(540,262,'R_in(Q2) = r_π+(β+1)(R_e2+R_22) = 374.7k','val2','middle');
+  return C;
+}
+function q4Calc(b){const rp=1,Ri=1/(1/10+1/10+1/30+1/rp),Rin2=rp+(b+1)*3.7,Ai=(Ri/rp)*b*(-18/(18+Rin2))*(b+1),D=1+0.1*(-Ai),Aif=Ai/D,al=b/(b+1),Avf=-al*Aif,Rif=Ri/D,Rx=1/(1/Rif-1/10);
+  return {Ri,Rin2,Ai,D,Aif,Avf,Rif,Rx,Rinf:10+Rx};}
+function mountQ4(host,px){
+  host.innerHTML='<div class="lab"><div class="controls"><div class="sliders" id="'+px+'-ctl"></div><div class="presets"><button type="button" data-preset="'+px+'-a">β = 50</button><button type="button" data-preset="'+px+'-b">β = 100 (השאלה)</button><button type="button" data-preset="'+px+'-c">β = 300</button></div></div>'+
+    '<div class="scopes">'+scope(px+'-p','short',lg('t1','A_vf עם משוב')+lg('t2','A_v בלי משוב ÷ 40','dash')+lg('t3','הנקודה הנוכחית','dot'),'כמה ההגבר תלוי ב-β של הטרנזיסטורים')+'</div><div class="readouts" id="'+px+'-r"></div></div>';
+  const cv=reg(px+'-p');
+  const st=sliders(px+'-ctl',[{key:'b',id:px+'-b',label:'β של שני הטרנזיסטורים',min:40,max:300,step:1,value:100,fmt:v=>v.toFixed(0)}],upd);
+  const L1=[],L2=[];for(let b=40;b<=300;b+=2){const s=q4Calc(b);L1.push([b,s.Avf]);L2.push([b,-(b/(b+1))*s.Ai/40]);}
+  function upd(){const s=q4Calc(st.b);
+    draw(cv,{x0:40,x1:300,y0:0,y1:20,xl:'β',yl:'A_v',series:[{c:'t2',w:1.6,dash:[5,4],pts:L2},{c:'t1',w:2.6,pts:L1},{c:'axis',w:1,dash:[3,4],pts:[[40,10],[300,10]]}],points:[{x:st.b,y:s.Avf,c:'t3',label:s.Avf.toFixed(3)}]});
+    readouts(px+'-r',[["A<sub>i</sub>' (בלי משוב)",s.Ai.toFixed(1)],['D = 1 + β<sub>f</sub>A<sub>i</sub>\'',s.D.toFixed(2)],['A<sub>if</sub> = A<sub>i</sub>\'/D',s.Aif.toFixed(3)+' (אידיאלי −10)'],['A<sub>vf</sub>',s.Avf.toFixed(3)],['R<sub>inf</sub>',s.Rinf.toFixed(3)+' kΩ']]);}
+  presets({[px+'-a']:{[px+'-b']:50},[px+'-b']:{[px+'-b']:100},[px+'-c']:{[px+'-b']:300}});
+  upd();
+}
+function q4Figs(){
+  if(document.getElementById('m26-q4-net'))q4Net(Circuit('m26-q4-net',620,190));
+  if(document.getElementById('m26-q4-a'))q4A(Circuit('m26-q4-a',740,275));
+}
+
+const Q4={n:4,id:'m26-q4',pts:30,title:'משוב מקבילי-טורי במגבר BJT דו-דרגתי',
+topic:'משוב שלילי · ארבע הטופולוגיות · β, R₁₁, R₂₂, D · הגבר והתנגדות כניסה עם משוב',
+primer:[
+{t:'למה בכלל משוב',h:RX`<p>מגבר "גולמי" של טרנזיסטורים נותן הגבר גדול אבל <b>לא יציב</b>: β משתנה מרכיב לרכיב (100? 200?), עם הטמפרטורה ועם נקודת העבודה. הרעיון של משוב שלילי: לוקחים <b>דגימה</b> של המוצא, מחזירים חלק ממנה לכניסה <b>בסימן הפוך</b>, ו"מתקנים" את הכניסה. מוותרים על הרבה הגבר, ומקבלים הגבר שתלוי כמעט רק בנגדים, שהם מדויקים ויציבים.</p>
+\[A_f=\frac{x_o}{x_s}=\frac{A}{1+\beta A}=\frac{A}{D}\qquad\xrightarrow{\ \beta A\gg1\ }\qquad A_f\approx\frac1\beta\]
+<ul><li>\(A\): ההגבר של המגבר הבסיסי, בלי המשוב.</li><li>\(\beta\): איזה חלק מהמוצא חוזר לכניסה (נגדים בלבד).</li><li>\(D=1+\beta A\): <b>כמות המשוב</b>. משוב שלילי ⇔ \(\beta A>0\) ⇔ \(D>1\). אם יצא \(D\lt1\), יש טעות סימן.</li></ul>
+<p>${R('ssD')} ${BK(8,3,'משוואות המשוב')}</p>
+`+co('analogy','🎯','בשאלה שלנו, במספרים',RX`<p>הכפלת β של הטרנזיסטורים מ-100 ל-200 משנה את ההגבר הסופי רק מ-9.644 ל-9.823 (כ-2%). בלי משוב ההגבר היה כמעט מוכפל. זה כל הקסם. נסה במעבדה החיה בתוך השאלה.</p>`)},
+{t:'ארבע הטופולוגיות: מה דוגמים ואיך מערבבים',h:RX`<p>השם הוא <b>[ערבוב בכניסה]–[דגימה במוצא]</b>:</p>
+${tb(['טופולוגיה (עמוד 6)','בכניסה מערבבים','במוצא דוגמים','ההגבר','זיהוי לפי הדף'],[
+['1. טורי-מקבילי (Series–Shunt)','מתח (בטור)','מתח (במקביל)','\\(A_v=V_o/V_s\\)','בכניסה אין צומת, במוצא יש צומת'],
+['2. מקבילי-מקבילי (Shunt–Shunt)','זרם (בצומת)','מתח (במקביל)','\\(A_z=V_o/I_s\\)','בכניסה יש צומת, במוצא יש צומת'],
+['<b>3. מקבילי-טורי (Shunt–Series)</b>','<b>זרם (בצומת)</b>','<b>זרם (בטור)</b>','\\(A_i=I_o/I_s\\)','<b>בכניסה יש צומת, במוצא אין צומת</b>'],
+['4. טורי-טורי (Series–Series)','מתח (בטור)','זרם (בטור)','\\(A_y=I_o/V_s\\)','בכניסה אין צומת, במוצא אין צומת']])}
+`+co('analogy','🔌','אנלוגיה: וולטמטר ואמפרמטר',RX`<p><b>דגימת מתח</b> = הרשת מתנהגת כמו <b>וולטמטר</b>: מחוברת במקביל לעומס (נוגעת בצומת המוצא). <b>דגימת זרם</b> = הרשת מתנהגת כמו <b>אמפרמטר</b>: יושבת בטור בתוך לולאת זרם המוצא, והזרם עובר דרכה. <b>ערבוב זרם</b> = המשוב שופך/שואב זרם <b>לאותו צומת</b> של המקור. <b>ערבוב מתח</b> = המשוב יוצר מתח בטור עם המקור, למשל על נגד אמיטר של טרנזיסטור הכניסה.</p>`)+RX`<p>${BK(8,4,'ארבע הטופולוגיות')}</p>`},
+{t:'איך מזהים מהשרטוט: שני מבחנים',h:RX`<ol><li><b>מבחן הצומת (מהדף):</b> איפה נגד המשוב "נוחת"? בכניסה: על <b>אותו צומת</b> של המקור/הבסיס ⇒ מקבילי. על אמיטר של טרנזיסטור הכניסה ⇒ טורי. במוצא: על <b>צומת \(V_o\)</b> ⇒ דגימת מתח. על נקודה <b>בתוך מסלול זרם המוצא</b> (למשל אמיטר של טרנזיסטור המוצא) ⇒ דגימת זרם.</li>
+<li><b>מבחן הקצר:</b> מקצרים את \(V_o\) לאדמה. <b>אם המשוב נעלם</b> ⇒ דגימת מתח. <b>אם הוא נשאר</b> ⇒ דגימת זרם. ${NB('מבחן הקצר')}</li></ol>`},
+{t:'העמסה: R₁₁ ו-R₂₂, ולמה צריך אותם',h:RX`<p>רשת המשוב עשויה נגדים, והם <b>מעמיסים</b> את המגבר בכניסה ובמוצא. השיטה: מוציאים את הרשת מהמעגל, אבל משאירים את ההעמסה שלה: \(R_{11}\) בצד הכניסה, \(R_{22}\) בצד המוצא.</p>
+`+co('key','📏','הכלל: מקבילי ⇒ קצר, טורי ⇒ נתק',RX`<p>כדי למצוא \(R_{11}\) מבטלים את <b>צד 2</b> (המוצא) לפי סוג <b>הדגימה</b>. כדי למצוא \(R_{22}\) מבטלים את <b>צד 1</b> (הכניסה) לפי סוג <b>הערבוב</b>. צד מקבילי מבטלים ב<b>קצר</b>, צד טורי ב<b>נתק</b>. במקבילי-טורי: \(R_{11}\) עם צד 2 בנתק, \(R_{22}\) עם צד 1 בקצר.</p>`)+
+RX`<p><b>מה קורה להתנגדויות:</b> צד מקבילי מחלקים ב-D (יורדת), צד טורי מכפילים ב-D (עולה). במקבילי-טורי: \(R_{if}=R_{in}/D\), \(R_{of}=R_oD\). מגבר זרם אידיאלי צריך כניסה נמוכה ומוצא גבוה, וזה בדיוק לשם המשוב דוחף.</p>
+<p>${R('ssR11')} ${R('ssR22')} ${BK(8,5,'חמשת שלבי הניתוח')} ${BK(8,6,'מתכון מסודר')}</p>`}
+],
+prob:{t:'שאלה 4 · מגבר BJT דו-דרגתי עם משוב מאמיטר Q₂ לבסיס Q₁',pts:30,lvl:'30 נק\'',tags:['ac'],w:600,h:300,
+fig(C){q4Circuit(C);},
+st:RX`נתוני הטרנזיסטורים: \(h_{fe}=\beta=100\), \(V_{BE(on)}=0.7V\), \(r_{\pi1}=r_{\pi2}=1k\Omega\). <b>(א · 5 נק')</b> זהו את סוג המשוב וחשבו את פרמטר רשת המשוב β ואת נגדי העמסת רשת המשוב. <b>(ב · 12 נק')</b> שרטטו מעגל חשמלי שקול ללא משוב כולל העמסות רשת המשוב וחשבו את כמות המשוב. <b>(ג · 6 נק')</b> חשבו את הגבר המתח \(A_{vf}=V_o/V_{sig}\) בחוג סגור. <b>(ד · 7 נק'; מסומן "ג" שוב במבחן)</b> חשבו את התנגדות הכניסה \(R_{inf}\) המסומנת במעגל.`,
+given:RX`\(R_{sig}=10k\), \(R_1=R_2=20k\), \(R_{c1}=18k\), \(R_{c2}=10k\), \(R_{e2}=1k\), \(R_3=3k\), \(R_f=27k\) מצומת F (בין \(R_{e2}\) ל-\(R_3\)) חזרה לבסיס \(Q_1\). אמיטר \(Q_1\) באדמה. \(V_{cc}\) לא נתון. החץ של \(R_{inf}\) <b>משמאל ל-\(R_{sig}\)</b>.`,
+ask:RX`סוג משוב, β, \(R_{11}\), \(R_{22}\) · מעגל A ו-D · \(A_{vf}\) · \(R_{inf}\)`,
+live:(host,px)=>mountQ4(host,px),
+steps:[
+{t:'סעיף א · שלב 1: הדגימה במוצא, זרם',b:RX`<p>\(R_f\) <b>לא</b> מתחבר לצומת \(V_o\) (הקולקטור של \(Q_2\)). הוא מתחבר לצומת F, שנמצא <b>בתוך מסלול זרם האמיטר</b> של \(Q_2\): \(Q_2\to R_{e2}\to F\to R_3\to\) אדמה. הרשת יושבת <b>בטור</b> עם זרם המוצא, כלומר "במוצא אין צומת", ולכן <b>דגימת זרם</b>.</p>
+<p><b>מבחן הקצר:</b> נקצר את \(V_o\) לאדמה. \(i_{e2}\) עדיין זורם דרך \(R_{e2},R_3\), והמשוב <b>לא נעלם</b>. לכן זו לא דגימת מתח ✓.</p>
+`+used([R('ssD','זיהוי: במוצא אין צומת')])},
+{t:'סעיף א · שלב 2: הערבוב בכניסה, זרם',b:RX`<p>\(R_f\) נוחת על הצומת של בסיס \(Q_1\): <b>אותו צומת</b> שאליו נכנס האות מ-\(R_{sig}\). "בכניסה יש צומת", ולכן <b>ערבוב זרם</b> (מקבילי). בצומת פועל KCL: \(I_i=I_s-I_f\).</p>
+<p><b>מסקנה:</b> משוב <b>מקבילי-טורי (Shunt–Series)</b>, השוואת זרם ודגימת זרם. זה <b>מגבר זרם</b>, \(A_i=I_o/I_s\).</p>
+<p><b>הגדרות (לפי הדף):</b> \(I_o\equiv i_{e2}\), הזרם שיוצא מאמיטר \(Q_2\) אל צומת F. \(I_f\) הוא הזרם ש<b>יוצא</b> מצומת הבסיס אל הרשת.</p>
+`+used([R('ssA','\\(A_i=I_o/I_s\\)'),BK(8,4)])},
+{t:'סעיף א · שלב 3: בדיקה שהמשוב שלילי (טבלת חצים)',b:RX`${tb(['#','גודל','שינוי'],[['1','\\(V_{sig}\\), ולכן \\(I_s\\)','↑'],['2','\\(v_{b1}\\)','↑'],['3','\\(i_{c1}=g_mv_{b1}\\)','↑'],['4','\\(v_{c1}=v_{b2}\\) (CE הופך)','↓'],['5','\\(i_{e2}=I_o\\)','↓'],['6','\\(V_F\\)','↓'],['7','\\(I_f=(v_{b1}-V_F)/R_f\\), יוצא מהבסיס','↑'],['8','\\(I_i=I_s-I_f\\), ולכן \\(v_{b1}\\)','העלייה מוקטנת ✓']])}
+<p>עלייה בכניסה גורמת לרשת "לשאוב" יותר זרם מצומת הכניסה. זה <b>משוב שלילי</b>.</p>`},
+{t:'סעיף א · שלב 4: β (צד 1 מקוצר, מזריקים I_o ל-F)',b:RX`<p>מקצרים את צד 1 (\(V_{B1}=0\)) ומזריקים \(I_o\) לצומת F. הזרם מתחלק בין \(R_3\) (לאדמה) ל-\(R_f\) (לקצר). לפי מחלק זרם, ב-\(R_f\) <b>לכיוון</b> הבסיס עובר \(I_o\frac{R_3}{R_3+R_f}\). \(I_f\) מוגדר בכיוון ההפוך (יוצא מהבסיס), ולכן:</p>
+\[\beta_f=\frac{I_f}{I_o}\Big|_{V_1=0}=-\frac{R_3}{R_3+R_f}=-\frac{3}{3+27}=\boxed{-0.100}\]
+${circ('m26-q4-net',lg('t1','רשת המשוב לבד')+' · שלושת המצבים: β, R₁₁, R₂₂')}
+`+used([R('ssBeta','β במקבילי-טורי (\\(R_E\\to R_3\\), \\(R_F\\to R_f\\))'),R('idiv','מחלק זרם')])},
+{t:'סעיף א · שלב 5: נגדי ההעמסה R₁₁ ו-R₂₂',b:RX`<p><b>\(R_{11}\)</b>: צד 2 <b>בנתק</b> (דגימה טורית, \(I_o=0\)). מהבסיס רואים \(R_f\) בטור עם \(R_3\) לאדמה:</p>
+\[R_{11}=R_f+R_3=27+3=\boxed{30.000\ k\Omega}\]
+<p><b>\(R_{22}\)</b>: צד 1 <b>בקצר</b> (ערבוב מקבילי). מצומת F רואים \(R_3\) לאדמה במקביל ל-\(R_f\):</p>
+\[R_{22}=R_3\parallel R_f=\frac{3\cdot27}{30}=\boxed{2.700\ k\Omega}\]
+<p><b>ו-\(R_{e2}\)?</b> הוא שייך <b>למגבר</b>, בטור עם \(R_{22}\). גם אם "מכניסים" אותו לרשת, β לא משתנה ומעגל A יוצא אותו דבר בדיוק.</p>
+`+used([R('ssR11'),R('ssR22')])},
+{t:'סעיף ב · שלב 1: שרטוט מעגל A (בלי משוב, עם העמסות)',b:RX`<p>קבלים ⇒ קצר, \(V_{cc}\) ⇒ אדמה. מחליפים את מקור המתח במקור <b>נורטון</b>: \(I_s=V_{sig}/R_{sig}\) במקביל ל-\(R_{sig}\). בבסיס \(Q_1\): \(R_{sig}\), \(R_B=R_1\parallel R_2=10k\), \(R_{11}=30k\), \(r_{\pi1}\), כולם במקביל. באמיטר \(Q_2\): \(R_{e2}\) בטור עם \(R_{22}\). <b>אין</b> \(R_f\) ו-\(R_3\): הם הוחלפו ב-\(R_{11}\) ו-\(R_{22}\).</p>
+${circ('m26-q4-a',lg('t1','מעגל A: המגבר בלי חוט המשוב, עם ההעמסות')+' · אין R_f ו-R_3, יש R₁₁ ו-R₂₂')}
+`+used([R('ssA','מעגל המגבר \\(A\'_i\\) כולל העמסות'),R('srcTf','תבנין ↔ נורטון'),R('rb','\\(R_b=R_1\\parallel R_2\\)')])},
+{t:'סעיף ב · שלב 2: ההתנגדות בצומת הכניסה',b:RX`
+\[R_i=R_{sig}\parallel R_B\parallel R_{11}\parallel r_{\pi1}=\left(\tfrac1{10}+\tfrac1{10}+\tfrac1{30}+\tfrac11\right)^{-1}k=\boxed{0.811\ k\Omega}\]
+<p>(\(R_{in}(Q_1)=r_{\pi1}\), כי האמיטר באדמה.)</p>
+`+used([R('ceRin','CE: \\(R_{in}=r_\\pi+(\\beta+1)R_E\\), כאן \\(R_E=0\\)'),R('par')])},
+{t:'סעיף ב · שלב 3: הזרמים של Q₁',b:RX`
+\[i_{b1}=I_s\frac{R_i}{r_{\pi1}}=0.811\,I_s,\qquad i_{c1}=\beta i_{b1}=81.081\,I_s\]
+`+used([R('rel8','\\(i_c=\\beta i_b\\)')])},
+{t:'סעיף ב · שלב 4: התנגדות הכניסה של Q₂',b:RX`<p>\(Q_2\) הוא CE עם התנגדות אמיטר \(R_{e2}+R_{22}\):</p>
+\[R_{in}(Q_2)=r_{\pi2}+(\beta+1)(R_{e2}+R_{22})=1+101\cdot3.7=\boxed{374.700\ k\Omega}\]
+`+used([R('ceRin')])},
+{t:'סעיף ב · שלב 5: מחלק זרם בקולקטור של Q₁',b:RX`<p>\(i_{c1}\) "נשאב" לתוך הקולקטור, והוא מגיע מ-\(R_{c1}\) ומ-\(R_{in}(Q_2)\) שבמקביל. זרם הבסיס של \(Q_2\) (נכנס לבסיס):</p>
+\[i_{b2}=-i_{c1}\frac{R_{c1}}{R_{c1}+R_{in}(Q_2)}=-81.081\cdot\frac{18}{18+374.7}\,I_s=-3.716\,I_s\]
+`+used([R('idiv')])},
+{t:'סעיף ב · שלב 6: זרם המוצא והגבר הזרם בלי משוב',b:RX`
+\[I_o=i_{e2}=(\beta+1)i_{b2}=101\cdot(-3.716)\,I_s\]
+\[A'_i=\frac{I_o}{I_s}=\frac{R_i}{r_{\pi1}}\cdot\beta\cdot\left(-\frac{R_{c1}}{R_{c1}+R_{in}(Q_2)}\right)\cdot(\beta+1)=\boxed{-375.364}\]
+`+used([R('rel8','\\(i_e=(\\beta+1)i_b\\)'),NB('הנוסחה המשורשרת לשתי דרגות (כל חוליה בדף)')])},
+{t:'סעיף ב · שלב 7: כמות המשוב D',b:RX`
+\[\beta_fA'_i=(-0.1)(-375.364)=37.536\quad(\text{positive} \Rightarrow \text{negative feedback ✓})\]
+\[D=1+\beta_fA'_i=\boxed{38.536}\quad(\approx31.717\,dB)\]
+<p>ב-Shunt–Series לפי הדף <b>גם β וגם \(A'_i\) שליליים</b>, והמכפלה חיובית.</p>
+`+used([R('ssD','\\(D=1+\\beta_fA\'_i\\)'),R('dB')])},
+{t:'סעיף ג · שלב 1: הגבר הזרם בחוג סגור',b:RX`
+\[A_{if}=\frac{A'_i}{D}=\frac{-375.364}{38.536}=\boxed{-9.741}\qquad(\tfrac1{\beta_f}=-10)\]
+<p>קרוב מאוד ל-\(1/\beta_f\). ההבדל בערך \(1/D\approx2.6\%\).</p>
+`+used([R('ssD','\\(A_{if}=A\'_i/D\\)')])},
+{t:'סעיף ג · שלב 2: ממוצא זרם להגבר מתח (זהירות בסימן)',b:RX`<p>\(V_o\) נמדד על \(R_{c2}\), שבו זורם \(i_{c2}=\alpha I_o\) מ-\(V_{cc}\) <b>אל</b> הקולקטור. ולכן \(V_o=-\alpha I_oR_{c2}\). המקור: \(V_{sig}=I_sR_{sig}\).</p>
+\[A_{vf}=\frac{V_o}{V_{sig}}=-\alpha\frac{R_{c2}}{R_{sig}}A_{if}=-0.990\cdot\frac{10}{10}\cdot(-9.741)=\boxed{+9.644}\]
+<p>בקירוב \(i_c\approx i_e\): \(+9.741\). <b>הסימן חיובי:</b> שתי דרגות CE הופכות, ויחד לא-הופך.</p>
+`+co('warn','⚠️','מלכודת בנוסחת המעבר שבדף',RX`<p>בדף: \(A_{Vf}=A_{if}\frac{R_L}{R_s}\). היא מניחה ש-\(I_o\) <b>עובר דרך \(R_L\)</b> בכיוון שיוצר \(+V_o\). אצלנו הנגד שמוציא את \(V_o\) הוא \(R_{c2}\), הוא נושא \(\alpha I_o\), והכיוון יוצר \(V_o\) <b>שלילי</b>. הצבה עיוורת נותנת −9.741, סימן שגוי.</p>`)+used([R('ssConv','מעברים'),R('beta_re','\\(\\alpha=\\beta/(\\beta+1)\\)'),R('srcTf')])},
+{t:'סעיף ד · שלב 1: איפה החץ?',b:RX`<p>החץ \(R_{inf}\) בהדק של \(V_{sig}\), <b>משמאל ל-\(R_{sig}\)</b>. לכן מבקשים את ההתנגדות שהמקור רואה: \(R_{sig}\) ועוד מה שמימינו.</p>`},
+{t:'סעיף ד · שלב 2: R_if, ואז מוציאים את R_sig מהמקביליות',b:RX`
+\[R_{if}=\frac{R_i}{D}=\frac{810.811\,\Omega}{38.536}=21.040\ \Omega\]
+<p>זו ההתנגדות שרואה מקור הנורטון, והיא כוללת את \(R_{sig}\) במקביל (כי \(R_{sig}\) היה בתוך \(R_i\) כשחישבנו את D). לכן "מוציאים" אותו:</p>
+\[R_x=\left(\frac{1}{R_{if}}-\frac{1}{R_{sig}}\right)^{-1}=\left(\frac{1}{21.040}-\frac{1}{10000}\right)^{-1}=21.084\ \Omega\]
+`+used([R('ssD','\\(R_{if}=R_{in}/D\\)')])},
+{t:'סעיף ד · שלב 3: מוסיפים R_sig בטור',b:RX`
+\[R_{inf}=R_{sig}+R_x=10000+21.084=\boxed{10.021\ k\Omega}\]
+<p><b>בנוסחה המרוכזת של הדף:</b></p>
+\[R_{inf(TOT)}=R_s+\left(\frac{D}{R_s\parallel R_{11}\parallel R_{in}(Q)}-\frac1{R_s}\right)^{-1}\]
+<p>בדף כתוב שם "\(R_1\)", והכוונה ל-<b>\(R_{11}\)</b>, לא לנגד הקיטוב. ו-\(R_{in}(Q)\) צריך לכלול את נגדי הקיטוב: \(R_B\parallel r_{\pi1}\). הצבה: \(10k+(47.528-0.100)^{-1}k=10.021k\) ✓.</p>
+<p><b>פירוש:</b> המשוב המקבילי מוריד את התנגדות צומת הבסיס מ-882Ω ל-21Ω, כמעט קצר. לכן כמעט כל הזרם \(V_{sig}/R_{sig}\) נכנס למגבר, ו-\(R_{inf}\approx R_{sig}\).</p>
+`+used([R('ssRinf','\\(R_{\\inf(TOT)}\\)')])},
+{t:'בדיקה: השיטה מול ניתוח צמתים מדויק',b:RX`${tb(['גודל','בשיטת המשוב','ניתוח צמתים מלא','הפרש'],[['\\(A_{vf}\\)','9.644','9.644','0.0001%'],['\\(A_{if}\\)','−9.741','−9.741','0.0001%'],['\\(R_{inf}\\)','10.021k','10.021k','0.00001%'],['\\(R_x\\) בצומת','21.084Ω','21.083Ω','0.005%']])}
+<p>ההפרש הזעיר: השיטה מזניחה אות שעובר מהכניסה <b>ישירות</b> דרך \(R_f\) לצומת F. כאן זה זניח.</p>
+${tb(['β של הטרנזיסטורים','50','100','200'],[['\\(A_{vf}\\) מדויק','9.286','9.644','9.823']])}
+<p>שינוי של פי 4 ב-β משנה את ההגבר בכ-6% בלבד. זה המשוב.</p>`}
+],
+ans:RX`<b>א:</b> מקבילי-טורי (השוואת זרם, דגימת זרם), \(\beta_f=-0.100\), \(R_{11}=30.000k\), \(R_{22}=2.700k\) · <b>ב:</b> \(R_i=0.811k\), \(R_{in}(Q_2)=374.700k\), \(A'_i=-375.364\), \(D=38.536\) · <b>ג:</b> \(A_{if}=-9.741\), \(A_{vf}=+9.644\) · <b>ד:</b> \(R_{if}=21.040\Omega\), \(R_{inf}=10.021k\Omega\).`},
+after:[
+{t:'הטעויות שכדאי להכיר',h:RX`<ol><li><b>דגימת מתח במקום זרם</b>: "המשוב לקוח מהטרנזיסטור השני". לא: \(R_f\) לא נוגע ב-\(V_o\).</li>
+<li><b>ערבוב טורי</b> בגלל ש-\(R_f\) "מגיע מלמטה". חשוב רק שהוא נוחת על צומת הבסיס.</li>
+<li>לשכוח את \(R_1\parallel R_2\) בכניסה: \(A'_i=-408.48\), \(D=41.85\).</li>
+<li>בלי העמסה בכלל: \(A'_i\approx-1262.5\), \(D\approx127.3\). ערכי ביניים שגויים לגמרי.</li>
+<li>סימן β: לשכוח את המינוס ולקבל \(D\lt1\), "משוב חיובי". אבסורד.</li>
+<li>\(R_{e2}\) במקום הלא נכון, או לשכוח אותו ב-\(R_{in}(Q_2)\).</li>
+<li>להחליף את כללי הקצר/הנתק: \(R_{11}=2.7k\), \(R_{22}=30k\). שגוי.</li>
+<li>המעבר \(A_{if}\to A_{vf}\): הצבה עיוורת (סימן שגוי), או לשכוח לחלק ב-\(R_{sig}\).</li>
+<li>\(R_{inf}\): לענות 21Ω במקום 10.021kΩ. החץ משמאל ל-\(R_{sig}\).</li>
+<li>"\(R_1\)" בתיבה של עמוד 6: לקרוא אותו כנגד הקיטוב במקום \(R_{11}\).</li>
+<li>לנסות לחשב DC: אין \(V_{cc}\), ו-\(r_\pi\) נתון. לא לבזבז זמן.</li></ol>`},
+{t:'מה חסר בדף הנוסחאות לשאלה הזו, ואיפה להוסיף',h:RX`${tb(['מה להוסיף','למה','איפה בדף'],[
+['מבחן הקצר: "מקצרים את \\(V_o\\); אם המשוב נעלם, דגימת מתח"','זיהוי בטוח','עמוד 6, בשורת "זיהוי" (או פס עליון לכל העמוד)'],
+['"מקבילי ⇒ קצר, טורי ⇒ נתק; \\(R_{11}\\): מבטלים צד 2, \\(R_{22}\\): מבטלים צד 1"','הכלל במילים','עמוד 6, מעל "מציאת R11 / R22"'],
+['\\(A_{vf}=-\\alpha\\frac{R_C}{R_s}A_{if}\\) כשהמוצא בקולקטור','הסימן בסעיף ג','עמוד 6 · סעיף 3, שורת "מעברים"'],
+['מוסכמת \\(I_o\\), \\(I_f\\): \\(\\beta\\lt0\\), \\(A\'_i\\lt0\\), בדיקה \\(\\beta A\\gt0\\)','מניעת טעות סימן','עמוד 6 · סעיף 3, ליד "מציאת β"'],
+['בתיבת \\(R_{\\inf(TOT)}\\): "\\(R_1\\)" = \\(R_{11}\\), ו-\\(R_{in}(Q)\\) כולל \\(R_B\\)','קריאה נכונה של הנוסחה','עמוד 6 · סעיף 3, בתוך התיבה'],
+['שרשרת \\(A\'_i\\) לשתי דרגות CE','סעיף ב','עמוד 6 · סעיף 3, ליד "מודל הדוגמה"'],
+['\\(\\frac{dA_f}{A_f}=\\frac1D\\frac{dA}{A}\\), \\(A_f\\approx1/\\beta\\)','הבנה, ושאלות "למה משוב"','עמוד 6 למעלה']])}`},
+{t:'מקורות',h:RX`<p><b>מהחוברות:</b> ${BK(8,2,'משוב חיובי ושלילי')} ${BK(8,3,'A_f, D')} ${BK(8,4,'ארבע הטופולוגיות')} ${BK(8,5,'השלבים, R_if')} ${BK(8,6,'R11 ו-R22')} ${BK(5,8,'מודל היבריד-π')} ${BK(5,10,'CE עם R_E')}. בחוברת 8 אין דוגמה מספרית עם טרנזיסטורים, וזה בדיוק "המעגל הקלאסי" של Sedra/Smith.</p>
+${src([['https://people.engr.tamu.edu/spalermo/ecen326/lab10_notes.pdf','Texas A&M ECEN326, Lab 10: BJT Shunt-Series Feedback Amp, אותו מעגל בדיוק'],
+['https://inst.eecs.berkeley.edu/~ee140/fa13/lectures/feedback.ee140.f13.pdf','UC Berkeley EE140: ארבע הטופולוגיות וכללי ההעמסה'],
+['https://in.ncu.edu.tw/~ncume_ee/harvard-es154/lect_18_feedback.pdf','Harvard ES154, הרצאה 18: סוג מגבר ↔ טופולוגיה'],
+['https://pallen.ece.gatech.edu/Academic/ECE_6412/Spring_2003/L250-Intro2FdbkConcepts-2UP.pdf','Georgia Tech (P. Allen): גזירת R_if ו-R_of']])}`}
+],
+figs:q4Figs,
+recs:[['6','פס עליון / שורת "זיהוי"','מבחן הקצר, כלל קצר/נתק במילים, \\(dA_f/A_f=\\frac1D\\,dA/A\\)',4],['6','סעיף 3, "מעברים" ו"מציאת β"','\\(A_{vf}=-\\alpha\\frac{R_C}{R_s}A_{if}\\) ומוסכמת הסימן',4],['6','סעיף 3, תיבת \\(R_{\\inf(TOT)}\\)','"\\(R_1\\)" = \\(R_{11}\\)',4]]
+};
+
+const QS=[Q1,Q2,Q3,Q4];
+const sec=(n,t,h)=>'<section class="th-sec"><h2><span class="sn">'+n+'</span>'+t+'</h2>'+h+'</section>';
+const INTRO=[
+{t:'איך לעבוד עם העמוד הזה',h:RX`<p>כל שאלה בנויה בשלושה חלקים: <b>(1) קודם הנושא</b>: המושגים שהשאלה בודקת, מאפס, עם האינטואיציה ועם הנוסחאות מהדף. <b>(2) השאלה עצמה</b>: הסעיפים מפורקים לצעדים. חשוף צעד אחד בכל פעם ונסה לנחש את הבא. בכל שאלה יש גם <b>מעבדה חיה</b> עם סליידר. <b>(3) אחרי השאלה</b>: מה הבודק סימן, הטעויות הנפוצות, מה חסר בדף הנוסחאות ואיפה להוסיף, ומקורות.</p>
+<p>ההסברים נבנו מחדש מהחוברות הכתובות (שיעורים 1, 3, 5, 7, 8, 9) וממקורות באינטרנט, וכל מספר אומת בחישוב במחשב (כולל ניתוח צמתים מלא של המעגלים).</p>`+
+co('key','🧾','הדף החדש',RX`<p>כל נוסחה מצוטטת מ<a href="#/sheet">דף הנוסחאות החדש</a> (8 עמודים) בצורה <b>עמוד · סעיף · מספר</b>, והקישור מביא אותך בדיוק לנוסחה. מה שמסומן ⚠ לא מופיע בדף, ובסוף העמוד יש טבלה מרוכזת של מה כדאי להוסיף ואיפה.</p>`)},
+{t:'מה היה במבחן, ואיפה כדאי להשקיע',h:tb(['שאלה','נקודות','הנושא','מה הכי חשוב לזכור'],[
+['<a href="#/m26a/1">1</a>','25','BJT כמקור זרם + דיודה לאות קטן','\\(I_D=I_C\\) (לא \\(I_E\\)), \\(r_D=nV_T/I_D\\), הקולקטור נתק ב-AC, הסימן של \\(i_d\\)'],
+['<a href="#/m26a/2">2</a>','20','מגבר הפרש NMOS','חצי מעגל, \\(2R_{SS}\\) באות משותף, CMRR באותו סוג מוצא, שני קצוות \\(V_{CM}\\)'],
+['<a href="#/m26a/3">3</a>','25','<b>תלות בטמפרטורה</b> + מגברי שרת','חם ⇒ \\(V_D\\) יורד 2mV/°C; חוט המשוב נוחת על −; הצבה של \\((T-25)\\)'],
+['<a href="#/m26a/4">4</a>','30','משוב מקבילי-טורי','זיהוי בשני מבחנים, קצר/נתק ל-\\(R_{11}\\),\\(R_{22}\\), סימן \\(A_{vf}\\), איפה החץ של \\(R_{inf}\\)']])}
+];
+function qsec(q){
+  return '<section class="m26q" id="'+q.id+'"><h2 class="xh"><span class="m26n">'+q.n+'</span>'+q.title+'</h2><p class="m26topic">'+q.topic+' · '+q.pts+' נק׳'+(q.got?' · <b>במבחן: '+q.got+'</b>':'')+'</p>'+
+    '<div class="m26part">① קודם הנושא</div><div class="th">'+q.primer.map((s,i)=>sec(q.n+'.'+(i+1),s.t,s.h)).join('')+'</div>'+
+    '<div class="m26part">② השאלה, צעד אחר צעד</div><div class="probs" id="m26-p'+q.n+'"></div>'+
+    '<div class="m26part">③ אחרי השאלה</div><div class="th">'+q.after.map((s,i)=>sec('✓','<span>'+s.t+'</span>',s.h)).join('')+'</div></section>';
+}
+function recsTable(){
+  const rows=[];QS.forEach(q=>q.recs.forEach(r=>rows.push(r)));
+  rows.sort((a,b)=>parseInt(a[0])-parseInt(b[0]));
+  return tb(['עמוד בדף','איפה בעמוד','מה להוסיף','בשביל שאלה'],rows.map(r=>[r[0],r[1],r[2],'<a href="#/m26a/'+r[3]+'">'+r[3]+'</a>']));
+}
+function build(d){
+  d.innerHTML='<div class="lhead"><div class="kicker">מבחן 2026 · מועד א׳ · סמסטר ג (קיץ) · 4 שאלות · 100 נקודות · דף הנוסחאות החדש</div><h1>מבחן 2026 מועד א׳: לומדים את הנושא דרך השאלה</h1><p class="sub">המבחן שהיה. כל שאלה מתחילה בהסבר של הנושא כולו, לא רק של השאלה, וממשיכה לפתרון מלא של כל הסעיפים. הכי הרבה זמן הושקע בשאלה 3 ובתלות בטמפרטורה.</p>'+
+    '<nav class="m26nav">'+QS.map(q=>'<a href="#/m26a/'+q.n+'"><b>שאלה '+q.n+'</b><span>'+q.title+'</span></a>').join('')+'<a href="#/m26a/recs"><b>📝 לדף הנוסחאות</b><span>מה להוסיף ואיפה</span></a></nav></div>'+
+    '<div class="th">'+INTRO.map((s,i)=>sec(String(i+1).padStart(2,'0'),s.t,s.h)).join('')+'</div>'+
+    QS.map(qsec).join('')+
+    '<section class="m26q" id="m26-recs"><h2 class="xh">מה כדאי להוסיף לדף הנוסחאות, ואיפה</h2><p class="m26topic">כל ההמלצות מארבע השאלות במקום אחד, לפי סדר העמודים בדף. הפירוט המלא נמצא בסוף כל שאלה.</p>'+recsTable()+
+    co('warn','⚠️','שלושה דברים בדף שכדאי לתקן',RX`<ul><li><b>עמוד 3, שרטוט "מגבר הפרש FET":</b> מקור הזרם מצויר עם חץ למעלה ו-\(R_{SS}\) בטור. הנכון (כמו בעמודים 4 ו-8): חץ למטה, \(R_{SS}\) במקביל.</li><li><b>עמוד 6, תיבות \(R_{\inf(TOT)}\):</b> ה-"\(R_1\)" שם הוא \(R_{11}\), לא נגד הקיטוב.</li><li><b>עמוד 3, \(V_{ceQ}=V_{cc}-I_c(R_c+R_e)\):</b> נכון רק כשבקולקטור יש נגד. כשיש שם רכיב אחר (כמו הדיודה בשאלה 1), כותבים \(V_{CE}=V_C-V_E\).</li></ul>`)+'</section>'+
+    '<div class="pnav"><a class="btn line" href="#/sheet">🧾 לדף הנוסחאות החדש</a><a class="btn solid" href="#/exam">לסימולטור המבחן ←</a></div>';
+  QS.forEach(q=>{const host=document.getElementById('m26-p'+q.n);X26.renderProblems(host,'m26q'+q.n,[q.prob]);const b=host.querySelector('header .badge');if(b)b.textContent=q.n;});
+  QS.forEach(q=>q.figs&&q.figs());
+  typeset(d);
+}
+function jump(t){const el=document.getElementById(t==='recs'?'m26-recs':'m26-q'+t);if(el)el.scrollIntoView({behavior:reduced?'auto':'smooth',block:'start'});}
+return {build,jump};
+})();
+
 /* ---------- lesson page with 5 tabs ---------- */
 function buildLesson(d,n){
   const L=LESSONS[n];
@@ -12503,6 +13705,7 @@ function route(){
   if(h.startsWith('#/f')){cur={page:'f',n:0,tab:''};page('f',buildFormulas);navMark('f');document.getElementById('mtitle').textContent='דף נוסחאות';}
   else if(h.startsWith('#/exam')){cur={page:'exam',n:0,tab:''};const p=page('exam',buildExam);if(p._init)examRender();p._init=1;navMark('exam');document.getElementById('mtitle').textContent='סימולטור מבחן';}
   else if((m=h.match(/^#\/sheet(?:\/([\d.]+))?/))){cur={page:'sheet',n:0,tab:''};page('sheet',buildSheet);navMark('f');document.getElementById('mtitle').textContent='דף הנוסחאות של המבחן';if(m[1]){setTimeout(()=>sheetJump(m[1]),80);refreshProgress();kickLoop();return;}}
+  else if((m=h.match(/^#\/m26a(?:\/(\w+))?/))){cur={page:'m26a',n:0,tab:''};page('m26a',M26A.build);navMark('');document.getElementById('mtitle').textContent='מבחן 2026 מועד א׳';if(m[1]){setTimeout(()=>M26A.jump(m[1]),120);refreshProgress();kickLoop();return;}}
   else if(h.startsWith('#/x2026')){cur={page:'x2026',n:0,tab:''};page('x2026',X26.build);navMark('');document.getElementById('mtitle').textContent='פתרון מבחן 2026';}
   else if(h.startsWith('#/div')){cur={page:'div',n:0,tab:''};page('div',DIVS.build);navMark('');document.getElementById('mtitle').textContent='מחלק מתח ומחלק זרם';}
   else if(h.startsWith('#/calc')){cur={page:'calc',n:0,tab:''};page('calc',buildCalc);navMark('calc');document.getElementById('mtitle').textContent='מחשבון נקודת עבודה';}
